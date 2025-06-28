@@ -4,11 +4,9 @@ import logging
 logging.basicConfig(level=logging.INFO,
                     format="%(levelname)s | %(name)s | %(message)s")
 import typer
-# Importing registers all MCP tools at module load
-import tools.agent_tools  # noqa: F401
-from agents.job_search_agent import JobSearchAgent
 from agent_runner import run_agent
-from agents.resume_tailor_agent import ResumeTailorAgent
+from utils.job_search import JobSearchAgent
+from utils.resume_tailor import ResumeTailorAgent
 from pathlib import Path
 
 app = typer.Typer()

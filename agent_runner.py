@@ -20,42 +20,29 @@ The agent will:
 """
 
 from __future__ import annotations
-import json, pathlib, hashlib
+import pathlib, hashlib
 import numpy as np
 import requests
 
-from tools import mlp, mcp
-
-OLLAMA_HOST  = "http://localhost:11434"
-EMBED_MODEL  = "mxbai-embed-large"
-LLM_MODEL    = "llama3:70b-instruct-q5_K_M"
-
+from tools import agent_tools as tools  # MCP‑registered helpers
 
 # --------------------------------------------------------------------------- #
 #  Small local helper                                                         #
 # --------------------------------------------------------------------------- #
 def embed_text(text: str) -> list[float]:
-    text = text[:8000]
-    r = requests.post(
-        f"{OLLAMA_HOST}/api/embeddings",
-        json={"model": EMBED_MODEL, "prompt": text},
-        timeout=30,
-    )
-    r.raise_for_status()
-    return r.json()["embedding"]
+    return tools.embed_text(text)["vector"]
 
 
 # --------------------------------------------------------------------------- #
 #  Agent loop                                                                 #
 # --------------------------------------------------------------------------- #
 def run_agent(url_rows: list[dict], resume_pdf: pathlib.Path) -> list[dict]:
-    resume_text = mlp.fetch_pdf_as_text(resume_pdf)
+    resume_text = tools.fetch_pdf_as_text(str(resume_pdf))["text"]
     resume_vec  = embed_text(resume_text)
 
     ranked = []
     for row in url_rows:
-        jd_html = mlp.fetch_html(row["url"])
-        jd_clean = jd_html  # simplistic; real code would strip tags
+        jd_clean = tools.fetch_html(row["url"])["html"]  # simplistic: no tag stripping
         jd_vec   = embed_text(jd_clean)
 
         embed_score = float(np.dot(resume_vec, jd_vec) /
@@ -88,5 +75,5 @@ def run_agent(url_rows: list[dict], resume_pdf: pathlib.Path) -> list[dict]:
 
     ranked.sort(key=lambda x: (x["llm_score"], x["embed_score"]),
                 reverse=True)
-    mcp.save_similarity_csv(ranked)
+    tools.save_similarity_csv(ranked)
     return ranked
