@@ -5,83 +5,139 @@ Unified MCP‑compliant toolbox used by the LLM agent.
 
 Exposed tools
 -------------
-• fetch_html(url)            → {"html": str}
+• search_web(query)          → {"results": [...]}
+• read_resource(uri)         → {"content": str}
 • fetch_pdf_as_text(path)    → {"text": str}
+• chat(messages, model)      → {"message": ...}
 • embed_text(text)           → {"vector": [float]}
+• chat_with_llm(prompt, context) → {"message": ...}
+• save_tex_file(path, content) → {"path": str}
 • save_similarity_csv(rows)  → {"ok": True}
-• save_tex_file(company, title, tex) → {"path": str}
 """
 
 from __future__ import annotations
-import csv, pathlib, re, datetime as dt
-from mcp import tool  # Anthropic MCP decorator
-import requests, fitz, json, numpy as np
+import pathlib
+import requests
+from typing import List
+import fitz  # PyMuPDF
 
-HEADERS      = {"User-Agent": "ResumeAgent"}
-OLLAMA_HOST  = "http://localhost:11434"
-EMBED_MODEL  = "mxbai-embed-large"
+from mcp import service, tool, MCP
 
-RESULTS_DIR = pathlib.Path("results")
-TEX_DIR     = pathlib.Path("tailored_resumes")
+# --- MCP Service Definitions -------------------------------------------------
 
-def _slug(text: str) -> str:
-    return re.sub(r"[^\w\-]+", "_", text.lower()).strip("_")
+@service
+class DocumentReader:
+    """A service for reading various document types (PDF, HTML)."""
+    @tool
+    async def read(self, uri: str) -> str:
+        """Reads content from a URI (file path or URL) and returns it as text."""
+        if uri.startswith("http://") or uri.startswith("https://"):
+            headers = {"User-Agent": "Mozilla/5.0 (ResumeAgent)"}
+            try:
+                r = requests.get(uri, headers=headers, timeout=10)
+                r.raise_for_status()
+                # Basic HTML to text, could be improved with BeautifulSoup
+                return r.text
+            except requests.RequestException as e:
+                raise RuntimeError(f"Failed to fetch HTML from {uri}: {e}") from e
+        elif pathlib.Path(uri).is_file() and uri.lower().endswith(".pdf"):
+            try:
+                doc = fitz.open(uri)
+                return "\n".join(p.get_text() for p in doc)
+            except Exception as e:
+                raise RuntimeError(f"Failed to read PDF {uri}: {e}") from e
+        else:
+            raise ValueError(f"Unsupported URI or file type: {uri}")
 
+@service
+class FileStorage:
+    """A service for storing files."""
+    @tool
+    async def save(self, path: str, content: bytes) -> None: ...
 
-# --------------------------------------------------------------------------- #
-# Fetch tools
+@service
+class EmbeddingService:
+    """A service for generating text embeddings."""
+    @tool
+    async def embed(self, text: str) -> List[float]: ...
+
+@service
+class LLMChat:
+    """A service for interacting with a large language model."""
+    @tool
+    async def chat(self, prompt: str, context: str | None = None) -> str: ...
+
+# --- Agent Tool Definitions --------------------------------------------------
+
 @tool(
-    name="fetch_html",
-    description="Download raw HTML from a URL.",
+    name="read_document",
+    description="Read content from a given URI (e.g., a local PDF path or an https:// URL).",
     parameters={
         "type": "object",
-        "properties": {"url": {"type": "string"}},
-        "required": ["url"],
+        "properties": {
+            "uri": {"type": "string", "description": "The URI of the resource to read."},
+        },
+        "required": ["uri"],
     },
 )
-def fetch_html(url: str, timeout: int = 10) -> dict:
-    r = requests.get(url, headers=HEADERS, timeout=timeout)
-    r.raise_for_status()
-    return {"html": r.text}
-
-
-@tool(
-    name="fetch_pdf_as_text",
-    description="Extract plain text from a local PDF file.",
-    parameters={
-        "type": "object",
-        "properties": {"path": {"type": "string"}},
-        "required": ["path"],
-    },
-)
-def fetch_pdf_as_text(path: str | pathlib.Path) -> dict:
-    doc = fitz.open(path)
-    return {"text": "\n".join(p.get_text() for p in doc)}
-
+async def read_document(uri: str) -> str:
+    """Read content from a URI by delegating to the DocumentReader service."""
+    reader_svc = await MCP.get(DocumentReader)
+    return await reader_svc.read(uri)
 
 @tool(
     name="embed_text",
-    description="Return an embedding vector for the given text using Ollama.",
+    description="Generate a vector embedding for a given text.",
     parameters={
         "type": "object",
-        "properties": {"text": {"type": "string"}},
+        "properties": {
+            "text": {"type": "string", "description": "The text to embed."},
+        },
         "required": ["text"],
     },
 )
-def embed_text(text: str) -> dict:
-    text = text[:8000]  # safety truncation
-    resp = requests.post(
-        f"{OLLAMA_HOST}/api/embeddings",
-        json={"model": EMBED_MODEL, "prompt": text},
-        timeout=30,
-    )
-    resp.raise_for_status()
-    return {"vector": resp.json()["embedding"]}
+async def embed_text(text: str) -> List[float]:
+    """Generate a vector embedding for a text using the EmbeddingService."""
+    embedding_svc = await MCP.get(EmbeddingService)
+    return await embedding_svc.embed(text)
 
+@tool(
+    name="chat_with_llm",
+    description="Get a response from the LLM to tailor the resume.",
+    parameters={
+        "type": "object",
+        "properties": {
+            "prompt": {"type": "string", "description": "The prompt to send to the LLM."},
+            "context": {"type": "string", "description": "Optional context for the prompt, like resume text or a job description."},
+        },
+        "required": ["prompt"],
+    },
+)
+async def chat_with_llm(prompt: str, context: str | None = None) -> str:
+    """Get a response from the LLM using the LLMChat MCP service."""
+    llm_chat_svc = await MCP.get(LLMChat)
+    return await llm_chat_svc.chat(prompt, context=context)
+
+@tool(
+    name="save_tex_file",
+    description="Save a .tex file to a specified path.",
+    parameters={
+        "type": "object",
+        "properties": {
+            "path": {"type": "string", "description": "The path to save the file to."},
+            "content": {"type": "string", "description": "The content of the .tex file."},
+        },
+        "required": ["path", "content"],
+    },
+)
+async def save_tex_file(path: str, content: str) -> None:
+    """Save a .tex file using the FileStorage MCP service."""
+    storage_svc = await MCP.get(FileStorage)
+    await storage_svc.save(path, content.encode("utf-8"))
 
 @tool(
     name="save_similarity_csv",
-    description="Persist similarity rows to results/ranked_jobs.csv.",
+    description="Persist similarity rows to a CSV file.",
     parameters={
         "type": "object",
         "properties": {
@@ -109,22 +165,12 @@ def embed_text(text: str) -> dict:
     },
 )
 def save_similarity_csv(rows: list[dict]) -> dict:
-    RESULTS_DIR.mkdir(exist_ok=True)
-    path = RESULTS_DIR / "ranked_jobs.csv"
-    with path.open("w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(
-            f,
-            fieldnames=["job_id", "embed_score", "llm_score",
-                        "company", "url", "title", "posted"],
-        )
-        writer.writeheader()
-        writer.writerows(rows)
-    return {"ok": True}
-
+    content = json.dumps(rows)
+    return FileStorage().save(path="results/ranked_jobs.csv", content=content)
 
 @tool(
     name="save_tex_file",
-    description="Write a tailored LaTeX résumé to disk and return its path.",
+    description="Write a tailored LaTeX résumé to a file.",
     parameters={
         "type": "object",
         "properties": {
@@ -136,10 +182,5 @@ def save_similarity_csv(rows: list[dict]) -> dict:
     },
 )
 def save_tex_file(company: str, title: str, tex: str) -> dict:
-    today = dt.datetime.utcnow().strftime("%Y%m%d")
-    out_dir = TEX_DIR / _slug(company)
-    out_dir.mkdir(parents=True, exist_ok=True)
-    file_name = f"{_slug(title)}_{today}.tex"
-    path = out_dir / file_name
-    path.write_text(tex, encoding="utf-8")
-    return {"path": str(path)}
+    path = f"tailored_resumes/{company}/{title}.tex"
+    return FileStorage().save(path=path, content=tex)
