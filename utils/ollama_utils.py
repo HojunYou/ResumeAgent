@@ -1,31 +1,54 @@
-import os, time, shutil, subprocess, requests
+"""
+utils/ollama_utils.py
+=====================
 
-# Allow overrides:
+Starts (or re-uses) a local `ollama serve` process on macOS and guarantees that
+the REST endpoint is alive **before** any agent code proceeds.
+
+Importing this module once is enough:
+
+    import utils.ollama_utils        # side-effect: ensure_ollama_running()
+
+Public API
+----------
+ensure_ollama_running(max_wait: int = 15) -> bool
+"""
+
+from __future__ import annotations
+import os, shutil, subprocess, time, requests, platform, logging, sys
+
+# Allow user overrides
+OLLAMA_BIN  = os.getenv("OLLAMA_BIN", "ollama")
 OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://localhost:11434")
-OLLAMA_BIN  = os.getenv("OLLAMA_BIN", "ollama")        # e.g. /opt/homebrew/bin/ollama
+LOGGER      = logging.getLogger("ollama_utils")
 
-def is_ollama_running(host: str = OLLAMA_HOST) -> bool:
-    """Ping the Ollama REST endpoint."""
+# --------------------------------------------------------------------------- #
+#                                helpers                                      #
+# --------------------------------------------------------------------------- #
+def _is_endpoint_up() -> bool:
     try:
-        return requests.get(f"{host}/api/tags", timeout=2).status_code == 200
+        r = requests.get(f"{OLLAMA_HOST}/api/tags", timeout=2)
+        return r.status_code == 200
     except requests.RequestException:
         return False
 
-def _ollama_process_exists() -> bool:
-    """Use macOS pgrep to see if 'ollama serve' is already running."""
-    return subprocess.call(
-        ["pgrep", "-f", r"ollama.*serve"],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-    ) == 0
 
-def launch_ollama() -> bool:
-    """Start `ollama serve` in the background (detached)."""
-    if _ollama_process_exists():
-        return True
+def _proc_exists() -> bool:
+    """macOS-native: `pgrep -f 'ollama.*serve'` → True/False."""
+    return (
+        subprocess.call(
+            ["pgrep", "-f", r"ollama.*serve"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+        == 0
+    )
 
+
+def _launch_detached() -> bool:
+    """Spawn `ollama serve` in its own session so it survives parent exit."""
     if shutil.which(OLLAMA_BIN) is None:
-        print("[Error] The 'ollama' executable is not in PATH.")
+        LOGGER.error("ollama binary not found on PATH.")
         return False
 
     try:
@@ -33,28 +56,47 @@ def launch_ollama() -> bool:
             [OLLAMA_BIN, "serve"],
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
-            start_new_session=True,        # <-- key for macOS: create its own session
+            start_new_session=True,          # keeps it alive after parent exits
         )
         return True
-    except Exception as exc:
-        print(f"[Error] Could not launch Ollama: {exc}")
+    except Exception as exc:                # noqa: BLE001
+        LOGGER.error("Could not launch ollama: %s", exc)
         return False
 
+
+# --------------------------------------------------------------------------- #
+#                            public function                                  #
+# --------------------------------------------------------------------------- #
 def ensure_ollama_running(max_wait: int = 15) -> bool:
-    """Guarantee that a local Ollama server is listening."""
-    if is_ollama_running():
+    """
+    Make sure Ollama is listening on OLLAMA_HOST.
+
+    Returns
+    -------
+    bool
+        True if running; False otherwise.
+    """
+    if _is_endpoint_up():
         return True
 
-    print("[Info] Ollama not detected; launching …")
-    if not launch_ollama():
-        return False
+    LOGGER.info("Ollama not detected; launching …")
+    if _proc_exists() or _launch_detached():
+        # Poll until the HTTP endpoint responds
+        deadline = time.time() + max_wait
+        while time.time() < deadline:
+            if _is_endpoint_up():
+                LOGGER.info("Ollama is ready.")
+                return True
+            time.sleep(1)
 
-    deadline = time.time() + max_wait
-    while time.time() < deadline:
-        if is_ollama_running():
-            print("[Info] Ollama is ready.")
-            return True
-        time.sleep(1)
-
-    print("[Error] Timed out waiting for Ollama to start.")
+    LOGGER.error("Timed out waiting for Ollama.")
     return False
+
+
+# --------------------------------------------------------------------------- #
+#           run once at import so *all* agents inherit the guarantee          #
+# --------------------------------------------------------------------------- #
+if platform.system() == "Darwin":           # macOS only; skip on CI Linux etc.
+    if not ensure_ollama_running():
+        LOGGER.critical("Ollama unavailable – exiting.")
+        sys.exit(1)

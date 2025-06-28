@@ -1,19 +1,24 @@
 """
-ResumeTailorAgent
-=================
+agents/resume_tailor_agent.py
+=============================
 
-• Validates job URLs (HEAD request).
-• Calls Ollama’s chat endpoint with a prompt that returns LaTeX content.
-• Saves `.tex` in a tidy directory structure and optionally compiles to PDF.
+Tailors the résumé *while preserving the exact layout* of `full_resume.pdf`.
+Ollama readiness is guaranteed by importing utils.ollama_utils.
 """
+
 from __future__ import annotations
-import pathlib, requests, logging, datetime as dt, subprocess, re, shutil, hashlib, textwrap
+import pathlib, datetime as dt, subprocess, logging, re, textwrap, hashlib
 from typing import Dict
+
+import requests
 from jinja2 import Template
 
+# ---- side-effect: starts Ollama if it isn't already running
+import utils.ollama_utils as _ollama  # noqa: F401  (import for side-effect)
+
 OLLAMA_HOST  = "http://localhost:11434"
-CHAT_MODEL   = "llama3:70b-instruct-q5_K_M"   # adjust to your local model name
-TEX_TEMPLATE = r"""
+CHAT_MODEL   = "llama3:70b-instruct-q5_K_M"   # adjust to local install
+TEX_WRAPPER  = r"""
 \documentclass[11pt]{article}
 \usepackage{geometry}\geometry{margin=0.8in}
 \usepackage{hyperref}
@@ -22,17 +27,20 @@ TEX_TEMPLATE = r"""
 \end{document}
 """
 
+_LOGGER = logging.getLogger("ResumeTailorAgent")
+
+
 class ResumeTailorAgent:
-    URL_RE = re.compile(r"^https?://")
+    URL_RE = re.compile(r"^https?://", re.I)
 
     def __init__(self, resume_path: pathlib.Path) -> None:
         self.resume_path = resume_path
-        self.logger      = logging.getLogger(self.__class__.__name__)
-        self.base_text   = resume_path.read_text() if resume_path.suffix == ".tex" else ""
-        # If PDF, SimilarityAgent already extracted; we just send file bytes here if needed.
+        self.base_pdf_bytes = resume_path.read_bytes()
+        self.job_template = Template(TEX_WRAPPER)  # compiled once
 
-    # ----------------- public -----------------
-
+    # --------------------------------------------------------------------- #
+    #                              public                                   #
+    # --------------------------------------------------------------------- #
     @staticmethod
     def is_url_valid(url: str, timeout: int = 6) -> bool:
         if not ResumeTailorAgent.URL_RE.match(url):
@@ -44,46 +52,61 @@ class ResumeTailorAgent:
             return False
 
     def tailor_resume(self, job: Dict) -> pathlib.Path:
-        """Returns path to the new .tex file."""
+        """Return path to new .tex file tailored to `job`."""
         prompt = self._build_prompt(job)
         latex_body = self._ollama_chat(prompt)
 
         today = dt.datetime.utcnow().strftime("%Y%m%d")
-        company_dir = pathlib.Path("tailored_resumes", _slug(job["company"]))
+        company_dir = pathlib.Path(
+            "tailored_resumes", _slug(job["company"])
+        )
         company_dir.mkdir(parents=True, exist_ok=True)
 
-        outfile = company_dir / f"{_slug(job['title'])}_{job['job_id']}_{today}.tex"
-        outfile.write_text(latex_body, encoding="utf-8")
+        tex_name = f"{_slug(job['title'])}_{job['job_id']}_{today}.tex"
+        tex_path = company_dir / tex_name
+        tex_path.write_text(latex_body, encoding="utf-8")
 
-        # Quick sanity compile; errors → logs
-        self._compile_tex(outfile)
+        self._compile(tex_path)
+        _LOGGER.info("✅ Tailored résumé written → %s", tex_path)
+        return tex_path
 
-        self.logger.info("✅ Tailored résumé saved → %s", outfile)
-        return outfile
-
-    # ----------------- helpers -----------------
-
+    # --------------------------------------------------------------------- #
+    #                              helpers                                  #
+    # --------------------------------------------------------------------- #
     def _build_prompt(self, job: Dict) -> str:
-        jd_excerpt = job["description"][:1500]  # keep prompt short
+        """
+        Instruct the LLM to *mimic* the PDF structure while swapping content.
+        We embed the original PDF bytes so the model can infer styling cues.
+        """
+        jd = job["description"][:1600]  # keep prompt within context limit
+        pdf_hex = self.base_pdf_bytes.hex()[:8000]  # partial hex to save tokens
+
         return textwrap.dedent(
             f"""
-            You are a résumé-writing assistant. Given the candidate résumé below and
-            the job description, produce a concise LaTeX résumé (<= 2 pages) that
-            highlights the most relevant experiences for the role.
+            You are a LaTeX résumé re-writer.
 
-            Candidate résumé (raw text):
-            ----
-            {self.base_text}
-            ----
+            • You are given PARTIAL hex-encoded bytes of the candidate's original résumé
+              PDF (`full_resume.pdf`). Use this to preserve visual structure, section
+              order, fonts, headings, and overall length **as closely as possible**.
 
-            Job description excerpt:
-            ----
-            {jd_excerpt}
-            ----
+            • Replace *only* the content necessary to maximise alignment with the
+              provided job description, while keeping the same look & feel:
+              - Keep every existing section header in the same order.
+              - Keep the two-column layout (if present), bullet shapes, margins, etc.
+              - Do NOT exceed two pages.
 
-            Return *only* valid LaTeX content inside \\begin{{document}}...\\end{{document}}.
+            • Return **only** valid LaTeX code between \\begin{{document}} and
+              \\end{{document}} – no explanations, no Markdown.
+
+            --- PARTIAL PDF HEX ---
+            {pdf_hex}
+            --- END PDF HEX ---
+
+            --- JOB DESCRIPTION EXCERPT ---
+            {jd}
+            --- END JOB DESCRIPTION ---
             """
-        )
+        ).strip()
 
     def _ollama_chat(self, prompt: str) -> str:
         resp = requests.post(
@@ -93,16 +116,15 @@ class ResumeTailorAgent:
                 "messages": [{"role": "user", "content": prompt}],
                 "stream": False,
             },
-            timeout=60,
+            timeout=90,
         )
         resp.raise_for_status()
-        content = resp.json()["message"]["content"]
+        return self.job_template.render(
+            content=resp.json()["message"]["content"]
+        )
 
-        # wrap inside mini template to guarantee compile
-        template = Template(TEX_TEMPLATE)
-        return template.render(content=content)
-
-    def _compile_tex(self, tex_path: pathlib.Path) -> None:
+    @staticmethod
+    def _compile(tex_path: pathlib.Path) -> None:
         try:
             subprocess.run(
                 ["pdflatex", "-interaction=batchmode", tex_path.name],
@@ -112,9 +134,11 @@ class ResumeTailorAgent:
                 check=True,
             )
         except subprocess.CalledProcessError:
-            self.logger.warning("⚠️  pdflatex failed for %s", tex_path.name)
+            _LOGGER.warning("⚠️  pdflatex failed for %s", tex_path.name)
 
-# --------------- utilities -------------------
 
-def _slug(text: str) -> str:
-    return re.sub(r"[^\w\-]+", "_", text.lower()).strip("_")
+# ------------------------------------------------------------------------- #
+#                             util funcs                                    #
+# ------------------------------------------------------------------------- #
+def _slug(txt: str) -> str:
+    return re.sub(r"[^\w\-]+", "_", txt.lower()).strip("_")

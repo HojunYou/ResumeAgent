@@ -1,3 +1,8 @@
+# Ensure local Ollama server is running before any agent code executes
+import utils.ollama_utils  # side‑effect: ensure_ollama_running()
+import logging
+logging.basicConfig(level=logging.INFO,
+                    format="%(levelname)s | %(name)s | %(message)s")
 import typer
 from agents.job_search_agent import JobSearchAgent
 from agents.similarity_agent import SimilarityAgent
