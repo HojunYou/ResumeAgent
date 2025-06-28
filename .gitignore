@@ -9,8 +9,10 @@ tailored_resumes/
 **/.DS_Store
 results/
 .resumeagent/
+resumeagent/
 __pypackages__/
 .uv/
+.python_version
 
 
 # C extensions
