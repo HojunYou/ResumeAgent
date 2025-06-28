@@ -52,40 +52,132 @@ class JobSearchAgent:
 
     # ----------------- public API -----------------
 
-    def search_jobs(self) -> List[Dict]:
-        """High-level entry: returns list[{title, company, url, description, posted, yoe, edu}]"""
+    def search_jobs(self, resume_path: pathlib.Path = None) -> List[Dict]:
+        """
+        High-level entry: returns list[{job_id, title, company, url, description, posted, yoe, edu, embed_score, llm_score}]
+        Deduplicates by job_id, computes similarity scores, filters/ranks jobs, and outputs results to results/ directory as CSV.
+        """
+        import pandas as pd
+        import utils.similarity as sim
+        from collections import defaultdict
+
+        if resume_path is None:
+            raise ValueError("resume_path must be provided for similarity scoring.")
+        resume_text = self._extract_resume_text(resume_path)
+
         all_results: list[dict] = []
+        job_ids = set()
         for company in self.companies:
             try:
                 results = self._search_company(company)
-                all_results.extend(results)
+                # Deduplicate by job_id
+                unique_jobs = []
+                for job in results:
+                    job_id = self._hash_job(job)
+                    if job_id not in job_ids:
+                        job["job_id"] = job_id
+                        job_ids.add(job_id)
+                        unique_jobs.append(job)
+                # Compute similarity scores
+                for job in unique_jobs:
+                    try:
+                        job["embed_score"] = sim.get_embed_score(resume_text, job.get("description", ""))
+                    except Exception as e:
+                        self.logger.warning(f"Embedding similarity failed for job {job['job_id']}: {e}")
+                        job["embed_score"] = 0.0
+                    try:
+                        job["llm_score"] = sim.get_llm_score(resume_text, job.get("description", ""))
+                    except Exception as e:
+                        self.logger.warning(f"LLM similarity failed for job {job['job_id']}: {e}")
+                        job["llm_score"] = 0.0
+                # Filter and rank jobs
+                filtered = self._filter_and_rank_jobs(unique_jobs)
+                filtered = filtered[:6]
+                all_results.extend(filtered)
             except Exception as exc:
                 self.logger.warning("❌ %s – %s", company, exc)
-
             if len(all_results) >= self.max_total:
                 break
 
-        # sort by recency as a tie-breaker
-        return sorted(all_results, key=lambda x: x["posted"], reverse=True)[: self.max_total]
+        # sort by recency as tie-breaker
+        all_results = sorted(all_results, key=lambda x: x["posted"], reverse=True)[: self.max_total]
+
+        # Output DataFrame/CSV
+        df = pd.DataFrame([
+            {
+                "JobID": job["job_id"],
+                "EmbedScore": round(job.get("embed_score", 0), 3),
+                "LLMScore": round(job.get("llm_score", 0), 3),
+                "CompanyName": job["company"],
+                "CareerWebsite": job["careers_url"],
+                "JobDescriptionURL": job["url"],
+            }
+            for job in all_results
+        ])
+        results_dir = pathlib.Path("results")
+        results_dir.mkdir(exist_ok=True)
+        out_path = results_dir / "job_results.csv"
+        df.to_csv(out_path, index=False)
+        self.logger.info(f"✅ Results saved to {out_path}")
+        return all_results
+
+    def _extract_resume_text(self, resume_path: pathlib.Path) -> str:
+        """Extracts text from a PDF resume using requests to local OCR or PDF-to-text endpoint, or fallback."""
+        # For now, use agent_runner/tools.fetch_pdf_as_text logic or fallback to PyPDF2
+        try:
+            import PyPDF2
+            with open(resume_path, 'rb') as f:
+                reader = PyPDF2.PdfReader(f)
+                return "\n".join(page.extract_text() or '' for page in reader.pages)
+        except Exception as e:
+            self.logger.warning(f"Failed to extract resume text: {e}")
+            return ""
+
+    def _hash_job(self, job: dict) -> str:
+        """Generate a unique hash for a job posting."""
+        base = f"{job.get('company','')}|{job.get('title','')}|{job.get('url','')}|{job.get('posted','')}"
+        return _hash(base)
+
+    def _filter_and_rank_jobs(self, jobs: list[dict]) -> list[dict]:
+        """
+        Filter by years of experience, education, and date; rank by llm_score then embed_score, then recency.
+        """
+        filtered = [
+            job for job in jobs
+            if (job.get("yoe", 0) >= 2) and (job.get("edu", "").lower() in ["bachelor", "master", "phd"]) and job.get("posted")
+        ]
+        filtered = sorted(
+            filtered,
+            key=lambda x: (x.get("llm_score", 0), x.get("embed_score", 0), x["posted"]),
+            reverse=True
+        )
+        return filtered
 
     # ----------------- core steps -----------------
 
     def _search_company(self, company: str) -> list[dict]:
+        """
+        Discover and parse jobs for a single company. Modular for new job boards.
+        """
         careers_url = self._discover_careers_url(company)
         if not careers_url:
             raise RuntimeError("careers URL not found")
 
-        # dispatch: JSON job board vs static HTML
+        # Store for output
+        self.logger.info(f"Company: {company} | Careers URL: {careers_url}")
+
+        # Modular job board dispatch
         if any(board in careers_url for board in ("greenhouse.io", "boards.greenhouse.io")):
             jobs = self._parse_greenhouse(careers_url)
-        elif "lever.co" in careers_url:
+        elif any(board in careers_url for board in ("lever.co", "jobs.lever.co")):
             jobs = self._parse_lever(careers_url)
         else:
-            jobs = self._parse_static_site(careers_url)
-
-        # filter + rank
-        filtered = self._filter_jobs(jobs)
-        return filtered[:6]                                    # up to 6 per company
+            jobs = self._parse_static_html(careers_url)
+        # Attach company/careers_url for output
+        for job in jobs:
+            job["company"] = company
+            job["careers_url"] = careers_url
+        return jobs
 
     # ----------------- discover careers URL -----------------
 
