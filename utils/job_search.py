@@ -134,9 +134,15 @@ class JobSearchAgent:
             return ""
 
     def _hash_job(self, job: dict) -> str:
-        """Generate a unique hash for a job posting."""
-        base = f"{job.get('company','')}|{job.get('title','')}|{job.get('url','')}|{job.get('posted','')}"
-        return _hash(base)
+        """Generate a short, human-friendly job ID: {company}_{title}_{hash4}, all lowercase."""
+        import re
+        def prefix(text):
+            return ''.join(re.findall(r'[a-z0-9]', text.lower()))[:3]
+        company_prefix = prefix(job.get('company', ''))
+        title_prefix = prefix(job.get('title', ''))
+        base = f"{job.get('company','')}|{job.get('title','')}|{job.get('url','')}"
+        short_hash = str(abs(hash(base)))[-4:]
+        return f"{company_prefix}_{title_prefix}_{short_hash}"
 
     def _filter_and_rank_jobs(self, jobs: list[dict]) -> list[dict]:
         """

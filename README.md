@@ -69,3 +69,15 @@ ResumeAgent is an AI-powered automation tool that discovers relevant jobs, ranks
 ---
 
 For any issues or suggestions, please open an issue or PR.
+
+## Example Outputs
+
+### results/job_results.csv
+| JobID        | EmbedScore | LLMScore | CompanyName | CareerWebsite                | JobDescriptionURL            |
+|--------------|------------|----------|-------------|------------------------------|------------------------------|
+| goo_mle_1234 | 0.843      | 0.9      | Google      | https://careers.google.com   | https://.../job/123456       |
+| ant_mle_5678 | 0.779      | 0.8      | Anthropic   | https://www.anthropic.com... | https://.../job/654321       |
+
+### Tailored Resume Files
+- tailored_resumes/google/machine_learning_engineer_goo_mle_1234_20250628.tex
+- tailored_resumes/anthropic/machine_learning_engineer_ant_mle_5678_20250628.tex
