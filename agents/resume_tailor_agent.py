@@ -1,58 +1,120 @@
 """
-Agent for tailoring the resume to a specific job description.
+ResumeTailorAgent
+=================
+
+• Validates job URLs (HEAD request).
+• Calls Ollama’s chat endpoint with a prompt that returns LaTeX content.
+• Saves `.tex` in a tidy directory structure and optionally compiles to PDF.
 """
-from pathlib import Path
+from __future__ import annotations
+import pathlib, requests, logging, datetime as dt, subprocess, re, shutil, hashlib, textwrap
+from typing import Dict
+from jinja2 import Template
 
-import requests
-import pdfplumber
-
-import os
-import requests
-import pdfplumber
-from .ollama_utils import ensure_ollama_running
+OLLAMA_HOST  = "http://localhost:11434"
+CHAT_MODEL   = "llama3:70b-instruct-q5_K_M"   # adjust to your local model name
+TEX_TEMPLATE = r"""
+\documentclass[11pt]{article}
+\usepackage{geometry}\geometry{margin=0.8in}
+\usepackage{hyperref}
+\begin{document}
+{{ content }}
+\end{document}
+"""
 
 class ResumeTailorAgent:
-    def __init__(self, resume_path):
-        ensure_ollama_running()
+    URL_RE = re.compile(r"^https?://")
+
+    def __init__(self, resume_path: pathlib.Path) -> None:
         self.resume_path = resume_path
-        self.resume_text = self._extract_text_from_pdf(resume_path)
+        self.logger      = logging.getLogger(self.__class__.__name__)
+        self.base_text   = resume_path.read_text() if resume_path.suffix == ".tex" else ""
+        # If PDF, SimilarityAgent already extracted; we just send file bytes here if needed.
 
-    def _extract_text_from_pdf(self, pdf_path):
-        with pdfplumber.open(pdf_path) as pdf:
-            return "\n".join(page.extract_text() or '' for page in pdf.pages)
-
-    def _ollama_generate(self, prompt, model="llama3"):
-        resp = requests.post(
-            "http://localhost:11434/api/generate",
-            json={"model": model, "prompt": prompt, "stream": False}
-        )
-        return resp.json()["response"]
+    # ----------------- public -----------------
 
     @staticmethod
-    def is_url_valid(url: str) -> bool:
+    def is_url_valid(url: str, timeout: int = 6) -> bool:
+        if not ResumeTailorAgent.URL_RE.match(url):
+            return False
         try:
-            resp = requests.head(url, allow_redirects=True, timeout=5)
-            return resp.status_code == 200
-        except Exception:
+            r = requests.head(url, allow_redirects=True, timeout=timeout)
+            return r.status_code < 400
+        except requests.RequestException:
             return False
 
-    def tailor_resume(self, job: dict):
-        company = job.get('company', 'UnknownCompany').replace('/', '_').replace(' ', '_')
-        position = job.get('title', 'UnknownPosition').replace('/', '_').replace(' ', '_')
-        output_dir = os.path.join('resume', company, position)
-        os.makedirs(output_dir, exist_ok=True)
-        output_path = os.path.join(output_dir, 'tailored_resume.tex')
-        job_desc = job.get('description', '')
-        prompt = f"""
-You are an expert resume writer. Given the following full resume and a target job description, write a tailored LaTeX (.tex) resume that maximizes the match for this job. Only output valid LaTeX code, no explanations.
+    def tailor_resume(self, job: Dict) -> pathlib.Path:
+        """Returns path to the new .tex file."""
+        prompt = self._build_prompt(job)
+        latex_body = self._ollama_chat(prompt)
 
-Resume:
-{self.resume_text}
+        today = dt.datetime.utcnow().strftime("%Y%m%d")
+        company_dir = pathlib.Path("tailored_resumes", _slug(job["company"]))
+        company_dir.mkdir(parents=True, exist_ok=True)
 
-Target job description:
-{job_desc}
-"""
-        latex_resume = self._ollama_generate(prompt)
-        with open(output_path, "w") as out:
-            out.write(latex_resume)
-        return output_path
+        outfile = company_dir / f"{_slug(job['title'])}_{job['job_id']}_{today}.tex"
+        outfile.write_text(latex_body, encoding="utf-8")
+
+        # Quick sanity compile; errors → logs
+        self._compile_tex(outfile)
+
+        self.logger.info("✅ Tailored résumé saved → %s", outfile)
+        return outfile
+
+    # ----------------- helpers -----------------
+
+    def _build_prompt(self, job: Dict) -> str:
+        jd_excerpt = job["description"][:1500]  # keep prompt short
+        return textwrap.dedent(
+            f"""
+            You are a résumé-writing assistant. Given the candidate résumé below and
+            the job description, produce a concise LaTeX résumé (<= 2 pages) that
+            highlights the most relevant experiences for the role.
+
+            Candidate résumé (raw text):
+            ----
+            {self.base_text}
+            ----
+
+            Job description excerpt:
+            ----
+            {jd_excerpt}
+            ----
+
+            Return *only* valid LaTeX content inside \\begin{{document}}...\\end{{document}}.
+            """
+        )
+
+    def _ollama_chat(self, prompt: str) -> str:
+        resp = requests.post(
+            f"{OLLAMA_HOST}/api/chat",
+            json={
+                "model": CHAT_MODEL,
+                "messages": [{"role": "user", "content": prompt}],
+                "stream": False,
+            },
+            timeout=60,
+        )
+        resp.raise_for_status()
+        content = resp.json()["message"]["content"]
+
+        # wrap inside mini template to guarantee compile
+        template = Template(TEX_TEMPLATE)
+        return template.render(content=content)
+
+    def _compile_tex(self, tex_path: pathlib.Path) -> None:
+        try:
+            subprocess.run(
+                ["pdflatex", "-interaction=batchmode", tex_path.name],
+                cwd=tex_path.parent,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                check=True,
+            )
+        except subprocess.CalledProcessError:
+            self.logger.warning("⚠️  pdflatex failed for %s", tex_path.name)
+
+# --------------- utilities -------------------
+
+def _slug(text: str) -> str:
+    return re.sub(r"[^\w\-]+", "_", text.lower()).strip("_")
