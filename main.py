@@ -56,5 +56,25 @@ def tailor_resumes(
     asyncio.run(run_resume_agent(jobs_csv_path, resume_path))
 
 
+@app.command()
+def launch_mcp(
+    background: bool = typer.Option(True, help="Run MCP agent_tools in the background (recommended)."),
+):
+    """Launch all MCP microservices via agent_tools.py."""
+    import subprocess, sys, os
+    script_path = os.path.join(os.path.dirname(__file__), "mcp_tools", "agent_tools.py")
+    if background:
+        subprocess.Popen([sys.executable, script_path])
+        print("[MCP] agent_tools.py launched in background.")
+    else:
+        subprocess.run([sys.executable, script_path])
+
+# --- Optional: Auto-launch MCP tools before agent commands ---
+# def ensure_mcp_running():
+#     # Implement a check (e.g., socket or port check) and launch if not running
+#     pass
+#
+# Call ensure_mcp_running() at the start of each command if desired.
+
 if __name__ == "__main__":
     app()

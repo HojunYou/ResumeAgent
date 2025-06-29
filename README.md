@@ -24,12 +24,19 @@ ResumeAgent is an AI-powered automation tool that discovers relevant jobs, ranks
 3. **Install Python Dependencies:**
     - Recommended: [uv](https://github.com/astral-sh/uv) for reproducible environments.
     - Run: `uv pip install -r requirements.txt`
-4. **Run the Agent:**
+4. **Launch MCP Microservices:**
+    - Before running any job search or resume tailoring commands, launch all MCP microservices:
+    - `python main.py launch-mcp`
+    - (You can add `--background False` to run in the foreground for debugging.)
+5. **Run the Agent:**
     - See all options: `python main.py --help`
-    - Example: `python main.py run --position "Machine Learning Engineer" --location "California Bay Area"`
+    - Example: `python main.py search-jobs --position "Machine Learning Engineer" --location "California Bay Area"`
+    - Example: `python main.py tailor-resumes --jobs-csv-path results/job_results.csv --resume-path data/resume.pdf`
 
 ## Usage
-- By default, ResumeAgent will:
+- **First, launch MCP microservices:**
+    - `python main.py launch-mcp`
+- Then, use the CLI to:
     1. Load company list (`data/company_list.csv`).
     2. Discover career pages and search for jobs matching your criteria.
     3. Rank jobs by similarity to your resume.
@@ -40,6 +47,11 @@ ResumeAgent is an AI-powered automation tool that discovers relevant jobs, ranks
 ### Weekly Update Mode (Planned)
 - Run: `python main.py weekly-update ...`
 - Checks each company for new jobs, adds only new ones, and generates tailored resumes as needed (no duplicates).
+
+## MCP Microservice Architecture
+- All MCP-compliant tools (HTML/PDF fetching, embedding, LLM chat, result saving, LaTeX handling) are exposed via `mcp_tools/agent_tools.py`.
+- `agent_tools.py` is the only required launcher for MCP microservices. Launch it via the CLI as shown above.
+- Other scripts (including `agent_runner.py`) now assume MCP tools are already running and do not launch microservices themselves.
 
 ## Configuration & Extensibility
 - **Add New Job Boards:** Extend `JobSearchAgent` with new parsing methods.
