@@ -10,7 +10,6 @@ The agent will:
 • iterate over a list of job URLs
 """
 
-from __future__ import annotations
 import asyncio
 import pathlib
 import json

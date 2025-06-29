@@ -7,7 +7,6 @@ JobSearchAgent
 • Filters postings by date, degree, and YOE.
 • Returns a list of job dicts, capped at 6 per company, sorted by similarity-ready text.
 """
-from __future__ import annotations
 import re, pathlib, datetime as dt, hashlib, logging
 from typing import List, Dict
 import requests

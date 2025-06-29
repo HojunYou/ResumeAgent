@@ -5,21 +5,17 @@ Unified MCP‑compliant toolbox used by the LLM agent.
 
 Exposed tools
 -------------
-• search_web(query)          → {"results": [...]}
-• read_resource(uri)         → {"content": str}
-• fetch_pdf_as_text(path)    → {"text": str}
-• chat(messages, model)      → {"message": ...}
-• embed_text(text)           → {"vector": [float]}
-• chat_with_llm(prompt, context) → {"message": ...}
-• save_tex_file(path, content) → {"path": str}
-• save_similarity_csv(rows)  → {"ok": True}
+• fetch_html(uri)               → {"html": str}
+• fetch_pdf_as_text(path)       → {"text": str}
+• embed_text(text)              → {"vector": [float]}
+• chat_with_llm(prompt, ctx)    → {"message": str}
+• save_result(rows)             → {"ok": True}
+• handle_tex(company,title,tex) → {"path": str}
 """
 
-from __future__ import annotations
-import pathlib
-import requests
+import csv, pathlib, re, datetime as dt
+import requests, fitz
 from typing import List
-import fitz  # PyMuPDF
 
 from mcp import service, tool, MCP
 
@@ -70,8 +66,8 @@ class LLMChat:
 # --- Agent Tool Definitions --------------------------------------------------
 
 @tool(
-    name="read_document",
-    description="Read content from a given URI (e.g., a local PDF path or an https:// URL).",
+    name="fetch_html",
+    description="Download HTML from a URL and return it as plain text.",
     parameters={
         "type": "object",
         "properties": {
@@ -80,10 +76,27 @@ class LLMChat:
         "required": ["uri"],
     },
 )
-async def read_document(uri: str) -> str:
-    """Read content from a URI by delegating to the DocumentReader service."""
+async def fetch_html(uri: str) -> dict:
+    """Download HTML from a URI by delegating to the DocumentReader service."""
     reader_svc = await MCP.get(DocumentReader)
-    return await reader_svc.read(uri)
+    return {"html": await reader_svc.read(uri)}
+
+@tool(
+    name="fetch_pdf_as_text",
+    description="Extract text content from a PDF file.",
+    parameters={
+        "type": "object",
+        "properties": {
+            "path": {"type": "string", "description": "The path to the PDF file."},
+        },
+        "required": ["path"],
+    },
+)
+async def fetch_pdf_as_text(path: str) -> dict:
+    """Extract text from a PDF file using DocumentReader service."""
+    reader_svc = await MCP.get(DocumentReader)
+    text = await reader_svc.read(path)
+    return {"text": text}
 
 @tool(
     name="embed_text",
@@ -119,24 +132,7 @@ async def chat_with_llm(prompt: str, context: str | None = None) -> str:
     return await llm_chat_svc.chat(prompt, context=context)
 
 @tool(
-    name="save_tex_file",
-    description="Save a .tex file to a specified path.",
-    parameters={
-        "type": "object",
-        "properties": {
-            "path": {"type": "string", "description": "The path to save the file to."},
-            "content": {"type": "string", "description": "The content of the .tex file."},
-        },
-        "required": ["path", "content"],
-    },
-)
-async def save_tex_file(path: str, content: str) -> None:
-    """Save a .tex file using the FileStorage MCP service."""
-    storage_svc = await MCP.get(FileStorage)
-    await storage_svc.save(path, content.encode("utf-8"))
-
-@tool(
-    name="save_similarity_csv",
+    name="save_result",
     description="Persist similarity rows to a CSV file.",
     parameters={
         "type": "object",
@@ -164,13 +160,24 @@ async def save_tex_file(path: str, content: str) -> None:
         "required": ["rows"],
     },
 )
-def save_similarity_csv(rows: list[dict]) -> dict:
-    content = json.dumps(rows)
-    return FileStorage().save(path="results/ranked_jobs.csv", content=content)
+def save_result(rows: list[dict]) -> dict:
+    fieldnames = ["job_id","embed_score","llm_score","company","url","title","posted"]
+    pathlib.Path("results").mkdir(parents=True, exist_ok=True)
+    with open("results/ranked_jobs.csv", "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)
+    return {"ok": True}
+
+def handle_tex(company: str, title: str, tex: str) -> dict:
+    path = pathlib.Path(f"tailored_resumes/{company}/{title}.tex")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(tex, encoding="utf-8")
+    return {"path": str(path)}
 
 @tool(
-    name="save_tex_file",
-    description="Write a tailored LaTeX résumé to a file.",
+    name="handle_tex",
+    description="Save a tailored LaTeX résumé and return its path.",
     parameters={
         "type": "object",
         "properties": {
@@ -182,5 +189,13 @@ def save_similarity_csv(rows: list[dict]) -> dict:
     },
 )
 def save_tex_file(company: str, title: str, tex: str) -> dict:
-    path = f"tailored_resumes/{company}/{title}.tex"
-    return FileStorage().save(path=path, content=tex)
+    return handle_tex(company, title, tex)
+
+__all__ = [
+    "fetch_html",
+    "fetch_pdf_as_text",
+    "embed_text",
+    "chat_with_llm",
+    "save_result",
+    "handle_tex",
+]
