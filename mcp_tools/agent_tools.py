@@ -11,10 +11,13 @@ Exposed tools
 • chat_with_llm(prompt, ctx)    → {"message": str}
 • save_result(rows)             → {"ok": True}
 • handle_tex(company,title,tex) → {"path": str}
+
+Installation: use `uv add "mcp[cli]"` (or `pip install "mcp[cli]"`).
 """
 
 import csv, pathlib, re, datetime as dt
 from typing import List
+import requests, fitz  # external deps used in tools
 
 from mcp.server.fastmcp import FastMCP
 
@@ -23,14 +26,7 @@ mcp = FastMCP("Resume Tailoring Agent")
 
 @mcp.tool(
     name="fetch_html",
-    description="Download HTML from a URL and return it as plain text.",
-    parameters={
-        "type": "object",
-        "properties": {
-            "uri": {"type": "string", "description": "The URI of the resource to read."},
-        },
-        "required": ["uri"],
-    },
+    description="Download HTML from a URL and return it as plain text."
 )
 async def fetch_html(uri: str) -> dict:
     """Download HTML from a URI by delegating to the DocumentReader service."""
@@ -38,14 +34,7 @@ async def fetch_html(uri: str) -> dict:
 
 @mcp.tool(
     name="fetch_pdf_as_text",
-    description="Extract text content from a PDF file.",
-    parameters={
-        "type": "object",
-        "properties": {
-            "path": {"type": "string", "description": "The path to the PDF file."},
-        },
-        "required": ["path"],
-    },
+    description="Extract text content from a PDF file."
 )
 async def fetch_pdf_as_text(path: str) -> dict:
     """Extract text from a PDF file using DocumentReader service."""
@@ -53,14 +42,7 @@ async def fetch_pdf_as_text(path: str) -> dict:
 
 @mcp.tool(
     name="embed_text",
-    description="Generate a vector embedding for a given text.",
-    parameters={
-        "type": "object",
-        "properties": {
-            "text": {"type": "string", "description": "The text to embed."},
-        },
-        "required": ["text"],
-    },
+    description="Generate a vector embedding for a given text."
 )
 async def embed_text(text: str) -> List[float]:
     """Generate a vector embedding for a text using the EmbeddingService."""
@@ -68,15 +50,7 @@ async def embed_text(text: str) -> List[float]:
 
 @mcp.tool(
     name="chat_with_llm",
-    description="Get a response from the LLM to tailor the resume.",
-    parameters={
-        "type": "object",
-        "properties": {
-            "prompt": {"type": "string", "description": "The prompt to send to the LLM."},
-            "context": {"type": "string", "description": "Optional context for the prompt, like resume text or a job description."},
-        },
-        "required": ["prompt"],
-    },
+    description="Get a response from the LLM to tailor the resume."
 )
 async def chat_with_llm(prompt: str, context: str | None = None) -> str:
     """Get a response from the LLM using the LLMChat MCP service."""
@@ -85,32 +59,7 @@ async def chat_with_llm(prompt: str, context: str | None = None) -> str:
 
 @mcp.tool(
     name="save_result",
-    description="Persist similarity rows to a CSV file.",
-    parameters={
-        "type": "object",
-        "properties": {
-            "rows": {
-                "type": "array",
-                "items": {
-                    "type": "object",
-                    "properties": {
-                        "job_id":     {"type": "string"},
-                        "embed_score":{"type": "number"},
-                        "llm_score": {"type": "number"},
-                        "company":    {"type": "string"},
-                        "url":        {"type": "string"},
-                        "title":      {"type": "string"},
-                        "posted":     {"type": "string"}
-                    },
-                    "required": [
-                        "job_id","embed_score","llm_score",
-                        "company","url","title","posted"
-                    ],
-                }
-            }
-        },
-        "required": ["rows"],
-    },
+    description="Persist similarity rows to a CSV file."
 )
 def save_result(rows: list[dict]) -> dict:
     fieldnames = ["job_id","embed_score","llm_score","company","url","title","posted"]
@@ -123,38 +72,13 @@ def save_result(rows: list[dict]) -> dict:
 
 @mcp.tool(
     name="handle_tex",
-    description="Save a tailored LaTeX résumé and return its path.",
-    parameters={
-        "type": "object",
-        "properties": {
-            "company": {"type": "string"},
-            "title":   {"type": "string"},
-            "tex":     {"type": "string"}
-        },
-        "required": ["company","title","tex"],
-    },
+    description="Save a tailored LaTeX résumé and return its path."
 )
 def handle_tex(company: str, title: str, tex: str) -> dict:
     path = pathlib.Path(f"tailored_resumes/{company}/{title}.tex")
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(tex, encoding="utf-8")
     return {"path": str(path)}
-
-@mcp.tool(
-    name="handle_tex",
-    description="Save a tailored LaTeX résumé and return its path.",
-    parameters={
-        "type": "object",
-        "properties": {
-            "company": {"type": "string"},
-            "title":   {"type": "string"},
-            "tex":     {"type": "string"}
-        },
-        "required": ["company","title","tex"],
-    },
-)
-def save_tex_file(company: str, title: str, tex: str) -> dict:
-    return handle_tex(company, title, tex)
 
 __all__ = [
     "fetch_html",
