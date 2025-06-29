@@ -30,10 +30,10 @@ ResumeAgent is an AI-powered automation tool that discovers relevant jobs, ranks
 
 ## Usage
 - By default, ResumeAgent will:
-    1. Load your resume and company list.
+    1. Load company list (`data/company_list.csv`).
     2. Discover career pages and search for jobs matching your criteria.
     3. Rank jobs by similarity to your resume.
-    4. Output results to `results/job_results.csv`.
+    4. Output results to `data/job_list.csv`.
     5. Generate a tailored `.tex` resume for each valid job.
 - All tailored resumes are saved in structured directories under `tailored_resumes/`.
 
