@@ -3,11 +3,11 @@
 ResumeAgent is an AI-powered automation tool that discovers relevant jobs, ranks them by similarity to your resume, and generates tailored resumes for each opportunity. It is designed for robust, extensible, and fully automated operation.
 
 ## Features
-- **Input:** Full resume (`data/full_resume.pdf`), target companies (`data/companies.txt`), desired job position(s), and location(s).
+- **Input:** Full resume (`data/full_resume.pdf`), target companies (`data/company_list.csv`), desired job position(s), and location(s).
 - **Automated Career Site Discovery:** Finds each company's official career website and relevant job search page.
 - **Job Search & Filtering:** Scrapes jobs from official career sites (supports Greenhouse, Lever, static HTML, and extensible for more). Filters by years of experience, education, posting date, and strict role match.
 - **Similarity Scoring:** Uses a local Ollama API for both embedding-based and LLM-based similarity scoring between your resume and each job description.
-- **Results Output:** Outputs all selected jobs to `results/job_results.csv` with columns: `JobID`, `SimilarityScore`, `CompanyName`, `CareerWebsite`, `JobDescriptionURL`. Supports up to 6 jobs per company (no artificial filling).
+- **Results Output:** Outputs all selected jobs to `data/job_list.csv` with columns: `JobID`, `SimilarityScore`, `CompanyName`, `CareerWebsite`, `JobDescriptionURL`. Supports up to 6 jobs per company (no artificial filling).
 - **Tailored Resume Generation:** For each job, generates a LaTeX `.tex` file in `tailored_resumes/{company}/{position}_{JobID}_{date}.tex`, validated to compile.
 - **Weekly Updates & Tracking:** (Planned) Weekly mode checks for new jobs, deduplicates, and generates resumes only for new postings.
 - **Robust Logging & Error Handling:** All steps feature robust logging and meaningful error messages.
@@ -15,12 +15,12 @@ ResumeAgent is an AI-powered automation tool that discovers relevant jobs, ranks
 
 ## Setup & Installation
 1. **Prepare Data:**
-    - Place your `full_resume.pdf` and `companies.txt` in the `data/` directory.
-    - `companies.txt` should list one company per line.
+    - Place your `full_resume.pdf`, `full_resume.tex`, and `company_list.csv` in the `data/` directory.
+    - `company_list.csv` should list one company per row.
 2. **Install Ollama:**
     - Download from [Ollama](https://ollama.com/download) and ensure `ollama` is in your PATH.
     - Start Ollama with `ollama serve` (ResumeAgent will also try to launch it automatically).
-    - Pull required models: `ollama pull nomic-embed-text` and `ollama pull llama3`.
+    - Pull required models: for example, `ollama pull nomic-embed-text` and `ollama pull qwen3`.
 3. **Install Python Dependencies:**
     - Recommended: [uv](https://github.com/astral-sh/uv) for reproducible environments.
     - Run: `uv pip install -r requirements.txt`
@@ -72,7 +72,7 @@ For any issues or suggestions, please open an issue or PR.
 
 ## Example Outputs
 
-### results/job_results.csv
+### data/job_list.csv
 | JobID        | EmbedScore | LLMScore | CompanyName | CareerWebsite                | JobDescriptionURL            |
 |--------------|------------|----------|-------------|------------------------------|------------------------------|
 | goo_mle_1234 | 0.843      | 0.9      | Google      | https://careers.google.com   | https://.../job/123456       |
