@@ -15,7 +15,8 @@ Exposed tools
 Installation: use `uv add "mcp[cli]"` (or `pip install "mcp[cli]"`).
 """
 
-import csv, pathlib, re, datetime as dt
+import csv, pathlib, re
+import datetime as dt
 from typing import List
 import requests, fitz  # external deps used in tools
 

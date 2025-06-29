@@ -7,18 +7,16 @@ JobSearchAgent
 • Filters postings by date, degree, and YOE.
 • Returns a list of job dicts, capped at 6 per company, sorted by similarity-ready text.
 """
-import re, pathlib, datetime as dt, hashlib, logging
+import re, pathlib, datetime as dt, hashlib, logging, json
 from typing import List, Dict
 import requests
 from bs4 import BeautifulSoup
+import polars as pl
 
 CACHE_PATH = pathlib.Path("data/company_cache.json")
 HEADERS    = {"User-Agent": "Mozilla/5.0 (ResumeAgent)"}
 
 # --- helpers ---------------------------------------------------------------
-
-def _slugify(text: str) -> str:
-    return re.sub(r"[^\w\-]+", "_", text.lower()).strip("_")
 
 def _hash(text: str) -> str:
     return hashlib.sha1(text.encode()).hexdigest()[:12]
@@ -32,34 +30,48 @@ def _parse_post_date(raw: str) -> dt.datetime | None:
             continue
     return None
 
+def _is_valid_url(url: str, timeout: int = 6) -> bool:
+    """Quick HEAD check to confirm the careers URL is reachable (status < 400)."""
+    try:
+        r = requests.head(url, allow_redirects=True, timeout=timeout)
+        return r.status_code < 400
+    except requests.RequestException:
+        return False
+
 # --- main class ------------------------------------------------------------
 
 class JobSearchAgent:
     def __init__(
         self,
         companies_path: pathlib.Path,
-        position: str,
+        position: str = "Machine Learning Engineer",
         location: str | None = "California Bay Area",
         max_results: int = 50,
     ) -> None:
         self.position   = position
         self.location   = location
         self.max_total  = max_results
-        self.companies  = [c.strip() for c in open(companies_path).read().splitlines() if c.strip()]
+        self.company_df  = pl.read_csv(companies_path)
+        # Make sure expected columns exist
+        if "CareerURL" not in self.company_df.columns:
+            self.company_df = self.company_df.with_columns(
+                pl.lit(None).alias("CareerURL")
+            )
+        # convenience list of company names
+        self.companies = self.company_df["Company"].to_list()
+        self.companies_path = companies_path
         self.logger     = logging.getLogger(self.__class__.__name__)
         self.cache      = self._load_cache()
 
     # ----------------- public API -----------------
 
-    def search_jobs(self, resume_path: pathlib.Path = None) -> List[Dict]:
+    def search_jobs(self) -> List[Dict]:
         """
         High-level entry: returns list[{job_id, title, company, url, description, posted, yoe, edu, embed_score, llm_score}]
         Deduplicates by job_id, computes similarity scores, filters/ranks jobs, and outputs results to results/ directory as CSV.
         """
-        """
-        High-level entry: returns list[{job_id, title, company, url, description, posted}].
-        Deduplicates by job_id and outputs results to results/ directory as CSV.
-        """
+        # Step 0: make sure CareerURL column is populated/validated
+        self.update_career_urls()
         import pandas as pd
 
         all_results: list[dict] = []
@@ -90,7 +102,7 @@ class JobSearchAgent:
         all_results = sorted(all_results, key=lambda x: x["posted"], reverse=True)[: self.max_total]
 
         # Output DataFrame/CSV
-        df = pd.DataFrame([
+        df = pl.DataFrame([
             {
                 "JobID": job["job_id"],
                 "CompanyName": job["company"],
@@ -100,10 +112,10 @@ class JobSearchAgent:
             }
             for job in all_results
         ])
-        results_dir = pathlib.Path("results")
+        results_dir = pathlib.Path("data")
         results_dir.mkdir(exist_ok=True)
         out_path = results_dir / "job_results.csv"
-        df.to_csv(out_path, index=False)
+        df.write_csv(out_path)
         self.logger.info(f"✅ Job discovery results saved to {out_path}")
         return all_results
 
@@ -129,7 +141,7 @@ class JobSearchAgent:
             raise RuntimeError("careers URL not found")
 
         # Store for output
-        self.logger.info(f"Company: {company} | Careers URL: {careers_url}")
+        self.logger.info("✔ %s careers page: %s", company, careers_url)
 
         # Modular job board dispatch
         if any(board in careers_url for board in ("greenhouse.io", "boards.greenhouse.io")):
@@ -137,7 +149,7 @@ class JobSearchAgent:
         elif any(board in careers_url for board in ("lever.co", "jobs.lever.co")):
             jobs = self._parse_lever(careers_url)
         else:
-            jobs = self._parse_static_html(careers_url)
+            jobs = self._parse_static_site(careers_url)
         # Attach company/careers_url for output
         for job in jobs:
             job["company"] = company
@@ -160,6 +172,29 @@ class JobSearchAgent:
                 self._save_cache()
                 return href
         return None
+
+    # ----------------- public util -----------------
+    def update_career_urls(self) -> None:
+        """
+        Populate missing CareerURL column in data/company_list.csv.
+        """
+        updated_rows = []
+        for row in self.company_df.iter_rows(named=True):
+            if row["CareerURL"] and _is_valid_url(row["CareerURL"]):
+                updated_rows.append(row)
+                continue
+
+            url = self._discover_careers_url(row["Company"])
+            if url and _is_valid_url(url):
+                row["CareerURL"] = url
+            updated_rows.append(row)
+
+        # Save back if anything changed
+        new_df = pl.DataFrame(updated_rows)
+        if not new_df.frame_equal(self.company_df, null_equal=True):
+            new_df.write_csv(self.companies_path, null_value="")
+            self.logger.info(f"✅ Career URLs updated in {self.companies_path}")
+        self.company_df = new_df
 
     # ----------------- site-specific parsers -----------------
 
