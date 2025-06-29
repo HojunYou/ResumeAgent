@@ -14,58 +14,14 @@ Exposed tools
 """
 
 import csv, pathlib, re, datetime as dt
-import requests, fitz
 from typing import List
 
-from mcp import service, tool, MCP
+from mcp.server.fastmcp import FastMCP
 
-# --- MCP Service Definitions -------------------------------------------------
-
-@service
-class DocumentReader:
-    """A service for reading various document types (PDF, HTML)."""
-    @tool
-    async def read(self, uri: str) -> str:
-        """Reads content from a URI (file path or URL) and returns it as text."""
-        if uri.startswith("http://") or uri.startswith("https://"):
-            headers = {"User-Agent": "Mozilla/5.0 (ResumeAgent)"}
-            try:
-                r = requests.get(uri, headers=headers, timeout=10)
-                r.raise_for_status()
-                # Basic HTML to text, could be improved with BeautifulSoup
-                return r.text
-            except requests.RequestException as e:
-                raise RuntimeError(f"Failed to fetch HTML from {uri}: {e}") from e
-        elif pathlib.Path(uri).is_file() and uri.lower().endswith(".pdf"):
-            try:
-                doc = fitz.open(uri)
-                return "\n".join(p.get_text() for p in doc)
-            except Exception as e:
-                raise RuntimeError(f"Failed to read PDF {uri}: {e}") from e
-        else:
-            raise ValueError(f"Unsupported URI or file type: {uri}")
-
-@service
-class FileStorage:
-    """A service for storing files."""
-    @tool
-    async def save(self, path: str, content: bytes) -> None: ...
-
-@service
-class EmbeddingService:
-    """A service for generating text embeddings."""
-    @tool
-    async def embed(self, text: str) -> List[float]: ...
-
-@service
-class LLMChat:
-    """A service for interacting with a large language model."""
-    @tool
-    async def chat(self, prompt: str, context: str | None = None) -> str: ...
-
+mcp = FastMCP("Resume Tailoring Agent")
 # --- Agent Tool Definitions --------------------------------------------------
 
-@tool(
+@mcp.tool(
     name="fetch_html",
     description="Download HTML from a URL and return it as plain text.",
     parameters={
@@ -78,10 +34,9 @@ class LLMChat:
 )
 async def fetch_html(uri: str) -> dict:
     """Download HTML from a URI by delegating to the DocumentReader service."""
-    reader_svc = await MCP.get(DocumentReader)
-    return {"html": await reader_svc.read(uri)}
+    return {"html": requests.get(uri).text}
 
-@tool(
+@mcp.tool(
     name="fetch_pdf_as_text",
     description="Extract text content from a PDF file.",
     parameters={
@@ -94,11 +49,9 @@ async def fetch_html(uri: str) -> dict:
 )
 async def fetch_pdf_as_text(path: str) -> dict:
     """Extract text from a PDF file using DocumentReader service."""
-    reader_svc = await MCP.get(DocumentReader)
-    text = await reader_svc.read(path)
-    return {"text": text}
+    return {"text": fitz.open(path).get_text()}
 
-@tool(
+@mcp.tool(
     name="embed_text",
     description="Generate a vector embedding for a given text.",
     parameters={
@@ -111,10 +64,9 @@ async def fetch_pdf_as_text(path: str) -> dict:
 )
 async def embed_text(text: str) -> List[float]:
     """Generate a vector embedding for a text using the EmbeddingService."""
-    embedding_svc = await MCP.get(EmbeddingService)
     return await embedding_svc.embed(text)
 
-@tool(
+@mcp.tool(
     name="chat_with_llm",
     description="Get a response from the LLM to tailor the resume.",
     parameters={
@@ -131,7 +83,7 @@ async def chat_with_llm(prompt: str, context: str | None = None) -> str:
     llm_chat_svc = await MCP.get(LLMChat)
     return await llm_chat_svc.chat(prompt, context=context)
 
-@tool(
+@mcp.tool(
     name="save_result",
     description="Persist similarity rows to a CSV file.",
     parameters={
@@ -169,13 +121,26 @@ def save_result(rows: list[dict]) -> dict:
         writer.writerows(rows)
     return {"ok": True}
 
+@mcp.tool(
+    name="handle_tex",
+    description="Save a tailored LaTeX résumé and return its path.",
+    parameters={
+        "type": "object",
+        "properties": {
+            "company": {"type": "string"},
+            "title":   {"type": "string"},
+            "tex":     {"type": "string"}
+        },
+        "required": ["company","title","tex"],
+    },
+)
 def handle_tex(company: str, title: str, tex: str) -> dict:
     path = pathlib.Path(f"tailored_resumes/{company}/{title}.tex")
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(tex, encoding="utf-8")
     return {"path": str(path)}
 
-@tool(
+@mcp.tool(
     name="handle_tex",
     description="Save a tailored LaTeX résumé and return its path.",
     parameters={
@@ -199,3 +164,6 @@ __all__ = [
     "save_result",
     "handle_tex",
 ]
+
+if __name__ == "__main__":
+    mcp.run()

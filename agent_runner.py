@@ -17,8 +17,7 @@ import textwrap
 import re
 import pandas as pd
 
-from mcp import bootstrap
-from tools import agent_tools
+from mcp_tools import agent_tools
 
 # --- Configuration -----------------------------------------------------------
 
@@ -87,7 +86,7 @@ async def run_resume_agent(
     # 2. Read base resume text
     try:
         print(f"Reading base resume from: {resume_pdf_path}")
-        resume_text = await agent_tools.read_document(str(resume_pdf_path))
+        resume_text = await agent_tools.fetch_pdf_as_text(str(resume_pdf_path))
     except Exception as e:
         print(f"Error reading resume PDF: {e}")
         return
@@ -116,7 +115,7 @@ async def run_resume_agent(
         try:
             # 4.1. Read job description
             print(f"  -> Reading job description from: {url}")
-            jd_text = await agent_tools.read_document(url)
+            jd_text = await agent_tools.fetch_html(url)
 
             # 4.2. Generate tailored resume via LLM
             print("  -> Generating tailored resume with LLM...")
