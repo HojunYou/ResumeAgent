@@ -7,19 +7,16 @@ JobSearchAgent
 • Filters postings by date, degree, and YOE.
 • Returns a list of job dicts, capped at 6 per company, sorted by similarity-ready text.
 """
-import re, pathlib, datetime as dt, hashlib, logging, json
+import os, re, datetime as dt, logging, json
+import pandas as pd
 from typing import List, Dict
 import requests
 from bs4 import BeautifulSoup
-import polars as pl
 
-CACHE_PATH = pathlib.Path("data/company_cache.json")
+CACHE_PATH = os.path.join("data", "company_cache.json")
 HEADERS    = {"User-Agent": "Mozilla/5.0 (ResumeAgent)"}
 
 # --- helpers ---------------------------------------------------------------
-
-def _hash(text: str) -> str:
-    return hashlib.sha1(text.encode()).hexdigest()[:12]
 
 def _parse_post_date(raw: str) -> dt.datetime | None:
     """Try a few date layouts → datetime, else None"""
@@ -38,30 +35,38 @@ def _is_valid_url(url: str, timeout: int = 6) -> bool:
     except requests.RequestException:
         return False
 
+def _fill_placeholders(url: str, position: str, location: str | None) -> str:
+    """Replace {position} and {location} placeholders with URL‑encoded values."""
+    if "{position}" in url:
+        url = url.replace("{position}", requests.utils.quote(position))
+    if "{location}" in url and location:
+        url = url.replace("{location}", requests.utils.quote(location))
+    return url
+
 # --- main class ------------------------------------------------------------
 
 class JobSearchAgent:
     def __init__(
         self,
-        companies_path: pathlib.Path,
+        companies_path: str | os.PathLike,
         position: str = "Machine Learning Engineer",
-        location: str | None = "California Bay Area",
+        location: str | None = "San Francisco",
         max_results: int = 50,
     ) -> None:
         self.position   = position
         self.location   = location
         self.max_total  = max_results
-        self.company_df  = pl.read_csv(companies_path)
+        self.company_df  = pd.read_csv(companies_path)
         # Make sure expected columns exist
         if "CareerURL" not in self.company_df.columns:
-            self.company_df = self.company_df.with_columns(
-                pl.lit(None).alias("CareerURL")
-            )
+            self.company_df = self.company_df.assign(CareerURL=None)
         # convenience list of company names
         self.companies = self.company_df["Company"].to_list()
-        self.companies_path = companies_path
+        self.companies_path = str(companies_path)
         self.logger     = logging.getLogger(self.__class__.__name__)
         self.cache      = self._load_cache()
+        # sequential counter for human‑readable JobID generation
+        self._id_counter = 0
 
     # ----------------- public API -----------------
 
@@ -72,8 +77,6 @@ class JobSearchAgent:
         """
         # Step 0: make sure CareerURL column is populated/validated
         self.update_career_urls()
-        import pandas as pd
-
         all_results: list[dict] = []
         job_ids = set()
         for company in self.companies:
@@ -84,7 +87,7 @@ class JobSearchAgent:
                 for job in results:
                     job_id = self._hash_job(job)
                     if job_id not in job_ids:
-                        job["job_id"] = job_id
+                        job["job_id"] = self._generate_job_id(job["company"])
                         job_ids.add(job_id)
                         unique_jobs.append(job)
 
@@ -102,7 +105,7 @@ class JobSearchAgent:
         all_results = sorted(all_results, key=lambda x: x["posted"], reverse=True)[: self.max_total]
 
         # Output DataFrame/CSV
-        df = pl.DataFrame([
+        df = pd.DataFrame([
             {
                 "JobID": job["job_id"],
                 "CompanyName": job["company"],
@@ -112,23 +115,38 @@ class JobSearchAgent:
             }
             for job in all_results
         ])
-        results_dir = pathlib.Path("data")
-        results_dir.mkdir(exist_ok=True)
-        out_path = results_dir / "job_results.csv"
-        df.write_csv(out_path)
+        os.makedirs("data", exist_ok=True)
+        out_path = os.path.join("data", "job_results.csv")
+        df.to_csv(out_path, index=False)
         self.logger.info(f"✅ Job discovery results saved to {out_path}")
         return all_results
 
-    def _hash_job(self, job: dict) -> str:
-        """Generate a short, human-friendly job ID: {company}_{title}_{hash4}, all lowercase."""
-        import re
-        def prefix(text):
-            return ''.join(re.findall(r'[a-z0-9]', text.lower()))[:3]
-        company_prefix = prefix(job.get('company', ''))
-        title_prefix = prefix(job.get('title', ''))
-        base = f"{job.get('company','')}|{job.get('title','')}|{job.get('url','')}"
-        short_hash = str(abs(hash(base)))[-4:]
-        return f"{company_prefix}_{title_prefix}_{short_hash}"
+    # ----------------- JobID helper -----------------
+    _ALNUM_RE = re.compile(r"[a-z0-9]")
+
+    def _generate_job_id(self, company: str) -> str:
+        """JobID = POS<3> + CMP<3> + 4‑digit counter
+
+        * POS<3> – first 3 alphanum chars from position
+        * CMP<3> – abbreviation rule:
+              • keep first alphanum char
+              • drop vowels (a,e,i,o,u) in the rest
+              • take the next 2 consonants/digits
+              • pad with 'x' if needed
+        The 4‑digit counter guarantees uniqueness even if two companies
+        collide on the same abbreviation.
+        """
+        vowels = set("aeiou")
+        def abbr(text: str) -> str:
+            cleaned = "".join(self._ALNUM_RE.findall(text.lower()))
+            if not cleaned:
+                return "xxx"
+            first = cleaned[0]
+            rest = [ch for ch in cleaned[1:] if ch not in vowels]
+            return (first + "".join(rest))[:3].ljust(3, "x")
+
+        self._id_counter += 1
+        return f"{abbr(self.position)}{abbr(company)}{self._id_counter:04d}"
 
     # ----------------- core steps -----------------
 
@@ -136,9 +154,25 @@ class JobSearchAgent:
         """
         Discover and parse jobs for a single company. Modular for new job boards.
         """
-        careers_url = self._discover_careers_url(company)
-        if not careers_url:
-            raise RuntimeError("careers URL not found")
+        # 1.  Prefer the CareerURL already stored in company_df
+        row_idx = self.company_df["Company"].to_list().index(company)
+        stored_url = self.company_df.iloc[row_idx]["CareerURL"]
+
+        careers_url = None
+        if stored_url and _is_valid_url(stored_url):
+            careers_url = stored_url
+        else:
+            # 2. Otherwise discover and (optionally) cache it
+            careers_url = self._discover_careers_url(company)
+            if not careers_url:
+                raise RuntimeError("careers URL not found")
+            # persist to dataframe and CSV for next run
+            if _is_valid_url(careers_url):
+                self.company_df.at[row_idx, "CareerURL"] = careers_url
+                self.company_df.to_csv(self.companies_path, index=False)
+
+        # Fill {position}/{location} placeholders
+        # careers_url = _fill_placeholders(careers_url, self.position, self.location)
 
         # Store for output
         self.logger.info("✔ %s careers page: %s", company, careers_url)
@@ -148,8 +182,10 @@ class JobSearchAgent:
             jobs = self._parse_greenhouse(careers_url)
         elif any(board in careers_url for board in ("lever.co", "jobs.lever.co")):
             jobs = self._parse_lever(careers_url)
+        elif any(board in careers_url for board in ("workdayjobs.com", "workday.com")):
+            jobs = self._parse_workday(careers_url)
         else:
-            jobs = self._parse_static_site(careers_url)
+            jobs = self._parse_static_site(careers_url, company)
         # Attach company/careers_url for output
         for job in jobs:
             job["company"] = company
@@ -159,18 +195,66 @@ class JobSearchAgent:
     # ----------------- discover careers URL -----------------
 
     def _discover_careers_url(self, company: str) -> str | None:
+        """
+        Heuristic + search‑engine discovery of a company's public job board.
+
+        Strategy
+        --------
+        1.  Try common patterns quickly ("/careers", Greenhouse, Lever, Workday).
+        2.  Fallback to DuckDuckGo HTML search and extract the first
+            result whose URL contains a careers keyword.
+        3.  Cache the first working URL for next runs.
+        """
+        # 0.  Return cached hit
         if company in self.cache:
             return self.cache[company]
 
-        query = f"{company} careers"
-        resp  = requests.get("https://duckduckgo.com/html/", params={"q": query}, headers=HEADERS, timeout=7)
-        soup  = BeautifulSoup(resp.text, "html.parser")
-        for a in soup.select("a.result__a"):
-            href = a["href"]
-            if any(token in href for token in ("careers", "jobs", "jobs/results", "boards.greenhouse")):
-                self.cache[company] = href
+        slug = re.sub(r"[^a-z0-9]", "", company.lower())        # e.g. "Google" → "google"
+
+        # 1. Pattern heuristics (fast, no search‐engine latency)
+        patterns = [
+            f"https://www.{slug}.com/careers",
+            f"https://{slug}.com/careers",
+            f"https://boards.greenhouse.io/{slug}",
+            f"https://jobs.lever.co/{slug}",
+            f"https://{slug}.workdayjobs.com/en-US/{slug}",
+        ]
+        for url in patterns:
+            if _is_valid_url(url):
+                self.cache[company] = url
                 self._save_cache()
-                return href
+                return url
+
+        # 2. DuckDuckGo fallback
+        query = f"{company} careers jobs"
+        try:
+            resp  = requests.get(
+                "https://duckduckgo.com/html/",
+                params={"q": query},
+                headers=HEADERS,
+                timeout=10,
+            )
+            soup  = BeautifulSoup(resp.text, "html.parser")
+            for a in soup.select("a.result__a[href]"):
+                href = a["href"]
+                # DuckDuckGo obfuscates links: /l/?kh=-1&uddg=<URL>
+                if "uddg=" in href:
+                    from urllib.parse import parse_qs, urlparse, unquote
+                    qs = parse_qs(urlparse(href).query)
+                    if "uddg" in qs:
+                        href = unquote(qs["uddg"][0])
+                if not href.startswith("http"):
+                    continue
+                if not any(k in href.lower() for k in ("careers", "jobs", "greenhouse", "lever.co", "workday")):
+                    continue
+                if _is_valid_url(href):
+                    self.cache[company] = href
+                    self._save_cache()
+                    return href
+        except requests.RequestException:
+            pass  # swallow network issues; will return None
+
+        # 3. Give up
         return None
 
     # ----------------- public util -----------------
@@ -178,22 +262,29 @@ class JobSearchAgent:
         """
         Populate missing CareerURL column in data/company_list.csv.
         """
+        self.logger.info(f"Updating career URLs for {self.position} and {self.location} for {len(self.company_df)} companies")
         updated_rows = []
-        for row in self.company_df.iter_rows(named=True):
-            if row["CareerURL"] and _is_valid_url(row["CareerURL"]):
+        for _, row in self.company_df.iterrows():
+            filled = _fill_placeholders(row["CareerURL"], self.position, self.location)
+            if filled and _is_valid_url(filled):
+                row["CareerURL"] = filled
                 updated_rows.append(row)
                 continue
 
             url = self._discover_careers_url(row["Company"])
             if url and _is_valid_url(url):
-                row["CareerURL"] = url
+                row["CareerURL"] = _fill_placeholders(url, self.position, self.location)
             updated_rows.append(row)
 
         # Save back if anything changed
-        new_df = pl.DataFrame(updated_rows)
-        if not new_df.frame_equal(self.company_df, null_equal=True):
-            new_df.write_csv(self.companies_path, null_value="")
-            self.logger.info(f"✅ Career URLs updated in {self.companies_path}")
+        new_df = pd.DataFrame(updated_rows)
+        if not new_df.equals(self.company_df):
+            safe_position = re.sub(r'\W+', '_', self.position).lower()
+            new_path = self.companies_path.replace(
+                ".csv", f"_{safe_position}.csv"
+            )
+            new_df.to_csv(new_path, index=False)
+            self.logger.info(f"✅ Career URLs updated in {new_path}")
         self.company_df = new_df
 
     # ----------------- site-specific parsers -----------------
@@ -233,22 +324,65 @@ class JobSearchAgent:
             )
         return jobs
 
-    def _parse_static_site(self, url: str) -> list[dict]:
+    def _parse_static_site(self, url: str, company: str) -> list[dict]:
+        """
+        Very lightweight scraper for companies that don't expose JSON APIs.
+        Strategy:
+        1. Look for <a> tags whose text matches the position string.
+        2. If none found (common on React sites e.g. Apple), parse any embedded
+           <script type="application/ld+json"> that contains an ItemList / jobs.
+        """
         resp  = requests.get(url, headers=HEADERS, timeout=10)
         soup  = BeautifulSoup(resp.text, "html.parser")
         jobs  = []
+
+        # -- 1. Anchor‑based fallback ------------------------------------------------
         for a in soup.find_all("a", href=True, text=re.compile(self.position, re.I)):
+            print(a)
             jobs.append(
                 dict(
-                    id          = _hash(a["href"] + a.get_text()),
+                    id          = self._generate_job_id(company),
                     title       = a.get_text(strip=True),
                     url         = requests.compat.urljoin(url, a["href"]),
-                    description = f"{a.get_text(strip=True)} at {url}",
+                    description = f"{a.get_text(strip=True)} at {company}",
                     posted      = dt.datetime.utcnow(),
-                    company     = url.split("//")[1].split("/")[0],
+                    company     = company,
                     location    = self.location or "",
                 )
             )
+        if jobs:
+            return jobs
+
+        # -- 2. ld+json / React initial‑state parsing --------------------------------
+        for script in soup.find_all("script", {"type": "application/ld+json"}):
+            try:
+                data = json.loads(script.string)
+            except (ValueError, TypeError):
+                continue
+            # Apple Search returns an ItemList
+            if isinstance(data, dict) and data.get("@type") == "ItemList":
+                for idx, item in enumerate(data.get("itemListElement", []), 1):
+                    ent = item.get("item", {})
+                    title = ent.get("title") or ent.get("name") or ""
+                    if self.position.lower() not in title.lower():
+                        continue
+                    jobs.append(
+                        dict(
+                            id          = self._generate_job_id(company),
+                            title       = title,
+                            url         = ent.get("url") or url,
+                            description = ent.get("description", title),
+                            posted      = dt.datetime.utcnow(),
+                            company     = company,
+                            location    = ent.get("jobLocation", [{}])[0]
+                                            .get("address", {})
+                                            .get("addressLocality", self.location or ""),
+                        )
+                    )
+            # break early if we already captured some jobs
+            if jobs:
+                break
+
         return jobs
 
     # ----------------- filtering -----------------
@@ -288,9 +422,11 @@ class JobSearchAgent:
     # ----------------- cache helpers -----------------
 
     def _load_cache(self) -> dict:
-        if CACHE_PATH.exists():
-            return json.loads(CACHE_PATH.read_text())
+        if os.path.exists(CACHE_PATH):
+            return json.loads(open(CACHE_PATH).read())
         return {}
 
     def _save_cache(self) -> None:
-        CACHE_PATH.write_text(json.dumps(self.cache, indent=2))
+        os.makedirs(os.path.dirname(CACHE_PATH), exist_ok=True)
+        with open(CACHE_PATH, "w") as fp:
+            json.dump(self.cache, fp, indent=2)
