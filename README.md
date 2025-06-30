@@ -2,6 +2,11 @@
 
 ResumeAgent is an AI-powered automation tool that discovers relevant jobs, ranks them by similarity to your resume, and generates tailored resumes for each opportunity. It is designed for robust, extensible, and fully automated operation.
 
+## Development Status
+- Each career website may be too different to scrape successfully. 
+- Scraping LinkedIn jobs would be better.
+- job_search.py needs to be updated to support LinkedIn jobs.
+
 ## Features
 - **Input:** Full resume (`data/full_resume.pdf`), target companies (`data/company_list.csv`), desired job position(s), and location(s).
 - **Automated Career Site Discovery:** Finds each company's official career website and relevant job search page.

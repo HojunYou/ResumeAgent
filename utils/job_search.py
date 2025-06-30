@@ -41,7 +41,7 @@ def _fill_placeholders(url: str, position: str, location: str | None) -> str:
         url = url.replace("{position}", requests.utils.quote(position))
     if "{location}" in url and location:
         url = url.replace("{location}", requests.utils.quote(location))
-    return url
+    return url  
 
 # --- main class ------------------------------------------------------------
 
@@ -326,63 +326,60 @@ class JobSearchAgent:
 
     def _parse_static_site(self, url: str, company: str) -> list[dict]:
         """
-        Very lightweight scraper for companies that don't expose JSON APIs.
-        Strategy:
-        1. Look for <a> tags whose text matches the position string.
-        2. If none found (common on React sites e.g. Apple), parse any embedded
-           <script type="application/ld+json"> that contains an ItemList / jobs.
-        """
-        resp  = requests.get(url, headers=HEADERS, timeout=10)
-        soup  = BeautifulSoup(resp.text, "html.parser")
-        jobs  = []
+        Generic scraper for any HTML job-search page.
 
-        # -- 1. Anchor‑based fallback ------------------------------------------------
-        for a in soup.find_all("a", href=True, text=re.compile(self.position, re.I)):
-            print(a)
+        1. Fetch the search results (already includes position/location).
+        2. Collect up to 50 unique anchors likely to be job posts.
+        3. Fetch each job URL once, extract visible text for similarity.
+        """
+        try:
+            resp = requests.get(url, headers=HEADERS, timeout=12)
+        except requests.RequestException:
+            return []
+
+        soup = BeautifulSoup(resp.text, "html.parser")
+        keyword = self.position.lower().split()[0]
+        raw_links = []
+        for a in soup.find_all("a", href=True):
+            href, text = a["href"], a.get_text(" ", strip=True)
+            if not text:
+                continue
+            if any(k in href.lower() for k in ("job", "career", "opening")) \
+            or keyword in text.lower() \
+            or re.search(r"\d{4,}", href):
+                raw_links.append(
+                    (requests.compat.urljoin(url, href), text)
+                )
+
+        seen, job_links = set(), []
+        for link in raw_links:
+            if link[0] not in seen:
+                seen.add(link[0])
+                job_links.append(link)
+            if len(job_links) >= 50:
+                break
+
+        jobs = []
+        for job_url, card_text in job_links:
+            try:
+                detail = requests.get(job_url, headers=HEADERS, timeout=10)
+                detail_soup = BeautifulSoup(detail.text, "html.parser")
+                main = detail_soup.find("main") or detail_soup
+                description = main.get_text(" ", strip=True)
+            except requests.RequestException:
+                description = card_text
+
             jobs.append(
                 dict(
                     id          = self._generate_job_id(company),
-                    title       = a.get_text(strip=True),
-                    url         = requests.compat.urljoin(url, a["href"]),
-                    description = f"{a.get_text(strip=True)} at {company}",
+                    title       = card_text,
+                    url         = job_url,
+                    description = description,
                     posted      = dt.datetime.utcnow(),
                     company     = company,
                     location    = self.location or "",
                 )
             )
-        if jobs:
-            return jobs
-
-        # -- 2. ld+json / React initial‑state parsing --------------------------------
-        for script in soup.find_all("script", {"type": "application/ld+json"}):
-            try:
-                data = json.loads(script.string)
-            except (ValueError, TypeError):
-                continue
-            # Apple Search returns an ItemList
-            if isinstance(data, dict) and data.get("@type") == "ItemList":
-                for idx, item in enumerate(data.get("itemListElement", []), 1):
-                    ent = item.get("item", {})
-                    title = ent.get("title") or ent.get("name") or ""
-                    if self.position.lower() not in title.lower():
-                        continue
-                    jobs.append(
-                        dict(
-                            id          = self._generate_job_id(company),
-                            title       = title,
-                            url         = ent.get("url") or url,
-                            description = ent.get("description", title),
-                            posted      = dt.datetime.utcnow(),
-                            company     = company,
-                            location    = ent.get("jobLocation", [{}])[0]
-                                            .get("address", {})
-                                            .get("addressLocality", self.location or ""),
-                        )
-                    )
-            # break early if we already captured some jobs
-            if jobs:
-                break
-
         return jobs
 
     # ----------------- filtering -----------------
