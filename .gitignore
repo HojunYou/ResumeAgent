@@ -4,7 +4,7 @@ __pycache__/
 *$py.class
 
 # Custom
-data/
+# data/
 tailored_resumes/
 **/.DS_Store
 results/

@@ -1,0 +1,6 @@
+Category,Company,CareerURL
+Tech Giants,Google,https://careers.google.com/jobs/results/?q={position}&location={location}
+Tech Giants,Microsoft,https://jobs.careers.microsoft.com/global/en/search?q={position}&l={location}
+Tech Giants,Meta (Facebook),https://www.metacareers.com/jobs?query={position}&location={location}
+Tech Giants,Apple,https://jobs.apple.com/en-us/search?location={location}&search={position}
+Tech Giants,Amazon,https://www.amazon.jobs/en/search?base_query={position}&location={location}
