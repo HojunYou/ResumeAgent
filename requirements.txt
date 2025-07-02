@@ -2,5 +2,7 @@
 # Uses subprocess (stdlib) to launch MCP microservices via agent_tools.py
 typer>=0.9.0
 bs4
+selenium
+rich
 pandas
 linkedin-jobs-scraper==5.0.2

@@ -1,0 +1,522 @@
+[ON_DATA] Software Engineer III, AI/ML, Google Cloud AI Google  2025-06-16  https://www.linkedin.com/jobs/view/software-engineer-iii-ai-ml-google-cloud-ai-at-google-4250545874?position=1&pageNum=0&refId=oMDFOckJVedfnJkNRFghWw%3D%3D&trackingId=widlMnC4oIQPubFaUiyPhA%3D%3D [] 4235
+[ON_DATA] Data Scientist, Research, Search Ads Google  2025-06-27  https://www.linkedin.com/jobs/view/data-scientist-research-search-ads-at-google-4256706142?position=2&pageNum=0&refId=oMDFOckJVedfnJkNRFghWw%3D%3D&trackingId=%2B1InYX4vHBxAQ%2BL1sFKozg%3D%3D [] 3666
+[ON_DATA] Software Engineer III, AI/ML Recommendations, Rankings, Predictions, YouTube Google  2025-06-22  https://www.linkedin.com/jobs/view/software-engineer-iii-ai-ml-recommendations-rankings-predictions-youtube-at-google-4224654967?position=3&pageNum=0&refId=oMDFOckJVedfnJkNRFghWw%3D%3D&trackingId=UXbxaBRCxnGw1c0m3MfZ3g%3D%3D [] 4338
+[ON_ERROR] Message: javascript error: Cannot read properties of undefined (reading 'querySelector')
+  (Session info: chrome=137.0.7151.120)
+Stacktrace:
+0   chromedriver                        0x0000000104869d14 cxxbridge1$str$ptr + 2735276
+1   chromedriver                        0x0000000104861f88 cxxbridge1$str$ptr + 2703136
+2   chromedriver                        0x00000001043b26f0 cxxbridge1$string$len + 90424
+3   chromedriver                        0x00000001043b83a8 cxxbridge1$string$len + 114160
+4   chromedriver                        0x00000001043ba978 cxxbridge1$string$len + 123840
+5   chromedriver                        0x000000010443bdec cxxbridge1$string$len + 653364
+6   chromedriver                        0x000000010443b0c8 cxxbridge1$string$len + 650000
+7   chromedriver                        0x00000001043edbe8 cxxbridge1$string$len + 333360
+8   chromedriver                        0x000000010482d598 cxxbridge1$str$ptr + 2487600
+9   chromedriver                        0x0000000104830830 cxxbridge1$str$ptr + 2500552
+10  chromedriver                        0x000000010480dc14 cxxbridge1$str$ptr + 2358188
+11  chromedriver                        0x00000001048310b8 cxxbridge1$str$ptr + 2502736
+12  chromedriver                        0x00000001047fedec cxxbridge1$str$ptr + 2297220
+13  chromedriver                        0x0000000104851420 cxxbridge1$str$ptr + 2634680
+14  chromedriver                        0x00000001048515ac cxxbridge1$str$ptr + 2635076
+15  chromedriver                        0x0000000104861bd4 cxxbridge1$str$ptr + 2702188
+16  libsystem_pthread.dylib             0x0000000195546c0c _pthread_start + 136
+17  libsystem_pthread.dylib             0x0000000195541b80 thread_start + 8
+
+Traceback (most recent call last):
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/linkedin_jobs_scraper/strategies/anonymous_strategy.py", line 267, in run
+    job_id, job_link, job_title, job_company, job_place, job_date = driver.execute_script(
+                                                                    ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 551, in execute_script
+    return self.execute(command, {"script": script, "args": converted_args})["value"]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 454, in execute
+    self.error_handler.check_response(response)
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/errorhandler.py", line 232, in check_response
+    raise exception_class(message, screen, stacktrace)
+selenium.common.exceptions.JavascriptException: Message: javascript error: Cannot read properties of undefined (reading 'querySelector')
+  (Session info: chrome=137.0.7151.120)
+Stacktrace:
+0   chromedriver                        0x0000000104869d14 cxxbridge1$str$ptr + 2735276
+1   chromedriver                        0x0000000104861f88 cxxbridge1$str$ptr + 2703136
+2   chromedriver                        0x00000001043b26f0 cxxbridge1$string$len + 90424
+3   chromedriver                        0x00000001043b83a8 cxxbridge1$string$len + 114160
+4   chromedriver                        0x00000001043ba978 cxxbridge1$string$len + 123840
+5   chromedriver                        0x000000010443bdec cxxbridge1$string$len + 653364
+6   chromedriver                        0x000000010443b0c8 cxxbridge1$string$len + 650000
+7   chromedriver                        0x00000001043edbe8 cxxbridge1$string$len + 333360
+8   chromedriver                        0x000000010482d598 cxxbridge1$str$ptr + 2487600
+9   chromedriver                        0x0000000104830830 cxxbridge1$str$ptr + 2500552
+10  chromedriver                        0x000000010480dc14 cxxbridge1$str$ptr + 2358188
+11  chromedriver                        0x00000001048310b8 cxxbridge1$str$ptr + 2502736
+12  chromedriver                        0x00000001047fedec cxxbridge1$str$ptr + 2297220
+13  chromedriver                        0x0000000104851420 cxxbridge1$str$ptr + 2634680
+14  chromedriver                        0x00000001048515ac cxxbridge1$str$ptr + 2635076
+15  chromedriver                        0x0000000104861bd4 cxxbridge1$str$ptr + 2702188
+16  libsystem_pthread.dylib             0x0000000195546c0c _pthread_start + 136
+17  libsystem_pthread.dylib             0x0000000195541b80 thread_start + 8
+
+
+[ON_ERROR] Message: javascript error: Cannot read properties of undefined (reading 'querySelector')
+  (Session info: chrome=137.0.7151.120)
+Stacktrace:
+0   chromedriver                        0x0000000104869d14 cxxbridge1$str$ptr + 2735276
+1   chromedriver                        0x0000000104861f88 cxxbridge1$str$ptr + 2703136
+2   chromedriver                        0x00000001043b26f0 cxxbridge1$string$len + 90424
+3   chromedriver                        0x00000001043b83a8 cxxbridge1$string$len + 114160
+4   chromedriver                        0x00000001043ba978 cxxbridge1$string$len + 123840
+5   chromedriver                        0x000000010443bdec cxxbridge1$string$len + 653364
+6   chromedriver                        0x000000010443b0c8 cxxbridge1$string$len + 650000
+7   chromedriver                        0x00000001043edbe8 cxxbridge1$string$len + 333360
+8   chromedriver                        0x000000010482d598 cxxbridge1$str$ptr + 2487600
+9   chromedriver                        0x0000000104830830 cxxbridge1$str$ptr + 2500552
+10  chromedriver                        0x000000010480dc14 cxxbridge1$str$ptr + 2358188
+11  chromedriver                        0x00000001048310b8 cxxbridge1$str$ptr + 2502736
+12  chromedriver                        0x00000001047fedec cxxbridge1$str$ptr + 2297220
+13  chromedriver                        0x0000000104851420 cxxbridge1$str$ptr + 2634680
+14  chromedriver                        0x00000001048515ac cxxbridge1$str$ptr + 2635076
+15  chromedriver                        0x0000000104861bd4 cxxbridge1$str$ptr + 2702188
+16  libsystem_pthread.dylib             0x0000000195546c0c _pthread_start + 136
+17  libsystem_pthread.dylib             0x0000000195541b80 thread_start + 8
+
+Traceback (most recent call last):
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/linkedin_jobs_scraper/strategies/anonymous_strategy.py", line 267, in run
+    job_id, job_link, job_title, job_company, job_place, job_date = driver.execute_script(
+                                                                    ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 551, in execute_script
+    return self.execute(command, {"script": script, "args": converted_args})["value"]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 454, in execute
+    self.error_handler.check_response(response)
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/errorhandler.py", line 232, in check_response
+    raise exception_class(message, screen, stacktrace)
+selenium.common.exceptions.JavascriptException: Message: javascript error: Cannot read properties of undefined (reading 'querySelector')
+  (Session info: chrome=137.0.7151.120)
+Stacktrace:
+0   chromedriver                        0x0000000104869d14 cxxbridge1$str$ptr + 2735276
+1   chromedriver                        0x0000000104861f88 cxxbridge1$str$ptr + 2703136
+2   chromedriver                        0x00000001043b26f0 cxxbridge1$string$len + 90424
+3   chromedriver                        0x00000001043b83a8 cxxbridge1$string$len + 114160
+4   chromedriver                        0x00000001043ba978 cxxbridge1$string$len + 123840
+5   chromedriver                        0x000000010443bdec cxxbridge1$string$len + 653364
+6   chromedriver                        0x000000010443b0c8 cxxbridge1$string$len + 650000
+7   chromedriver                        0x00000001043edbe8 cxxbridge1$string$len + 333360
+8   chromedriver                        0x000000010482d598 cxxbridge1$str$ptr + 2487600
+9   chromedriver                        0x0000000104830830 cxxbridge1$str$ptr + 2500552
+10  chromedriver                        0x000000010480dc14 cxxbridge1$str$ptr + 2358188
+11  chromedriver                        0x00000001048310b8 cxxbridge1$str$ptr + 2502736
+12  chromedriver                        0x00000001047fedec cxxbridge1$str$ptr + 2297220
+13  chromedriver                        0x0000000104851420 cxxbridge1$str$ptr + 2634680
+14  chromedriver                        0x00000001048515ac cxxbridge1$str$ptr + 2635076
+15  chromedriver                        0x0000000104861bd4 cxxbridge1$str$ptr + 2702188
+16  libsystem_pthread.dylib             0x0000000195546c0c _pthread_start + 136
+17  libsystem_pthread.dylib             0x0000000195541b80 thread_start + 8
+
+
+[ON_ERROR] Message: javascript error: Cannot read properties of undefined (reading 'querySelector')
+  (Session info: chrome=137.0.7151.120)
+Stacktrace:
+0   chromedriver                        0x0000000104869d14 cxxbridge1$str$ptr + 2735276
+1   chromedriver                        0x0000000104861f88 cxxbridge1$str$ptr + 2703136
+2   chromedriver                        0x00000001043b26f0 cxxbridge1$string$len + 90424
+3   chromedriver                        0x00000001043b83a8 cxxbridge1$string$len + 114160
+4   chromedriver                        0x00000001043ba978 cxxbridge1$string$len + 123840
+5   chromedriver                        0x000000010443bdec cxxbridge1$string$len + 653364
+6   chromedriver                        0x000000010443b0c8 cxxbridge1$string$len + 650000
+7   chromedriver                        0x00000001043edbe8 cxxbridge1$string$len + 333360
+8   chromedriver                        0x000000010482d598 cxxbridge1$str$ptr + 2487600
+9   chromedriver                        0x0000000104830830 cxxbridge1$str$ptr + 2500552
+10  chromedriver                        0x000000010480dc14 cxxbridge1$str$ptr + 2358188
+11  chromedriver                        0x00000001048310b8 cxxbridge1$str$ptr + 2502736
+12  chromedriver                        0x00000001047fedec cxxbridge1$str$ptr + 2297220
+13  chromedriver                        0x0000000104851420 cxxbridge1$str$ptr + 2634680
+14  chromedriver                        0x00000001048515ac cxxbridge1$str$ptr + 2635076
+15  chromedriver                        0x0000000104861bd4 cxxbridge1$str$ptr + 2702188
+16  libsystem_pthread.dylib             0x0000000195546c0c _pthread_start + 136
+17  libsystem_pthread.dylib             0x0000000195541b80 thread_start + 8
+
+Traceback (most recent call last):
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/linkedin_jobs_scraper/strategies/anonymous_strategy.py", line 267, in run
+    job_id, job_link, job_title, job_company, job_place, job_date = driver.execute_script(
+                                                                    ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 551, in execute_script
+    return self.execute(command, {"script": script, "args": converted_args})["value"]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 454, in execute
+    self.error_handler.check_response(response)
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/errorhandler.py", line 232, in check_response
+    raise exception_class(message, screen, stacktrace)
+selenium.common.exceptions.JavascriptException: Message: javascript error: Cannot read properties of undefined (reading 'querySelector')
+  (Session info: chrome=137.0.7151.120)
+Stacktrace:
+0   chromedriver                        0x0000000104869d14 cxxbridge1$str$ptr + 2735276
+1   chromedriver                        0x0000000104861f88 cxxbridge1$str$ptr + 2703136
+2   chromedriver                        0x00000001043b26f0 cxxbridge1$string$len + 90424
+3   chromedriver                        0x00000001043b83a8 cxxbridge1$string$len + 114160
+4   chromedriver                        0x00000001043ba978 cxxbridge1$string$len + 123840
+5   chromedriver                        0x000000010443bdec cxxbridge1$string$len + 653364
+6   chromedriver                        0x000000010443b0c8 cxxbridge1$string$len + 650000
+7   chromedriver                        0x00000001043edbe8 cxxbridge1$string$len + 333360
+8   chromedriver                        0x000000010482d598 cxxbridge1$str$ptr + 2487600
+9   chromedriver                        0x0000000104830830 cxxbridge1$str$ptr + 2500552
+10  chromedriver                        0x000000010480dc14 cxxbridge1$str$ptr + 2358188
+11  chromedriver                        0x00000001048310b8 cxxbridge1$str$ptr + 2502736
+12  chromedriver                        0x00000001047fedec cxxbridge1$str$ptr + 2297220
+13  chromedriver                        0x0000000104851420 cxxbridge1$str$ptr + 2634680
+14  chromedriver                        0x00000001048515ac cxxbridge1$str$ptr + 2635076
+15  chromedriver                        0x0000000104861bd4 cxxbridge1$str$ptr + 2702188
+16  libsystem_pthread.dylib             0x0000000195546c0c _pthread_start + 136
+17  libsystem_pthread.dylib             0x0000000195541b80 thread_start + 8
+
+
+[ON_END]
+[ON_DATA] Member of Technical Staff, Machine Learning Engineer Microsoft  2025-06-13  https://www.linkedin.com/jobs/view/member-of-technical-staff-machine-learning-engineer-at-microsoft-4186576022?position=1&pageNum=0&refId=auyr3Qixl8csz6ay7jZylQ%3D%3D&trackingId=pbk2gi%2BMt%2FX%2FKFhkcE9dWg%3D%3D [] 5378
+[ON_DATA] Member of Technical Staff, Machine Learning Engineer Microsoft  2025-06-18  https://www.linkedin.com/jobs/view/member-of-technical-staff-machine-learning-engineer-at-microsoft-4210000533?position=2&pageNum=0&refId=auyr3Qixl8csz6ay7jZylQ%3D%3D&trackingId=tFvh9XgYJ%2FEJzy3qtMd3jw%3D%3D [] 5219
+[ON_DATA] Software Engineer II Microsoft  2025-06-10  https://www.linkedin.com/jobs/view/software-engineer-ii-at-microsoft-4233383350?position=3&pageNum=0&refId=auyr3Qixl8csz6ay7jZylQ%3D%3D&trackingId=%2Bh8yNceQnX9MmWA0cEEaug%3D%3D [] 6117
+[ON_ERROR] Message: javascript error: Cannot read properties of undefined (reading 'querySelector')
+  (Session info: chrome=137.0.7151.120)
+Stacktrace:
+0   chromedriver                        0x000000010486dd14 cxxbridge1$str$ptr + 2735276
+1   chromedriver                        0x0000000104865f88 cxxbridge1$str$ptr + 2703136
+2   chromedriver                        0x00000001043b66f0 cxxbridge1$string$len + 90424
+3   chromedriver                        0x00000001043bc3a8 cxxbridge1$string$len + 114160
+4   chromedriver                        0x00000001043be978 cxxbridge1$string$len + 123840
+5   chromedriver                        0x000000010443fdec cxxbridge1$string$len + 653364
+6   chromedriver                        0x000000010443f0c8 cxxbridge1$string$len + 650000
+7   chromedriver                        0x00000001043f1be8 cxxbridge1$string$len + 333360
+8   chromedriver                        0x0000000104831598 cxxbridge1$str$ptr + 2487600
+9   chromedriver                        0x0000000104834830 cxxbridge1$str$ptr + 2500552
+10  chromedriver                        0x0000000104811c14 cxxbridge1$str$ptr + 2358188
+11  chromedriver                        0x00000001048350b8 cxxbridge1$str$ptr + 2502736
+12  chromedriver                        0x0000000104802dec cxxbridge1$str$ptr + 2297220
+13  chromedriver                        0x0000000104855420 cxxbridge1$str$ptr + 2634680
+14  chromedriver                        0x00000001048555ac cxxbridge1$str$ptr + 2635076
+15  chromedriver                        0x0000000104865bd4 cxxbridge1$str$ptr + 2702188
+16  libsystem_pthread.dylib             0x0000000195546c0c _pthread_start + 136
+17  libsystem_pthread.dylib             0x0000000195541b80 thread_start + 8
+
+Traceback (most recent call last):
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/linkedin_jobs_scraper/strategies/anonymous_strategy.py", line 267, in run
+    job_id, job_link, job_title, job_company, job_place, job_date = driver.execute_script(
+                                                                    ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 551, in execute_script
+    return self.execute(command, {"script": script, "args": converted_args})["value"]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 454, in execute
+    self.error_handler.check_response(response)
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/errorhandler.py", line 232, in check_response
+    raise exception_class(message, screen, stacktrace)
+selenium.common.exceptions.JavascriptException: Message: javascript error: Cannot read properties of undefined (reading 'querySelector')
+  (Session info: chrome=137.0.7151.120)
+Stacktrace:
+0   chromedriver                        0x000000010486dd14 cxxbridge1$str$ptr + 2735276
+1   chromedriver                        0x0000000104865f88 cxxbridge1$str$ptr + 2703136
+2   chromedriver                        0x00000001043b66f0 cxxbridge1$string$len + 90424
+3   chromedriver                        0x00000001043bc3a8 cxxbridge1$string$len + 114160
+4   chromedriver                        0x00000001043be978 cxxbridge1$string$len + 123840
+5   chromedriver                        0x000000010443fdec cxxbridge1$string$len + 653364
+6   chromedriver                        0x000000010443f0c8 cxxbridge1$string$len + 650000
+7   chromedriver                        0x00000001043f1be8 cxxbridge1$string$len + 333360
+8   chromedriver                        0x0000000104831598 cxxbridge1$str$ptr + 2487600
+9   chromedriver                        0x0000000104834830 cxxbridge1$str$ptr + 2500552
+10  chromedriver                        0x0000000104811c14 cxxbridge1$str$ptr + 2358188
+11  chromedriver                        0x00000001048350b8 cxxbridge1$str$ptr + 2502736
+12  chromedriver                        0x0000000104802dec cxxbridge1$str$ptr + 2297220
+13  chromedriver                        0x0000000104855420 cxxbridge1$str$ptr + 2634680
+14  chromedriver                        0x00000001048555ac cxxbridge1$str$ptr + 2635076
+15  chromedriver                        0x0000000104865bd4 cxxbridge1$str$ptr + 2702188
+16  libsystem_pthread.dylib             0x0000000195546c0c _pthread_start + 136
+17  libsystem_pthread.dylib             0x0000000195541b80 thread_start + 8
+
+
+[ON_ERROR] Message: javascript error: Cannot read properties of undefined (reading 'querySelector')
+  (Session info: chrome=137.0.7151.120)
+Stacktrace:
+0   chromedriver                        0x000000010486dd14 cxxbridge1$str$ptr + 2735276
+1   chromedriver                        0x0000000104865f88 cxxbridge1$str$ptr + 2703136
+2   chromedriver                        0x00000001043b66f0 cxxbridge1$string$len + 90424
+3   chromedriver                        0x00000001043bc3a8 cxxbridge1$string$len + 114160
+4   chromedriver                        0x00000001043be978 cxxbridge1$string$len + 123840
+5   chromedriver                        0x000000010443fdec cxxbridge1$string$len + 653364
+6   chromedriver                        0x000000010443f0c8 cxxbridge1$string$len + 650000
+7   chromedriver                        0x00000001043f1be8 cxxbridge1$string$len + 333360
+8   chromedriver                        0x0000000104831598 cxxbridge1$str$ptr + 2487600
+9   chromedriver                        0x0000000104834830 cxxbridge1$str$ptr + 2500552
+10  chromedriver                        0x0000000104811c14 cxxbridge1$str$ptr + 2358188
+11  chromedriver                        0x00000001048350b8 cxxbridge1$str$ptr + 2502736
+12  chromedriver                        0x0000000104802dec cxxbridge1$str$ptr + 2297220
+13  chromedriver                        0x0000000104855420 cxxbridge1$str$ptr + 2634680
+14  chromedriver                        0x00000001048555ac cxxbridge1$str$ptr + 2635076
+15  chromedriver                        0x0000000104865bd4 cxxbridge1$str$ptr + 2702188
+16  libsystem_pthread.dylib             0x0000000195546c0c _pthread_start + 136
+17  libsystem_pthread.dylib             0x0000000195541b80 thread_start + 8
+
+Traceback (most recent call last):
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/linkedin_jobs_scraper/strategies/anonymous_strategy.py", line 267, in run
+    job_id, job_link, job_title, job_company, job_place, job_date = driver.execute_script(
+                                                                    ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 551, in execute_script
+    return self.execute(command, {"script": script, "args": converted_args})["value"]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 454, in execute
+    self.error_handler.check_response(response)
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/errorhandler.py", line 232, in check_response
+    raise exception_class(message, screen, stacktrace)
+selenium.common.exceptions.JavascriptException: Message: javascript error: Cannot read properties of undefined (reading 'querySelector')
+  (Session info: chrome=137.0.7151.120)
+Stacktrace:
+0   chromedriver                        0x000000010486dd14 cxxbridge1$str$ptr + 2735276
+1   chromedriver                        0x0000000104865f88 cxxbridge1$str$ptr + 2703136
+2   chromedriver                        0x00000001043b66f0 cxxbridge1$string$len + 90424
+3   chromedriver                        0x00000001043bc3a8 cxxbridge1$string$len + 114160
+4   chromedriver                        0x00000001043be978 cxxbridge1$string$len + 123840
+5   chromedriver                        0x000000010443fdec cxxbridge1$string$len + 653364
+6   chromedriver                        0x000000010443f0c8 cxxbridge1$string$len + 650000
+7   chromedriver                        0x00000001043f1be8 cxxbridge1$string$len + 333360
+8   chromedriver                        0x0000000104831598 cxxbridge1$str$ptr + 2487600
+9   chromedriver                        0x0000000104834830 cxxbridge1$str$ptr + 2500552
+10  chromedriver                        0x0000000104811c14 cxxbridge1$str$ptr + 2358188
+11  chromedriver                        0x00000001048350b8 cxxbridge1$str$ptr + 2502736
+12  chromedriver                        0x0000000104802dec cxxbridge1$str$ptr + 2297220
+13  chromedriver                        0x0000000104855420 cxxbridge1$str$ptr + 2634680
+14  chromedriver                        0x00000001048555ac cxxbridge1$str$ptr + 2635076
+15  chromedriver                        0x0000000104865bd4 cxxbridge1$str$ptr + 2702188
+16  libsystem_pthread.dylib             0x0000000195546c0c _pthread_start + 136
+17  libsystem_pthread.dylib             0x0000000195541b80 thread_start + 8
+
+
+[ON_ERROR] Message: javascript error: Cannot read properties of undefined (reading 'querySelector')
+  (Session info: chrome=137.0.7151.120)
+Stacktrace:
+0   chromedriver                        0x000000010486dd14 cxxbridge1$str$ptr + 2735276
+1   chromedriver                        0x0000000104865f88 cxxbridge1$str$ptr + 2703136
+2   chromedriver                        0x00000001043b66f0 cxxbridge1$string$len + 90424
+3   chromedriver                        0x00000001043bc3a8 cxxbridge1$string$len + 114160
+4   chromedriver                        0x00000001043be978 cxxbridge1$string$len + 123840
+5   chromedriver                        0x000000010443fdec cxxbridge1$string$len + 653364
+6   chromedriver                        0x000000010443f0c8 cxxbridge1$string$len + 650000
+7   chromedriver                        0x00000001043f1be8 cxxbridge1$string$len + 333360
+8   chromedriver                        0x0000000104831598 cxxbridge1$str$ptr + 2487600
+9   chromedriver                        0x0000000104834830 cxxbridge1$str$ptr + 2500552
+10  chromedriver                        0x0000000104811c14 cxxbridge1$str$ptr + 2358188
+11  chromedriver                        0x00000001048350b8 cxxbridge1$str$ptr + 2502736
+12  chromedriver                        0x0000000104802dec cxxbridge1$str$ptr + 2297220
+13  chromedriver                        0x0000000104855420 cxxbridge1$str$ptr + 2634680
+14  chromedriver                        0x00000001048555ac cxxbridge1$str$ptr + 2635076
+15  chromedriver                        0x0000000104865bd4 cxxbridge1$str$ptr + 2702188
+16  libsystem_pthread.dylib             0x0000000195546c0c _pthread_start + 136
+17  libsystem_pthread.dylib             0x0000000195541b80 thread_start + 8
+
+Traceback (most recent call last):
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/linkedin_jobs_scraper/strategies/anonymous_strategy.py", line 267, in run
+    job_id, job_link, job_title, job_company, job_place, job_date = driver.execute_script(
+                                                                    ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 551, in execute_script
+    return self.execute(command, {"script": script, "args": converted_args})["value"]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 454, in execute
+    self.error_handler.check_response(response)
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/errorhandler.py", line 232, in check_response
+    raise exception_class(message, screen, stacktrace)
+selenium.common.exceptions.JavascriptException: Message: javascript error: Cannot read properties of undefined (reading 'querySelector')
+  (Session info: chrome=137.0.7151.120)
+Stacktrace:
+0   chromedriver                        0x000000010486dd14 cxxbridge1$str$ptr + 2735276
+1   chromedriver                        0x0000000104865f88 cxxbridge1$str$ptr + 2703136
+2   chromedriver                        0x00000001043b66f0 cxxbridge1$string$len + 90424
+3   chromedriver                        0x00000001043bc3a8 cxxbridge1$string$len + 114160
+4   chromedriver                        0x00000001043be978 cxxbridge1$string$len + 123840
+5   chromedriver                        0x000000010443fdec cxxbridge1$string$len + 653364
+6   chromedriver                        0x000000010443f0c8 cxxbridge1$string$len + 650000
+7   chromedriver                        0x00000001043f1be8 cxxbridge1$string$len + 333360
+8   chromedriver                        0x0000000104831598 cxxbridge1$str$ptr + 2487600
+9   chromedriver                        0x0000000104834830 cxxbridge1$str$ptr + 2500552
+10  chromedriver                        0x0000000104811c14 cxxbridge1$str$ptr + 2358188
+11  chromedriver                        0x00000001048350b8 cxxbridge1$str$ptr + 2502736
+12  chromedriver                        0x0000000104802dec cxxbridge1$str$ptr + 2297220
+13  chromedriver                        0x0000000104855420 cxxbridge1$str$ptr + 2634680
+14  chromedriver                        0x00000001048555ac cxxbridge1$str$ptr + 2635076
+15  chromedriver                        0x0000000104865bd4 cxxbridge1$str$ptr + 2702188
+16  libsystem_pthread.dylib             0x0000000195546c0c _pthread_start + 136
+17  libsystem_pthread.dylib             0x0000000195541b80 thread_start + 8
+
+
+[ON_END]
+[ON_DATA] Software Engineer, Machine Learning Meta  2025-06-25  https://www.linkedin.com/jobs/view/software-engineer-machine-learning-at-meta-4254373531?position=1&pageNum=0&refId=Kq4RSdKa7n2oigSVt3vjqg%3D%3D&trackingId=R4nsG8xwYiUCvj27DYBTKg%3D%3D [] 5031
+[ON_DATA] Software Engineer, Machine Learning Meta  2025-06-25  https://www.linkedin.com/jobs/view/software-engineer-machine-learning-at-meta-4254370680?position=2&pageNum=0&refId=Kq4RSdKa7n2oigSVt3vjqg%3D%3D&trackingId=KhA%2FlGUzKO%2Fk0xbkgSJSMQ%3D%3D [] 5031
+[ON_DATA] Software Engineer, Machine Learning Meta  2025-06-27  https://www.linkedin.com/jobs/view/software-engineer-machine-learning-at-meta-4255809904?position=3&pageNum=0&refId=Kq4RSdKa7n2oigSVt3vjqg%3D%3D&trackingId=eElPHjffLY6jDJ4%2FAqKGCw%3D%3D [] 4822
+[ON_ERROR] Message: javascript error: Cannot read properties of undefined (reading 'querySelector')
+  (Session info: chrome=137.0.7151.120)
+Stacktrace:
+0   chromedriver                        0x00000001046e5d14 cxxbridge1$str$ptr + 2735276
+1   chromedriver                        0x00000001046ddf88 cxxbridge1$str$ptr + 2703136
+2   chromedriver                        0x000000010422e6f0 cxxbridge1$string$len + 90424
+3   chromedriver                        0x00000001042343a8 cxxbridge1$string$len + 114160
+4   chromedriver                        0x0000000104236978 cxxbridge1$string$len + 123840
+5   chromedriver                        0x00000001042b7dec cxxbridge1$string$len + 653364
+6   chromedriver                        0x00000001042b70c8 cxxbridge1$string$len + 650000
+7   chromedriver                        0x0000000104269be8 cxxbridge1$string$len + 333360
+8   chromedriver                        0x00000001046a9598 cxxbridge1$str$ptr + 2487600
+9   chromedriver                        0x00000001046ac830 cxxbridge1$str$ptr + 2500552
+10  chromedriver                        0x0000000104689c14 cxxbridge1$str$ptr + 2358188
+11  chromedriver                        0x00000001046ad0b8 cxxbridge1$str$ptr + 2502736
+12  chromedriver                        0x000000010467adec cxxbridge1$str$ptr + 2297220
+13  chromedriver                        0x00000001046cd420 cxxbridge1$str$ptr + 2634680
+14  chromedriver                        0x00000001046cd5ac cxxbridge1$str$ptr + 2635076
+15  chromedriver                        0x00000001046ddbd4 cxxbridge1$str$ptr + 2702188
+16  libsystem_pthread.dylib             0x0000000195546c0c _pthread_start + 136
+17  libsystem_pthread.dylib             0x0000000195541b80 thread_start + 8
+
+Traceback (most recent call last):
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/linkedin_jobs_scraper/strategies/anonymous_strategy.py", line 267, in run
+    job_id, job_link, job_title, job_company, job_place, job_date = driver.execute_script(
+                                                                    ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 551, in execute_script
+    return self.execute(command, {"script": script, "args": converted_args})["value"]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 454, in execute
+    self.error_handler.check_response(response)
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/errorhandler.py", line 232, in check_response
+    raise exception_class(message, screen, stacktrace)
+selenium.common.exceptions.JavascriptException: Message: javascript error: Cannot read properties of undefined (reading 'querySelector')
+  (Session info: chrome=137.0.7151.120)
+Stacktrace:
+0   chromedriver                        0x00000001046e5d14 cxxbridge1$str$ptr + 2735276
+1   chromedriver                        0x00000001046ddf88 cxxbridge1$str$ptr + 2703136
+2   chromedriver                        0x000000010422e6f0 cxxbridge1$string$len + 90424
+3   chromedriver                        0x00000001042343a8 cxxbridge1$string$len + 114160
+4   chromedriver                        0x0000000104236978 cxxbridge1$string$len + 123840
+5   chromedriver                        0x00000001042b7dec cxxbridge1$string$len + 653364
+6   chromedriver                        0x00000001042b70c8 cxxbridge1$string$len + 650000
+7   chromedriver                        0x0000000104269be8 cxxbridge1$string$len + 333360
+8   chromedriver                        0x00000001046a9598 cxxbridge1$str$ptr + 2487600
+9   chromedriver                        0x00000001046ac830 cxxbridge1$str$ptr + 2500552
+10  chromedriver                        0x0000000104689c14 cxxbridge1$str$ptr + 2358188
+11  chromedriver                        0x00000001046ad0b8 cxxbridge1$str$ptr + 2502736
+12  chromedriver                        0x000000010467adec cxxbridge1$str$ptr + 2297220
+13  chromedriver                        0x00000001046cd420 cxxbridge1$str$ptr + 2634680
+14  chromedriver                        0x00000001046cd5ac cxxbridge1$str$ptr + 2635076
+15  chromedriver                        0x00000001046ddbd4 cxxbridge1$str$ptr + 2702188
+16  libsystem_pthread.dylib             0x0000000195546c0c _pthread_start + 136
+17  libsystem_pthread.dylib             0x0000000195541b80 thread_start + 8
+
+
+[ON_ERROR] Message: javascript error: Cannot read properties of undefined (reading 'querySelector')
+  (Session info: chrome=137.0.7151.120)
+Stacktrace:
+0   chromedriver                        0x00000001046e5d14 cxxbridge1$str$ptr + 2735276
+1   chromedriver                        0x00000001046ddf88 cxxbridge1$str$ptr + 2703136
+2   chromedriver                        0x000000010422e6f0 cxxbridge1$string$len + 90424
+3   chromedriver                        0x00000001042343a8 cxxbridge1$string$len + 114160
+4   chromedriver                        0x0000000104236978 cxxbridge1$string$len + 123840
+5   chromedriver                        0x00000001042b7dec cxxbridge1$string$len + 653364
+6   chromedriver                        0x00000001042b70c8 cxxbridge1$string$len + 650000
+7   chromedriver                        0x0000000104269be8 cxxbridge1$string$len + 333360
+8   chromedriver                        0x00000001046a9598 cxxbridge1$str$ptr + 2487600
+9   chromedriver                        0x00000001046ac830 cxxbridge1$str$ptr + 2500552
+10  chromedriver                        0x0000000104689c14 cxxbridge1$str$ptr + 2358188
+11  chromedriver                        0x00000001046ad0b8 cxxbridge1$str$ptr + 2502736
+12  chromedriver                        0x000000010467adec cxxbridge1$str$ptr + 2297220
+13  chromedriver                        0x00000001046cd420 cxxbridge1$str$ptr + 2634680
+14  chromedriver                        0x00000001046cd5ac cxxbridge1$str$ptr + 2635076
+15  chromedriver                        0x00000001046ddbd4 cxxbridge1$str$ptr + 2702188
+16  libsystem_pthread.dylib             0x0000000195546c0c _pthread_start + 136
+17  libsystem_pthread.dylib             0x0000000195541b80 thread_start + 8
+
+Traceback (most recent call last):
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/linkedin_jobs_scraper/strategies/anonymous_strategy.py", line 267, in run
+    job_id, job_link, job_title, job_company, job_place, job_date = driver.execute_script(
+                                                                    ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 551, in execute_script
+    return self.execute(command, {"script": script, "args": converted_args})["value"]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 454, in execute
+    self.error_handler.check_response(response)
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/errorhandler.py", line 232, in check_response
+    raise exception_class(message, screen, stacktrace)
+selenium.common.exceptions.JavascriptException: Message: javascript error: Cannot read properties of undefined (reading 'querySelector')
+  (Session info: chrome=137.0.7151.120)
+Stacktrace:
+0   chromedriver                        0x00000001046e5d14 cxxbridge1$str$ptr + 2735276
+1   chromedriver                        0x00000001046ddf88 cxxbridge1$str$ptr + 2703136
+2   chromedriver                        0x000000010422e6f0 cxxbridge1$string$len + 90424
+3   chromedriver                        0x00000001042343a8 cxxbridge1$string$len + 114160
+4   chromedriver                        0x0000000104236978 cxxbridge1$string$len + 123840
+5   chromedriver                        0x00000001042b7dec cxxbridge1$string$len + 653364
+6   chromedriver                        0x00000001042b70c8 cxxbridge1$string$len + 650000
+7   chromedriver                        0x0000000104269be8 cxxbridge1$string$len + 333360
+8   chromedriver                        0x00000001046a9598 cxxbridge1$str$ptr + 2487600
+9   chromedriver                        0x00000001046ac830 cxxbridge1$str$ptr + 2500552
+10  chromedriver                        0x0000000104689c14 cxxbridge1$str$ptr + 2358188
+11  chromedriver                        0x00000001046ad0b8 cxxbridge1$str$ptr + 2502736
+12  chromedriver                        0x000000010467adec cxxbridge1$str$ptr + 2297220
+13  chromedriver                        0x00000001046cd420 cxxbridge1$str$ptr + 2634680
+14  chromedriver                        0x00000001046cd5ac cxxbridge1$str$ptr + 2635076
+15  chromedriver                        0x00000001046ddbd4 cxxbridge1$str$ptr + 2702188
+16  libsystem_pthread.dylib             0x0000000195546c0c _pthread_start + 136
+17  libsystem_pthread.dylib             0x0000000195541b80 thread_start + 8
+
+
+[ON_ERROR] Message: javascript error: Cannot read properties of undefined (reading 'querySelector')
+  (Session info: chrome=137.0.7151.120)
+Stacktrace:
+0   chromedriver                        0x00000001046e5d14 cxxbridge1$str$ptr + 2735276
+1   chromedriver                        0x00000001046ddf88 cxxbridge1$str$ptr + 2703136
+2   chromedriver                        0x000000010422e6f0 cxxbridge1$string$len + 90424
+3   chromedriver                        0x00000001042343a8 cxxbridge1$string$len + 114160
+4   chromedriver                        0x0000000104236978 cxxbridge1$string$len + 123840
+5   chromedriver                        0x00000001042b7dec cxxbridge1$string$len + 653364
+6   chromedriver                        0x00000001042b70c8 cxxbridge1$string$len + 650000
+7   chromedriver                        0x0000000104269be8 cxxbridge1$string$len + 333360
+8   chromedriver                        0x00000001046a9598 cxxbridge1$str$ptr + 2487600
+9   chromedriver                        0x00000001046ac830 cxxbridge1$str$ptr + 2500552
+10  chromedriver                        0x0000000104689c14 cxxbridge1$str$ptr + 2358188
+11  chromedriver                        0x00000001046ad0b8 cxxbridge1$str$ptr + 2502736
+12  chromedriver                        0x000000010467adec cxxbridge1$str$ptr + 2297220
+13  chromedriver                        0x00000001046cd420 cxxbridge1$str$ptr + 2634680
+14  chromedriver                        0x00000001046cd5ac cxxbridge1$str$ptr + 2635076
+15  chromedriver                        0x00000001046ddbd4 cxxbridge1$str$ptr + 2702188
+16  libsystem_pthread.dylib             0x0000000195546c0c _pthread_start + 136
+17  libsystem_pthread.dylib             0x0000000195541b80 thread_start + 8
+
+Traceback (most recent call last):
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/linkedin_jobs_scraper/strategies/anonymous_strategy.py", line 267, in run
+    job_id, job_link, job_title, job_company, job_place, job_date = driver.execute_script(
+                                                                    ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 551, in execute_script
+    return self.execute(command, {"script": script, "args": converted_args})["value"]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 454, in execute
+    self.error_handler.check_response(response)
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/errorhandler.py", line 232, in check_response
+    raise exception_class(message, screen, stacktrace)
+selenium.common.exceptions.JavascriptException: Message: javascript error: Cannot read properties of undefined (reading 'querySelector')
+  (Session info: chrome=137.0.7151.120)
+Stacktrace:
+0   chromedriver                        0x00000001046e5d14 cxxbridge1$str$ptr + 2735276
+1   chromedriver                        0x00000001046ddf88 cxxbridge1$str$ptr + 2703136
+2   chromedriver                        0x000000010422e6f0 cxxbridge1$string$len + 90424
+3   chromedriver                        0x00000001042343a8 cxxbridge1$string$len + 114160
+4   chromedriver                        0x0000000104236978 cxxbridge1$string$len + 123840
+5   chromedriver                        0x00000001042b7dec cxxbridge1$string$len + 653364
+6   chromedriver                        0x00000001042b70c8 cxxbridge1$string$len + 650000
+7   chromedriver                        0x0000000104269be8 cxxbridge1$string$len + 333360
+8   chromedriver                        0x00000001046a9598 cxxbridge1$str$ptr + 2487600
+9   chromedriver                        0x00000001046ac830 cxxbridge1$str$ptr + 2500552
+10  chromedriver                        0x0000000104689c14 cxxbridge1$str$ptr + 2358188
+11  chromedriver                        0x00000001046ad0b8 cxxbridge1$str$ptr + 2502736
+12  chromedriver                        0x000000010467adec cxxbridge1$str$ptr + 2297220
+13  chromedriver                        0x00000001046cd420 cxxbridge1$str$ptr + 2634680
+14  chromedriver                        0x00000001046cd5ac cxxbridge1$str$ptr + 2635076
+15  chromedriver                        0x00000001046ddbd4 cxxbridge1$str$ptr + 2702188
+16  libsystem_pthread.dylib             0x0000000195546c0c _pthread_start + 136
+17  libsystem_pthread.dylib             0x0000000195541b80 thread_start + 8
+
+
+[ON_END]
+[ON_DATA] Machine Learning Engineer, AGIF Amazon  2025-06-25  https://www.linkedin.com/jobs/view/machine-learning-engineer-agif-at-amazon-4127777120?position=1&pageNum=0&refId=rERXgDwlaKS7axFVY%2B8vtA%3D%3D&trackingId=t1h34w6DTCNiEdu8uGpo5w%3D%3D [] 4664
+[ON_DATA] Machine Learning Engineer, Amazon General Intelligence (AGI) Amazon  2025-06-25  https://www.linkedin.com/jobs/view/machine-learning-engineer-amazon-general-intelligence-agi-at-amazon-4031555302?position=2&pageNum=0&refId=rERXgDwlaKS7axFVY%2B8vtA%3D%3D&trackingId=KbsMtw%2F6YB0hS3prvU9wtA%3D%3D [] 7044
+[ON_DATA] Machine Learning Engineer, Amazon General Intelligence (AGI) Amazon  2025-06-16  https://www.linkedin.com/jobs/view/machine-learning-engineer-amazon-general-intelligence-agi-at-amazon-4122014723?position=3&pageNum=0&refId=rERXgDwlaKS7axFVY%2B8vtA%3D%3D&trackingId=7tQJM6DMMlvCCylIBVN4iw%3D%3D [] 6641
+[ON_DATA] Machine Learning Engineer, AGIF | Finetuning Amazon  2025-06-19  https://www.linkedin.com/jobs/view/machine-learning-engineer-agif-finetuning-at-amazon-4190143697?position=4&pageNum=0&refId=rERXgDwlaKS7axFVY%2B8vtA%3D%3D&trackingId=MWNiZ2LCHe1jdHQqusbQUA%3D%3D [] 4664
+[ON_DATA] Software Development Engineer I 2025 Amazon  2025-06-30  https://www.linkedin.com/jobs/view/software-development-engineer-i-2025-at-amazon-4097101902?position=5&pageNum=0&refId=rERXgDwlaKS7axFVY%2B8vtA%3D%3D&trackingId=CvkNlqjdzUIpfI83Dwpw4Q%3D%3D [] 5751
+[ON_END]

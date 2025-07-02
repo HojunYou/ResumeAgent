@@ -4,9 +4,9 @@ from linkedin_jobs_scraper.events import Events, EventData, EventMetrics
 from linkedin_jobs_scraper.query import Query, QueryOptions, QueryFilters
 from linkedin_jobs_scraper.filters import (
     RelevanceFilters,
-    TimeFilters,
+    # TimeFilters,
     TypeFilters,
-    ExperienceLevelFilters,
+    # ExperienceLevelFilters,
     # OnSiteOrRemoteFilters,
     # SalaryBaseFilters
 )
@@ -14,9 +14,9 @@ import argparse, os
 import pandas as pd
 # ----------------- CLI -----------------
 parser = argparse.ArgumentParser(description="Scrape LinkedIn jobs by company list")
-parser.add_argument("--position", required=True, default="Machine Learning Engineer", help="Job position keyword, e.g. 'Machine Learning Engineer'")
-parser.add_argument("--location", required=True, default="San Jose", help="Job location, e.g. 'San Francisco Bay Area'")
-parser.add_argument("--filepath", default="data/company_list.csv", help="CSV with LinkedinURL column")
+parser.add_argument("--position", default="Machine Learning Engineer", help="Job position keyword, e.g. 'Machine Learning Engineer'")
+parser.add_argument("--location", default="San Jose", help="Job location, e.g. 'San Francisco Bay Area'")
+parser.add_argument("--filepath", default="data/company_small_list.csv", help="CSV with LinkedinURL column")
 args = parser.parse_args()
 
 position = args.position
@@ -24,7 +24,7 @@ location = args.location
 csv_path = args.filepath
 
 # Change root logger level (default is WARN)
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO) # , format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Fired once for each successfully processed job
 def on_data(data: EventData):
@@ -65,8 +65,8 @@ df = pd.read_csv(csv_path)
 queries = []
 for _, row in df.iterrows():
     url = row.get("LinkedinURL")
-    if not url:
-        logging.warning("No LinkedinURL found for company: %s", row.get("CompanyName"))
+    if not url or not isinstance(url, str):
+        logging.warning("No valid LinkedinURL found for company: %s", row.get("Company"))
         continue
     queries.append(
         Query(
@@ -80,14 +80,14 @@ for _, row in df.iterrows():
                 filters=QueryFilters(
                     company_jobs_url=url if url else None,
                     relevance=RelevanceFilters.RECENT,
-                    time=TimeFilters.MONTH,
+                    # time=TimeFilters.MONTH,
                     type=[TypeFilters.FULL_TIME], #, TypeFilters.INTERNSHIP],
                     # on_site_or_remote=[OnSiteOrRemoteFilters.REMOTE],
-                    experience=[
-                        ExperienceLevelFilters.ENTRY_LEVEL, 
-                        ExperienceLevelFilters.ASSOCIATE,
-                        ExperienceLevelFilters.MID_SENIOR
-                    ],
+                    # experience=[
+                    #     ExperienceLevelFilters.ENTRY_LEVEL, 
+                    #     ExperienceLevelFilters.ASSOCIATE,
+                    #     ExperienceLevelFilters.MID_SENIOR
+                    # ],
                     # base_salary=SalaryBaseFilters.SALARY_100K
                 )
             )
