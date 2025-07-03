@@ -1,6 +1,0 @@
-{
-  "Category,Company,CareerURL": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.google.com%2Fabout%2Fcareers%2Fapplications%2F&rut=ce30e5f33590eeb3983fa02750518cd49587f7d0a67d675760fab90ea71d5c14",
-  "Tech Giants,Google,https://careers.google.com/jobs/results/?q={position}&location={location}": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.google.com%2Fabout%2Fcareers%2Fapplications%2Fjobs%2Fresults%2F&rut=0ce8ae6566ff1f25bbf8185257f80965d24fb75829910480f8339c9f8643b7cf",
-  "Tech Giants,Microsoft,https://jobs.careers.microsoft.com/global/en/search?q={position}&l={location}": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fjobs.careers.microsoft.com%2Fglobal%2Fen%2Fsearch%3Fl%3Den_us&rut=2add057d48d44610aeb3ee530c388ee398a7fff0277d031b56c954806921d4c9",
-  "Tech Giants,Meta (Facebook),https://www.metacareers.com/jobs?query={position}&location={location}": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.metacareers.com%2Fjobs&rut=49c2585862237357f0505c29062be38d327f42f43d2d73c1ffac79cc05da9f3f"
-}
