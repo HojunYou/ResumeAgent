@@ -55,10 +55,23 @@ def init_driver(headless: bool = False) -> webdriver.Chrome:
     driver = webdriver.Chrome(options=opts)
 
     # optional session cookie
-    cookie = os.getenv("LI_AT_COOKIE")
-    if cookie:
-        driver.get("https://www.linkedin.com")
-        driver.add_cookie({"name": "li_at", "value": cookie, "domain": ".linkedin.com"})
+    cookie_raw = os.getenv("LI_AT_COOKIE")
+    if cookie_raw:
+        # strip possible prefixes like "export LI_AT_COOKIE=" and quotes
+        if "LI_AT_COOKIE" in cookie_raw:
+            cookie_raw = cookie_raw.split("=", 1)[-1]
+        cookie_raw = cookie_raw.strip().strip('\'"')
+        driver.get("https://www.linkedin.com")  # must be on domain to set cookie
+        driver.delete_all_cookies()
+        driver.add_cookie({
+            "name":   "li_at",
+            "value":  cookie_raw,
+            "domain": ".linkedin.com",
+            "path":   "/",
+            "secure": True,
+            "httpOnly": True,
+        })
+        print("[info] li_at cookie injected OK")
     return driver
 
 
@@ -67,19 +80,30 @@ def scrape_job(url: str, driver: webdriver.Chrome, timeout: int = 15) -> str | N
     driver.get(url)
     wait = WebDriverWait(driver, timeout)
 
-    # Expand description (See more)
-    try:
-        see_more = wait.until(
-            EC.element_to_be_clickable(
-                (By.CSS_SELECTOR, "button[aria-label^='See more']"))
-        )
-        see_more.click()
-    except TimeoutException:
-        pass  # button absent; maybe already expanded
+    # --- expand “See more” if present ---------------------------------------
+    see_more_selectors = [
+        (By.CSS_SELECTOR, "button[aria-label^='See more']"),
+        (By.CSS_SELECTOR, "button[aria-label*='See more about']"),
+        (By.XPATH, "//button[.//span[contains(text(),'See more')]]"),
+        (By.XPATH, "//button[contains(.,'See more')]"),
+        (By.CSS_SELECTOR, "button[data-tracking-control-name*='description']"),
+    ]
+    for by, sel in see_more_selectors:
+        try:
+            btn = WebDriverWait(driver, 4).until(
+                EC.element_to_be_clickable((by, sel))
+            )
+            btn.click()
+            break
+        except TimeoutException:
+            continue  # try the next selector
 
     try:
         # Locate <h2>About the job … then following div
-        header = driver.find_element(By.XPATH, "//h2[starts-with(.,'About the job')]")
+        header = driver.find_element(
+            By.XPATH,
+            "//h2[contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'about the job')]"
+        )
         container = header.find_element(By.XPATH, "following-sibling::div")
         return container.get_attribute("innerHTML")
     except Exception as exc:
@@ -96,7 +120,7 @@ def main() -> None:
     )
     ap.add_argument("--input", required=True, help="Text/CSV file with job URLs")
     ap.add_argument("--output", required=True, help="Output JSON path")
-    ap.add_argument("--headless", action="store_true", help="Run Chrome headless")
+    ap.add_argument("--headless", action=argparse.BooleanOptionalAction, default=True, help="Run Chrome headless")
     args = ap.parse_args()
 
     urls = list(iter_urls(args.input))
