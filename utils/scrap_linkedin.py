@@ -32,7 +32,7 @@ def on_data(data: EventData):
     #       len(data.description))
     import json
     job_info = {
-        "title": data.title[:-18] if data.title.endswith("with verification") else data.title, # Drop 'with verification' suffix
+        "title": data.title[:-18] if data.title.endswith(" with verification") else data.title, # Drop 'with verification' suffix
         "company": data.company,
         "company_link": data.company_link,
         "date": data.date,
@@ -74,12 +74,13 @@ if not os.path.isfile(csv_path):
 
 df = pd.read_csv(csv_path)
 
-queries = []
-for _, row in df.iterrows():
+queries, companies = [], []
+for idx, row in df.iterrows():
     url = row.get("LinkedinURL")
     if not url or not isinstance(url, str):
         logging.warning("No valid LinkedinURL found for company: %s", row.get("Company"))
         continue
+    companies.append(row.get("Company"))
     queries.append(
         Query(
             query=position,
@@ -108,5 +109,4 @@ for _, row in df.iterrows():
 if not queries:
     raise RuntimeError("No valid LinkedinURL found in the company list.")
 
-companies = df["Company"].tolist()
-scraper.run(queries, companies = companies)
+scraper.run(queries, companies=companies)
