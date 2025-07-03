@@ -13,6 +13,7 @@ resumeagent/
 __pypackages__/
 .uv/
 .python_version
+data/linkedin_cookie.txt
 
 
 # C extensions
