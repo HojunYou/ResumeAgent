@@ -28,7 +28,7 @@ logging.basicConfig(level=logging.INFO) # , format='%(asctime)s - %(levelname)s 
 
 # Fired once for each successfully processed job
 def on_data(data: EventData):
-    print('[ON_DATA]', data.title, data.company, data.company_link, data.date, data.date_text, data.link, data.insights,
+    print('[ON_DATA]', data.title, f"<<{data.company}>>", data.company_link, data.date, data.date_text, data.link, data.insights,
           len(data.description))
 
 # Fired once for each page (25 jobs)
@@ -47,7 +47,7 @@ scraper = LinkedinScraper(
     chrome_options=None,  # Custom Chrome options here
     headless=True,  # Overrides headless mode only if chrome_options is None
     max_workers=1,  # How many threads will be spawned to run queries concurrently (one Chrome driver for each thread)
-    slow_mo=1.3,  # Slow down the scraper to avoid 'Too many requests 429' errors (in seconds)
+    slow_mo=2,  # Slow down the scraper to avoid 'Too many requests 429' errors (in seconds)
     page_load_timeout=40  # Page load timeout (in seconds)    
 )
 
@@ -96,4 +96,5 @@ for _, row in df.iterrows():
 if not queries:
     raise RuntimeError("No valid LinkedinURL found in the company list.")
 
-scraper.run(queries)
+companies = df["Company"].tolist()
+scraper.run(queries, companies = companies)

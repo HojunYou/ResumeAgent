@@ -1,522 +1,185 @@
-[ON_DATA] Software Engineer III, AI/ML, Google Cloud AI Google  2025-06-16  https://www.linkedin.com/jobs/view/software-engineer-iii-ai-ml-google-cloud-ai-at-google-4250545874?position=1&pageNum=0&refId=oMDFOckJVedfnJkNRFghWw%3D%3D&trackingId=widlMnC4oIQPubFaUiyPhA%3D%3D [] 4235
-[ON_DATA] Data Scientist, Research, Search Ads Google  2025-06-27  https://www.linkedin.com/jobs/view/data-scientist-research-search-ads-at-google-4256706142?position=2&pageNum=0&refId=oMDFOckJVedfnJkNRFghWw%3D%3D&trackingId=%2B1InYX4vHBxAQ%2BL1sFKozg%3D%3D [] 3666
-[ON_DATA] Software Engineer III, AI/ML Recommendations, Rankings, Predictions, YouTube Google  2025-06-22  https://www.linkedin.com/jobs/view/software-engineer-iii-ai-ml-recommendations-rankings-predictions-youtube-at-google-4224654967?position=3&pageNum=0&refId=oMDFOckJVedfnJkNRFghWw%3D%3D&trackingId=UXbxaBRCxnGw1c0m3MfZ3g%3D%3D [] 4338
-[ON_ERROR] Message: javascript error: Cannot read properties of undefined (reading 'querySelector')
-  (Session info: chrome=137.0.7151.120)
-Stacktrace:
-0   chromedriver                        0x0000000104869d14 cxxbridge1$str$ptr + 2735276
-1   chromedriver                        0x0000000104861f88 cxxbridge1$str$ptr + 2703136
-2   chromedriver                        0x00000001043b26f0 cxxbridge1$string$len + 90424
-3   chromedriver                        0x00000001043b83a8 cxxbridge1$string$len + 114160
-4   chromedriver                        0x00000001043ba978 cxxbridge1$string$len + 123840
-5   chromedriver                        0x000000010443bdec cxxbridge1$string$len + 653364
-6   chromedriver                        0x000000010443b0c8 cxxbridge1$string$len + 650000
-7   chromedriver                        0x00000001043edbe8 cxxbridge1$string$len + 333360
-8   chromedriver                        0x000000010482d598 cxxbridge1$str$ptr + 2487600
-9   chromedriver                        0x0000000104830830 cxxbridge1$str$ptr + 2500552
-10  chromedriver                        0x000000010480dc14 cxxbridge1$str$ptr + 2358188
-11  chromedriver                        0x00000001048310b8 cxxbridge1$str$ptr + 2502736
-12  chromedriver                        0x00000001047fedec cxxbridge1$str$ptr + 2297220
-13  chromedriver                        0x0000000104851420 cxxbridge1$str$ptr + 2634680
-14  chromedriver                        0x00000001048515ac cxxbridge1$str$ptr + 2635076
-15  chromedriver                        0x0000000104861bd4 cxxbridge1$str$ptr + 2702188
-16  libsystem_pthread.dylib             0x0000000195546c0c _pthread_start + 136
-17  libsystem_pthread.dylib             0x0000000195541b80 thread_start + 8
-
-Traceback (most recent call last):
-  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/linkedin_jobs_scraper/strategies/anonymous_strategy.py", line 267, in run
-    job_id, job_link, job_title, job_company, job_place, job_date = driver.execute_script(
-                                                                    ^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 551, in execute_script
-    return self.execute(command, {"script": script, "args": converted_args})["value"]
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 454, in execute
-    self.error_handler.check_response(response)
-  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/errorhandler.py", line 232, in check_response
-    raise exception_class(message, screen, stacktrace)
-selenium.common.exceptions.JavascriptException: Message: javascript error: Cannot read properties of undefined (reading 'querySelector')
-  (Session info: chrome=137.0.7151.120)
-Stacktrace:
-0   chromedriver                        0x0000000104869d14 cxxbridge1$str$ptr + 2735276
-1   chromedriver                        0x0000000104861f88 cxxbridge1$str$ptr + 2703136
-2   chromedriver                        0x00000001043b26f0 cxxbridge1$string$len + 90424
-3   chromedriver                        0x00000001043b83a8 cxxbridge1$string$len + 114160
-4   chromedriver                        0x00000001043ba978 cxxbridge1$string$len + 123840
-5   chromedriver                        0x000000010443bdec cxxbridge1$string$len + 653364
-6   chromedriver                        0x000000010443b0c8 cxxbridge1$string$len + 650000
-7   chromedriver                        0x00000001043edbe8 cxxbridge1$string$len + 333360
-8   chromedriver                        0x000000010482d598 cxxbridge1$str$ptr + 2487600
-9   chromedriver                        0x0000000104830830 cxxbridge1$str$ptr + 2500552
-10  chromedriver                        0x000000010480dc14 cxxbridge1$str$ptr + 2358188
-11  chromedriver                        0x00000001048310b8 cxxbridge1$str$ptr + 2502736
-12  chromedriver                        0x00000001047fedec cxxbridge1$str$ptr + 2297220
-13  chromedriver                        0x0000000104851420 cxxbridge1$str$ptr + 2634680
-14  chromedriver                        0x00000001048515ac cxxbridge1$str$ptr + 2635076
-15  chromedriver                        0x0000000104861bd4 cxxbridge1$str$ptr + 2702188
-16  libsystem_pthread.dylib             0x0000000195546c0c _pthread_start + 136
-17  libsystem_pthread.dylib             0x0000000195541b80 thread_start + 8
-
-
-[ON_ERROR] Message: javascript error: Cannot read properties of undefined (reading 'querySelector')
-  (Session info: chrome=137.0.7151.120)
-Stacktrace:
-0   chromedriver                        0x0000000104869d14 cxxbridge1$str$ptr + 2735276
-1   chromedriver                        0x0000000104861f88 cxxbridge1$str$ptr + 2703136
-2   chromedriver                        0x00000001043b26f0 cxxbridge1$string$len + 90424
-3   chromedriver                        0x00000001043b83a8 cxxbridge1$string$len + 114160
-4   chromedriver                        0x00000001043ba978 cxxbridge1$string$len + 123840
-5   chromedriver                        0x000000010443bdec cxxbridge1$string$len + 653364
-6   chromedriver                        0x000000010443b0c8 cxxbridge1$string$len + 650000
-7   chromedriver                        0x00000001043edbe8 cxxbridge1$string$len + 333360
-8   chromedriver                        0x000000010482d598 cxxbridge1$str$ptr + 2487600
-9   chromedriver                        0x0000000104830830 cxxbridge1$str$ptr + 2500552
-10  chromedriver                        0x000000010480dc14 cxxbridge1$str$ptr + 2358188
-11  chromedriver                        0x00000001048310b8 cxxbridge1$str$ptr + 2502736
-12  chromedriver                        0x00000001047fedec cxxbridge1$str$ptr + 2297220
-13  chromedriver                        0x0000000104851420 cxxbridge1$str$ptr + 2634680
-14  chromedriver                        0x00000001048515ac cxxbridge1$str$ptr + 2635076
-15  chromedriver                        0x0000000104861bd4 cxxbridge1$str$ptr + 2702188
-16  libsystem_pthread.dylib             0x0000000195546c0c _pthread_start + 136
-17  libsystem_pthread.dylib             0x0000000195541b80 thread_start + 8
-
-Traceback (most recent call last):
-  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/linkedin_jobs_scraper/strategies/anonymous_strategy.py", line 267, in run
-    job_id, job_link, job_title, job_company, job_place, job_date = driver.execute_script(
-                                                                    ^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 551, in execute_script
-    return self.execute(command, {"script": script, "args": converted_args})["value"]
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 454, in execute
-    self.error_handler.check_response(response)
-  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/errorhandler.py", line 232, in check_response
-    raise exception_class(message, screen, stacktrace)
-selenium.common.exceptions.JavascriptException: Message: javascript error: Cannot read properties of undefined (reading 'querySelector')
-  (Session info: chrome=137.0.7151.120)
-Stacktrace:
-0   chromedriver                        0x0000000104869d14 cxxbridge1$str$ptr + 2735276
-1   chromedriver                        0x0000000104861f88 cxxbridge1$str$ptr + 2703136
-2   chromedriver                        0x00000001043b26f0 cxxbridge1$string$len + 90424
-3   chromedriver                        0x00000001043b83a8 cxxbridge1$string$len + 114160
-4   chromedriver                        0x00000001043ba978 cxxbridge1$string$len + 123840
-5   chromedriver                        0x000000010443bdec cxxbridge1$string$len + 653364
-6   chromedriver                        0x000000010443b0c8 cxxbridge1$string$len + 650000
-7   chromedriver                        0x00000001043edbe8 cxxbridge1$string$len + 333360
-8   chromedriver                        0x000000010482d598 cxxbridge1$str$ptr + 2487600
-9   chromedriver                        0x0000000104830830 cxxbridge1$str$ptr + 2500552
-10  chromedriver                        0x000000010480dc14 cxxbridge1$str$ptr + 2358188
-11  chromedriver                        0x00000001048310b8 cxxbridge1$str$ptr + 2502736
-12  chromedriver                        0x00000001047fedec cxxbridge1$str$ptr + 2297220
-13  chromedriver                        0x0000000104851420 cxxbridge1$str$ptr + 2634680
-14  chromedriver                        0x00000001048515ac cxxbridge1$str$ptr + 2635076
-15  chromedriver                        0x0000000104861bd4 cxxbridge1$str$ptr + 2702188
-16  libsystem_pthread.dylib             0x0000000195546c0c _pthread_start + 136
-17  libsystem_pthread.dylib             0x0000000195541b80 thread_start + 8
-
-
-[ON_ERROR] Message: javascript error: Cannot read properties of undefined (reading 'querySelector')
-  (Session info: chrome=137.0.7151.120)
-Stacktrace:
-0   chromedriver                        0x0000000104869d14 cxxbridge1$str$ptr + 2735276
-1   chromedriver                        0x0000000104861f88 cxxbridge1$str$ptr + 2703136
-2   chromedriver                        0x00000001043b26f0 cxxbridge1$string$len + 90424
-3   chromedriver                        0x00000001043b83a8 cxxbridge1$string$len + 114160
-4   chromedriver                        0x00000001043ba978 cxxbridge1$string$len + 123840
-5   chromedriver                        0x000000010443bdec cxxbridge1$string$len + 653364
-6   chromedriver                        0x000000010443b0c8 cxxbridge1$string$len + 650000
-7   chromedriver                        0x00000001043edbe8 cxxbridge1$string$len + 333360
-8   chromedriver                        0x000000010482d598 cxxbridge1$str$ptr + 2487600
-9   chromedriver                        0x0000000104830830 cxxbridge1$str$ptr + 2500552
-10  chromedriver                        0x000000010480dc14 cxxbridge1$str$ptr + 2358188
-11  chromedriver                        0x00000001048310b8 cxxbridge1$str$ptr + 2502736
-12  chromedriver                        0x00000001047fedec cxxbridge1$str$ptr + 2297220
-13  chromedriver                        0x0000000104851420 cxxbridge1$str$ptr + 2634680
-14  chromedriver                        0x00000001048515ac cxxbridge1$str$ptr + 2635076
-15  chromedriver                        0x0000000104861bd4 cxxbridge1$str$ptr + 2702188
-16  libsystem_pthread.dylib             0x0000000195546c0c _pthread_start + 136
-17  libsystem_pthread.dylib             0x0000000195541b80 thread_start + 8
-
-Traceback (most recent call last):
-  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/linkedin_jobs_scraper/strategies/anonymous_strategy.py", line 267, in run
-    job_id, job_link, job_title, job_company, job_place, job_date = driver.execute_script(
-                                                                    ^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 551, in execute_script
-    return self.execute(command, {"script": script, "args": converted_args})["value"]
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 454, in execute
-    self.error_handler.check_response(response)
-  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/errorhandler.py", line 232, in check_response
-    raise exception_class(message, screen, stacktrace)
-selenium.common.exceptions.JavascriptException: Message: javascript error: Cannot read properties of undefined (reading 'querySelector')
-  (Session info: chrome=137.0.7151.120)
-Stacktrace:
-0   chromedriver                        0x0000000104869d14 cxxbridge1$str$ptr + 2735276
-1   chromedriver                        0x0000000104861f88 cxxbridge1$str$ptr + 2703136
-2   chromedriver                        0x00000001043b26f0 cxxbridge1$string$len + 90424
-3   chromedriver                        0x00000001043b83a8 cxxbridge1$string$len + 114160
-4   chromedriver                        0x00000001043ba978 cxxbridge1$string$len + 123840
-5   chromedriver                        0x000000010443bdec cxxbridge1$string$len + 653364
-6   chromedriver                        0x000000010443b0c8 cxxbridge1$string$len + 650000
-7   chromedriver                        0x00000001043edbe8 cxxbridge1$string$len + 333360
-8   chromedriver                        0x000000010482d598 cxxbridge1$str$ptr + 2487600
-9   chromedriver                        0x0000000104830830 cxxbridge1$str$ptr + 2500552
-10  chromedriver                        0x000000010480dc14 cxxbridge1$str$ptr + 2358188
-11  chromedriver                        0x00000001048310b8 cxxbridge1$str$ptr + 2502736
-12  chromedriver                        0x00000001047fedec cxxbridge1$str$ptr + 2297220
-13  chromedriver                        0x0000000104851420 cxxbridge1$str$ptr + 2634680
-14  chromedriver                        0x00000001048515ac cxxbridge1$str$ptr + 2635076
-15  chromedriver                        0x0000000104861bd4 cxxbridge1$str$ptr + 2702188
-16  libsystem_pthread.dylib             0x0000000195546c0c _pthread_start + 136
-17  libsystem_pthread.dylib             0x0000000195541b80 thread_start + 8
-
-
+[ON_DATA] Senior Software Engineer, AI/ML, User Experiences with verification Google https://www.linkedin.com/company/google/life  Reposted 5 days ago https://www.linkedin.com/jobs/view/4243699653/?eBP=NON_CHARGEABLE_CHANNEL&refId=kiSA%2FWFk7ZvXtG8yZZzz%2FA%3D%3D&trackingId=ZxD8ll%2BrRQmqbn%2FlBwtlJw%3D%3D&trk=flagship3_search_srp_jobs [] 4524
+[ON_DATA] Senior Staff Software Engineer, On-Device Machine Learning with verification Google https://www.linkedin.com/company/google/life  Reposted 5 days ago https://www.linkedin.com/jobs/view/4243632016/?eBP=NON_CHARGEABLE_CHANNEL&refId=kiSA%2FWFk7ZvXtG8yZZzz%2FA%3D%3D&trackingId=ftlHmJQSjokVpTBOr412LQ%3D%3D&trk=flagship3_search_srp_jobs [] 5332
+[ON_DATA] Photonic Engineer, Machine Learning Systems, Platforms, PhD, University Graduate with verification Google https://www.linkedin.com/company/google/life  Reposted 1 week ago https://www.linkedin.com/jobs/view/4224660325/?eBP=NON_CHARGEABLE_CHANNEL&refId=kiSA%2FWFk7ZvXtG8yZZzz%2FA%3D%3D&trackingId=9Qh3NRYCQLB%2Bk%2BqOzEpSiw%3D%3D&trk=flagship3_search_srp_jobs [] 3822
+[ON_DATA] Machine Learning Algorithm Engineer, Silicon with verification Google https://www.linkedin.com/company/google/life  2 weeks ago https://www.linkedin.com/jobs/view/4251175023/?eBP=NON_CHARGEABLE_CHANNEL&refId=kiSA%2FWFk7ZvXtG8yZZzz%2FA%3D%3D&trackingId=sVwNCp%2Bg3%2B2cl5amE4Hx1w%3D%3D&trk=flagship3_search_srp_jobs [] 3579
+[ON_DATA] Staff Software Engineer, Search AI/ML with verification Google https://www.linkedin.com/company/google/life 2025-06-14 Reposted 2 weeks ago https://www.linkedin.com/jobs/view/4233926932/?eBP=NON_CHARGEABLE_CHANNEL&refId=kiSA%2FWFk7ZvXtG8yZZzz%2FA%3D%3D&trackingId=WZpC5%2FGL7tBje4io5INXRA%3D%3D&trk=flagship3_search_srp_jobs [] 4208
 [ON_END]
-[ON_DATA] Member of Technical Staff, Machine Learning Engineer Microsoft  2025-06-13  https://www.linkedin.com/jobs/view/member-of-technical-staff-machine-learning-engineer-at-microsoft-4186576022?position=1&pageNum=0&refId=auyr3Qixl8csz6ay7jZylQ%3D%3D&trackingId=pbk2gi%2BMt%2FX%2FKFhkcE9dWg%3D%3D [] 5378
-[ON_DATA] Member of Technical Staff, Machine Learning Engineer Microsoft  2025-06-18  https://www.linkedin.com/jobs/view/member-of-technical-staff-machine-learning-engineer-at-microsoft-4210000533?position=2&pageNum=0&refId=auyr3Qixl8csz6ay7jZylQ%3D%3D&trackingId=tFvh9XgYJ%2FEJzy3qtMd3jw%3D%3D [] 5219
-[ON_DATA] Software Engineer II Microsoft  2025-06-10  https://www.linkedin.com/jobs/view/software-engineer-ii-at-microsoft-4233383350?position=3&pageNum=0&refId=auyr3Qixl8csz6ay7jZylQ%3D%3D&trackingId=%2Bh8yNceQnX9MmWA0cEEaug%3D%3D [] 6117
-[ON_ERROR] Message: javascript error: Cannot read properties of undefined (reading 'querySelector')
-  (Session info: chrome=137.0.7151.120)
-Stacktrace:
-0   chromedriver                        0x000000010486dd14 cxxbridge1$str$ptr + 2735276
-1   chromedriver                        0x0000000104865f88 cxxbridge1$str$ptr + 2703136
-2   chromedriver                        0x00000001043b66f0 cxxbridge1$string$len + 90424
-3   chromedriver                        0x00000001043bc3a8 cxxbridge1$string$len + 114160
-4   chromedriver                        0x00000001043be978 cxxbridge1$string$len + 123840
-5   chromedriver                        0x000000010443fdec cxxbridge1$string$len + 653364
-6   chromedriver                        0x000000010443f0c8 cxxbridge1$string$len + 650000
-7   chromedriver                        0x00000001043f1be8 cxxbridge1$string$len + 333360
-8   chromedriver                        0x0000000104831598 cxxbridge1$str$ptr + 2487600
-9   chromedriver                        0x0000000104834830 cxxbridge1$str$ptr + 2500552
-10  chromedriver                        0x0000000104811c14 cxxbridge1$str$ptr + 2358188
-11  chromedriver                        0x00000001048350b8 cxxbridge1$str$ptr + 2502736
-12  chromedriver                        0x0000000104802dec cxxbridge1$str$ptr + 2297220
-13  chromedriver                        0x0000000104855420 cxxbridge1$str$ptr + 2634680
-14  chromedriver                        0x00000001048555ac cxxbridge1$str$ptr + 2635076
-15  chromedriver                        0x0000000104865bd4 cxxbridge1$str$ptr + 2702188
-16  libsystem_pthread.dylib             0x0000000195546c0c _pthread_start + 136
-17  libsystem_pthread.dylib             0x0000000195541b80 thread_start + 8
-
-Traceback (most recent call last):
-  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/linkedin_jobs_scraper/strategies/anonymous_strategy.py", line 267, in run
-    job_id, job_link, job_title, job_company, job_place, job_date = driver.execute_script(
-                                                                    ^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 551, in execute_script
-    return self.execute(command, {"script": script, "args": converted_args})["value"]
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 454, in execute
-    self.error_handler.check_response(response)
-  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/errorhandler.py", line 232, in check_response
-    raise exception_class(message, screen, stacktrace)
-selenium.common.exceptions.JavascriptException: Message: javascript error: Cannot read properties of undefined (reading 'querySelector')
-  (Session info: chrome=137.0.7151.120)
-Stacktrace:
-0   chromedriver                        0x000000010486dd14 cxxbridge1$str$ptr + 2735276
-1   chromedriver                        0x0000000104865f88 cxxbridge1$str$ptr + 2703136
-2   chromedriver                        0x00000001043b66f0 cxxbridge1$string$len + 90424
-3   chromedriver                        0x00000001043bc3a8 cxxbridge1$string$len + 114160
-4   chromedriver                        0x00000001043be978 cxxbridge1$string$len + 123840
-5   chromedriver                        0x000000010443fdec cxxbridge1$string$len + 653364
-6   chromedriver                        0x000000010443f0c8 cxxbridge1$string$len + 650000
-7   chromedriver                        0x00000001043f1be8 cxxbridge1$string$len + 333360
-8   chromedriver                        0x0000000104831598 cxxbridge1$str$ptr + 2487600
-9   chromedriver                        0x0000000104834830 cxxbridge1$str$ptr + 2500552
-10  chromedriver                        0x0000000104811c14 cxxbridge1$str$ptr + 2358188
-11  chromedriver                        0x00000001048350b8 cxxbridge1$str$ptr + 2502736
-12  chromedriver                        0x0000000104802dec cxxbridge1$str$ptr + 2297220
-13  chromedriver                        0x0000000104855420 cxxbridge1$str$ptr + 2634680
-14  chromedriver                        0x00000001048555ac cxxbridge1$str$ptr + 2635076
-15  chromedriver                        0x0000000104865bd4 cxxbridge1$str$ptr + 2702188
-16  libsystem_pthread.dylib             0x0000000195546c0c _pthread_start + 136
-17  libsystem_pthread.dylib             0x0000000195541b80 thread_start + 8
-
-
-[ON_ERROR] Message: javascript error: Cannot read properties of undefined (reading 'querySelector')
-  (Session info: chrome=137.0.7151.120)
-Stacktrace:
-0   chromedriver                        0x000000010486dd14 cxxbridge1$str$ptr + 2735276
-1   chromedriver                        0x0000000104865f88 cxxbridge1$str$ptr + 2703136
-2   chromedriver                        0x00000001043b66f0 cxxbridge1$string$len + 90424
-3   chromedriver                        0x00000001043bc3a8 cxxbridge1$string$len + 114160
-4   chromedriver                        0x00000001043be978 cxxbridge1$string$len + 123840
-5   chromedriver                        0x000000010443fdec cxxbridge1$string$len + 653364
-6   chromedriver                        0x000000010443f0c8 cxxbridge1$string$len + 650000
-7   chromedriver                        0x00000001043f1be8 cxxbridge1$string$len + 333360
-8   chromedriver                        0x0000000104831598 cxxbridge1$str$ptr + 2487600
-9   chromedriver                        0x0000000104834830 cxxbridge1$str$ptr + 2500552
-10  chromedriver                        0x0000000104811c14 cxxbridge1$str$ptr + 2358188
-11  chromedriver                        0x00000001048350b8 cxxbridge1$str$ptr + 2502736
-12  chromedriver                        0x0000000104802dec cxxbridge1$str$ptr + 2297220
-13  chromedriver                        0x0000000104855420 cxxbridge1$str$ptr + 2634680
-14  chromedriver                        0x00000001048555ac cxxbridge1$str$ptr + 2635076
-15  chromedriver                        0x0000000104865bd4 cxxbridge1$str$ptr + 2702188
-16  libsystem_pthread.dylib             0x0000000195546c0c _pthread_start + 136
-17  libsystem_pthread.dylib             0x0000000195541b80 thread_start + 8
-
-Traceback (most recent call last):
-  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/linkedin_jobs_scraper/strategies/anonymous_strategy.py", line 267, in run
-    job_id, job_link, job_title, job_company, job_place, job_date = driver.execute_script(
-                                                                    ^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 551, in execute_script
-    return self.execute(command, {"script": script, "args": converted_args})["value"]
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 454, in execute
-    self.error_handler.check_response(response)
-  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/errorhandler.py", line 232, in check_response
-    raise exception_class(message, screen, stacktrace)
-selenium.common.exceptions.JavascriptException: Message: javascript error: Cannot read properties of undefined (reading 'querySelector')
-  (Session info: chrome=137.0.7151.120)
-Stacktrace:
-0   chromedriver                        0x000000010486dd14 cxxbridge1$str$ptr + 2735276
-1   chromedriver                        0x0000000104865f88 cxxbridge1$str$ptr + 2703136
-2   chromedriver                        0x00000001043b66f0 cxxbridge1$string$len + 90424
-3   chromedriver                        0x00000001043bc3a8 cxxbridge1$string$len + 114160
-4   chromedriver                        0x00000001043be978 cxxbridge1$string$len + 123840
-5   chromedriver                        0x000000010443fdec cxxbridge1$string$len + 653364
-6   chromedriver                        0x000000010443f0c8 cxxbridge1$string$len + 650000
-7   chromedriver                        0x00000001043f1be8 cxxbridge1$string$len + 333360
-8   chromedriver                        0x0000000104831598 cxxbridge1$str$ptr + 2487600
-9   chromedriver                        0x0000000104834830 cxxbridge1$str$ptr + 2500552
-10  chromedriver                        0x0000000104811c14 cxxbridge1$str$ptr + 2358188
-11  chromedriver                        0x00000001048350b8 cxxbridge1$str$ptr + 2502736
-12  chromedriver                        0x0000000104802dec cxxbridge1$str$ptr + 2297220
-13  chromedriver                        0x0000000104855420 cxxbridge1$str$ptr + 2634680
-14  chromedriver                        0x00000001048555ac cxxbridge1$str$ptr + 2635076
-15  chromedriver                        0x0000000104865bd4 cxxbridge1$str$ptr + 2702188
-16  libsystem_pthread.dylib             0x0000000195546c0c _pthread_start + 136
-17  libsystem_pthread.dylib             0x0000000195541b80 thread_start + 8
-
-
-[ON_ERROR] Message: javascript error: Cannot read properties of undefined (reading 'querySelector')
-  (Session info: chrome=137.0.7151.120)
-Stacktrace:
-0   chromedriver                        0x000000010486dd14 cxxbridge1$str$ptr + 2735276
-1   chromedriver                        0x0000000104865f88 cxxbridge1$str$ptr + 2703136
-2   chromedriver                        0x00000001043b66f0 cxxbridge1$string$len + 90424
-3   chromedriver                        0x00000001043bc3a8 cxxbridge1$string$len + 114160
-4   chromedriver                        0x00000001043be978 cxxbridge1$string$len + 123840
-5   chromedriver                        0x000000010443fdec cxxbridge1$string$len + 653364
-6   chromedriver                        0x000000010443f0c8 cxxbridge1$string$len + 650000
-7   chromedriver                        0x00000001043f1be8 cxxbridge1$string$len + 333360
-8   chromedriver                        0x0000000104831598 cxxbridge1$str$ptr + 2487600
-9   chromedriver                        0x0000000104834830 cxxbridge1$str$ptr + 2500552
-10  chromedriver                        0x0000000104811c14 cxxbridge1$str$ptr + 2358188
-11  chromedriver                        0x00000001048350b8 cxxbridge1$str$ptr + 2502736
-12  chromedriver                        0x0000000104802dec cxxbridge1$str$ptr + 2297220
-13  chromedriver                        0x0000000104855420 cxxbridge1$str$ptr + 2634680
-14  chromedriver                        0x00000001048555ac cxxbridge1$str$ptr + 2635076
-15  chromedriver                        0x0000000104865bd4 cxxbridge1$str$ptr + 2702188
-16  libsystem_pthread.dylib             0x0000000195546c0c _pthread_start + 136
-17  libsystem_pthread.dylib             0x0000000195541b80 thread_start + 8
-
-Traceback (most recent call last):
-  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/linkedin_jobs_scraper/strategies/anonymous_strategy.py", line 267, in run
-    job_id, job_link, job_title, job_company, job_place, job_date = driver.execute_script(
-                                                                    ^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 551, in execute_script
-    return self.execute(command, {"script": script, "args": converted_args})["value"]
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 454, in execute
-    self.error_handler.check_response(response)
-  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/errorhandler.py", line 232, in check_response
-    raise exception_class(message, screen, stacktrace)
-selenium.common.exceptions.JavascriptException: Message: javascript error: Cannot read properties of undefined (reading 'querySelector')
-  (Session info: chrome=137.0.7151.120)
-Stacktrace:
-0   chromedriver                        0x000000010486dd14 cxxbridge1$str$ptr + 2735276
-1   chromedriver                        0x0000000104865f88 cxxbridge1$str$ptr + 2703136
-2   chromedriver                        0x00000001043b66f0 cxxbridge1$string$len + 90424
-3   chromedriver                        0x00000001043bc3a8 cxxbridge1$string$len + 114160
-4   chromedriver                        0x00000001043be978 cxxbridge1$string$len + 123840
-5   chromedriver                        0x000000010443fdec cxxbridge1$string$len + 653364
-6   chromedriver                        0x000000010443f0c8 cxxbridge1$string$len + 650000
-7   chromedriver                        0x00000001043f1be8 cxxbridge1$string$len + 333360
-8   chromedriver                        0x0000000104831598 cxxbridge1$str$ptr + 2487600
-9   chromedriver                        0x0000000104834830 cxxbridge1$str$ptr + 2500552
-10  chromedriver                        0x0000000104811c14 cxxbridge1$str$ptr + 2358188
-11  chromedriver                        0x00000001048350b8 cxxbridge1$str$ptr + 2502736
-12  chromedriver                        0x0000000104802dec cxxbridge1$str$ptr + 2297220
-13  chromedriver                        0x0000000104855420 cxxbridge1$str$ptr + 2634680
-14  chromedriver                        0x00000001048555ac cxxbridge1$str$ptr + 2635076
-15  chromedriver                        0x0000000104865bd4 cxxbridge1$str$ptr + 2702188
-16  libsystem_pthread.dylib             0x0000000195546c0c _pthread_start + 136
-17  libsystem_pthread.dylib             0x0000000195541b80 thread_start + 8
-
-
+[ON_DATA] Principal Applied Science Lead with verification Microsoft https://www.linkedin.com/company/microsoft/life  1 hour ago https://www.linkedin.com/jobs/view/4261417169/?eBP=NON_CHARGEABLE_CHANNEL&refId=EfN91JaRhJGVOI3A6R%2BG3g%3D%3D&trackingId=5Ia3MKAyI7rBCFpQRWTRkA%3D%3D&trk=flagship3_search_srp_jobs [] 5711
+[ON_DATA] Quantum Machine Learning Engineer - Remote Parature https://www.linkedin.com/company/parature/life 2025-07-02 15 hours ago https://www.linkedin.com/jobs/view/4261060856/?eBP=NON_CHARGEABLE_CHANNEL&refId=EfN91JaRhJGVOI3A6R%2BG3g%3D%3D&trackingId=rmdh5l8skAZt3OxBENbVRw%3D%3D&trk=flagship3_search_srp_jobs [] 1886
+[ON_DATA] Senior ML Research Engineer – LLM Quantization & Model Optimization with verification Microsoft https://www.linkedin.com/company/microsoft/life 2025-07-02 19 hours ago https://www.linkedin.com/jobs/view/4261007776/?eBP=NON_CHARGEABLE_CHANNEL&refId=EfN91JaRhJGVOI3A6R%2BG3g%3D%3D&trackingId=Hmds0pb1SOU%2BobP1VFxFSQ%3D%3D&trk=flagship3_search_srp_jobs [] 5479
+[ON_DATA] Member of Technical Staff, Machine Learning Engineer with verification Microsoft https://www.linkedin.com/company/microsoft/life  Reposted 2 weeks ago https://www.linkedin.com/jobs/view/4210000533/?eBP=NON_CHARGEABLE_CHANNEL&refId=EfN91JaRhJGVOI3A6R%2BG3g%3D%3D&trackingId=6C4t85ZNny6UWn%2BkY6THfg%3D%3D&trk=flagship3_search_srp_jobs [] 5242
+[ON_DATA] Member of Technical Staff, Machine Learning Engineer with verification Microsoft https://www.linkedin.com/company/microsoft/life  Reposted 2 weeks ago https://www.linkedin.com/jobs/view/4186576022/?eBP=NON_CHARGEABLE_CHANNEL&refId=EfN91JaRhJGVOI3A6R%2BG3g%3D%3D&trackingId=XJLMeRPJqoreLQ3D1t2JJQ%3D%3D&trk=flagship3_search_srp_jobs [] 5403
 [ON_END]
-[ON_DATA] Software Engineer, Machine Learning Meta  2025-06-25  https://www.linkedin.com/jobs/view/software-engineer-machine-learning-at-meta-4254373531?position=1&pageNum=0&refId=Kq4RSdKa7n2oigSVt3vjqg%3D%3D&trackingId=R4nsG8xwYiUCvj27DYBTKg%3D%3D [] 5031
-[ON_DATA] Software Engineer, Machine Learning Meta  2025-06-25  https://www.linkedin.com/jobs/view/software-engineer-machine-learning-at-meta-4254370680?position=2&pageNum=0&refId=Kq4RSdKa7n2oigSVt3vjqg%3D%3D&trackingId=KhA%2FlGUzKO%2Fk0xbkgSJSMQ%3D%3D [] 5031
-[ON_DATA] Software Engineer, Machine Learning Meta  2025-06-27  https://www.linkedin.com/jobs/view/software-engineer-machine-learning-at-meta-4255809904?position=3&pageNum=0&refId=Kq4RSdKa7n2oigSVt3vjqg%3D%3D&trackingId=eElPHjffLY6jDJ4%2FAqKGCw%3D%3D [] 4822
-[ON_ERROR] Message: javascript error: Cannot read properties of undefined (reading 'querySelector')
-  (Session info: chrome=137.0.7151.120)
-Stacktrace:
-0   chromedriver                        0x00000001046e5d14 cxxbridge1$str$ptr + 2735276
-1   chromedriver                        0x00000001046ddf88 cxxbridge1$str$ptr + 2703136
-2   chromedriver                        0x000000010422e6f0 cxxbridge1$string$len + 90424
-3   chromedriver                        0x00000001042343a8 cxxbridge1$string$len + 114160
-4   chromedriver                        0x0000000104236978 cxxbridge1$string$len + 123840
-5   chromedriver                        0x00000001042b7dec cxxbridge1$string$len + 653364
-6   chromedriver                        0x00000001042b70c8 cxxbridge1$string$len + 650000
-7   chromedriver                        0x0000000104269be8 cxxbridge1$string$len + 333360
-8   chromedriver                        0x00000001046a9598 cxxbridge1$str$ptr + 2487600
-9   chromedriver                        0x00000001046ac830 cxxbridge1$str$ptr + 2500552
-10  chromedriver                        0x0000000104689c14 cxxbridge1$str$ptr + 2358188
-11  chromedriver                        0x00000001046ad0b8 cxxbridge1$str$ptr + 2502736
-12  chromedriver                        0x000000010467adec cxxbridge1$str$ptr + 2297220
-13  chromedriver                        0x00000001046cd420 cxxbridge1$str$ptr + 2634680
-14  chromedriver                        0x00000001046cd5ac cxxbridge1$str$ptr + 2635076
-15  chromedriver                        0x00000001046ddbd4 cxxbridge1$str$ptr + 2702188
-16  libsystem_pthread.dylib             0x0000000195546c0c _pthread_start + 136
-17  libsystem_pthread.dylib             0x0000000195541b80 thread_start + 8
-
-Traceback (most recent call last):
-  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/linkedin_jobs_scraper/strategies/anonymous_strategy.py", line 267, in run
-    job_id, job_link, job_title, job_company, job_place, job_date = driver.execute_script(
-                                                                    ^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 551, in execute_script
-    return self.execute(command, {"script": script, "args": converted_args})["value"]
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 454, in execute
-    self.error_handler.check_response(response)
-  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/errorhandler.py", line 232, in check_response
-    raise exception_class(message, screen, stacktrace)
-selenium.common.exceptions.JavascriptException: Message: javascript error: Cannot read properties of undefined (reading 'querySelector')
-  (Session info: chrome=137.0.7151.120)
-Stacktrace:
-0   chromedriver                        0x00000001046e5d14 cxxbridge1$str$ptr + 2735276
-1   chromedriver                        0x00000001046ddf88 cxxbridge1$str$ptr + 2703136
-2   chromedriver                        0x000000010422e6f0 cxxbridge1$string$len + 90424
-3   chromedriver                        0x00000001042343a8 cxxbridge1$string$len + 114160
-4   chromedriver                        0x0000000104236978 cxxbridge1$string$len + 123840
-5   chromedriver                        0x00000001042b7dec cxxbridge1$string$len + 653364
-6   chromedriver                        0x00000001042b70c8 cxxbridge1$string$len + 650000
-7   chromedriver                        0x0000000104269be8 cxxbridge1$string$len + 333360
-8   chromedriver                        0x00000001046a9598 cxxbridge1$str$ptr + 2487600
-9   chromedriver                        0x00000001046ac830 cxxbridge1$str$ptr + 2500552
-10  chromedriver                        0x0000000104689c14 cxxbridge1$str$ptr + 2358188
-11  chromedriver                        0x00000001046ad0b8 cxxbridge1$str$ptr + 2502736
-12  chromedriver                        0x000000010467adec cxxbridge1$str$ptr + 2297220
-13  chromedriver                        0x00000001046cd420 cxxbridge1$str$ptr + 2634680
-14  chromedriver                        0x00000001046cd5ac cxxbridge1$str$ptr + 2635076
-15  chromedriver                        0x00000001046ddbd4 cxxbridge1$str$ptr + 2702188
-16  libsystem_pthread.dylib             0x0000000195546c0c _pthread_start + 136
-17  libsystem_pthread.dylib             0x0000000195541b80 thread_start + 8
-
-
-[ON_ERROR] Message: javascript error: Cannot read properties of undefined (reading 'querySelector')
-  (Session info: chrome=137.0.7151.120)
-Stacktrace:
-0   chromedriver                        0x00000001046e5d14 cxxbridge1$str$ptr + 2735276
-1   chromedriver                        0x00000001046ddf88 cxxbridge1$str$ptr + 2703136
-2   chromedriver                        0x000000010422e6f0 cxxbridge1$string$len + 90424
-3   chromedriver                        0x00000001042343a8 cxxbridge1$string$len + 114160
-4   chromedriver                        0x0000000104236978 cxxbridge1$string$len + 123840
-5   chromedriver                        0x00000001042b7dec cxxbridge1$string$len + 653364
-6   chromedriver                        0x00000001042b70c8 cxxbridge1$string$len + 650000
-7   chromedriver                        0x0000000104269be8 cxxbridge1$string$len + 333360
-8   chromedriver                        0x00000001046a9598 cxxbridge1$str$ptr + 2487600
-9   chromedriver                        0x00000001046ac830 cxxbridge1$str$ptr + 2500552
-10  chromedriver                        0x0000000104689c14 cxxbridge1$str$ptr + 2358188
-11  chromedriver                        0x00000001046ad0b8 cxxbridge1$str$ptr + 2502736
-12  chromedriver                        0x000000010467adec cxxbridge1$str$ptr + 2297220
-13  chromedriver                        0x00000001046cd420 cxxbridge1$str$ptr + 2634680
-14  chromedriver                        0x00000001046cd5ac cxxbridge1$str$ptr + 2635076
-15  chromedriver                        0x00000001046ddbd4 cxxbridge1$str$ptr + 2702188
-16  libsystem_pthread.dylib             0x0000000195546c0c _pthread_start + 136
-17  libsystem_pthread.dylib             0x0000000195541b80 thread_start + 8
-
-Traceback (most recent call last):
-  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/linkedin_jobs_scraper/strategies/anonymous_strategy.py", line 267, in run
-    job_id, job_link, job_title, job_company, job_place, job_date = driver.execute_script(
-                                                                    ^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 551, in execute_script
-    return self.execute(command, {"script": script, "args": converted_args})["value"]
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 454, in execute
-    self.error_handler.check_response(response)
-  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/errorhandler.py", line 232, in check_response
-    raise exception_class(message, screen, stacktrace)
-selenium.common.exceptions.JavascriptException: Message: javascript error: Cannot read properties of undefined (reading 'querySelector')
-  (Session info: chrome=137.0.7151.120)
-Stacktrace:
-0   chromedriver                        0x00000001046e5d14 cxxbridge1$str$ptr + 2735276
-1   chromedriver                        0x00000001046ddf88 cxxbridge1$str$ptr + 2703136
-2   chromedriver                        0x000000010422e6f0 cxxbridge1$string$len + 90424
-3   chromedriver                        0x00000001042343a8 cxxbridge1$string$len + 114160
-4   chromedriver                        0x0000000104236978 cxxbridge1$string$len + 123840
-5   chromedriver                        0x00000001042b7dec cxxbridge1$string$len + 653364
-6   chromedriver                        0x00000001042b70c8 cxxbridge1$string$len + 650000
-7   chromedriver                        0x0000000104269be8 cxxbridge1$string$len + 333360
-8   chromedriver                        0x00000001046a9598 cxxbridge1$str$ptr + 2487600
-9   chromedriver                        0x00000001046ac830 cxxbridge1$str$ptr + 2500552
-10  chromedriver                        0x0000000104689c14 cxxbridge1$str$ptr + 2358188
-11  chromedriver                        0x00000001046ad0b8 cxxbridge1$str$ptr + 2502736
-12  chromedriver                        0x000000010467adec cxxbridge1$str$ptr + 2297220
-13  chromedriver                        0x00000001046cd420 cxxbridge1$str$ptr + 2634680
-14  chromedriver                        0x00000001046cd5ac cxxbridge1$str$ptr + 2635076
-15  chromedriver                        0x00000001046ddbd4 cxxbridge1$str$ptr + 2702188
-16  libsystem_pthread.dylib             0x0000000195546c0c _pthread_start + 136
-17  libsystem_pthread.dylib             0x0000000195541b80 thread_start + 8
-
-
-[ON_ERROR] Message: javascript error: Cannot read properties of undefined (reading 'querySelector')
-  (Session info: chrome=137.0.7151.120)
-Stacktrace:
-0   chromedriver                        0x00000001046e5d14 cxxbridge1$str$ptr + 2735276
-1   chromedriver                        0x00000001046ddf88 cxxbridge1$str$ptr + 2703136
-2   chromedriver                        0x000000010422e6f0 cxxbridge1$string$len + 90424
-3   chromedriver                        0x00000001042343a8 cxxbridge1$string$len + 114160
-4   chromedriver                        0x0000000104236978 cxxbridge1$string$len + 123840
-5   chromedriver                        0x00000001042b7dec cxxbridge1$string$len + 653364
-6   chromedriver                        0x00000001042b70c8 cxxbridge1$string$len + 650000
-7   chromedriver                        0x0000000104269be8 cxxbridge1$string$len + 333360
-8   chromedriver                        0x00000001046a9598 cxxbridge1$str$ptr + 2487600
-9   chromedriver                        0x00000001046ac830 cxxbridge1$str$ptr + 2500552
-10  chromedriver                        0x0000000104689c14 cxxbridge1$str$ptr + 2358188
-11  chromedriver                        0x00000001046ad0b8 cxxbridge1$str$ptr + 2502736
-12  chromedriver                        0x000000010467adec cxxbridge1$str$ptr + 2297220
-13  chromedriver                        0x00000001046cd420 cxxbridge1$str$ptr + 2634680
-14  chromedriver                        0x00000001046cd5ac cxxbridge1$str$ptr + 2635076
-15  chromedriver                        0x00000001046ddbd4 cxxbridge1$str$ptr + 2702188
-16  libsystem_pthread.dylib             0x0000000195546c0c _pthread_start + 136
-17  libsystem_pthread.dylib             0x0000000195541b80 thread_start + 8
-
-Traceback (most recent call last):
-  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/linkedin_jobs_scraper/strategies/anonymous_strategy.py", line 267, in run
-    job_id, job_link, job_title, job_company, job_place, job_date = driver.execute_script(
-                                                                    ^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 551, in execute_script
-    return self.execute(command, {"script": script, "args": converted_args})["value"]
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 454, in execute
-    self.error_handler.check_response(response)
-  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/errorhandler.py", line 232, in check_response
-    raise exception_class(message, screen, stacktrace)
-selenium.common.exceptions.JavascriptException: Message: javascript error: Cannot read properties of undefined (reading 'querySelector')
-  (Session info: chrome=137.0.7151.120)
-Stacktrace:
-0   chromedriver                        0x00000001046e5d14 cxxbridge1$str$ptr + 2735276
-1   chromedriver                        0x00000001046ddf88 cxxbridge1$str$ptr + 2703136
-2   chromedriver                        0x000000010422e6f0 cxxbridge1$string$len + 90424
-3   chromedriver                        0x00000001042343a8 cxxbridge1$string$len + 114160
-4   chromedriver                        0x0000000104236978 cxxbridge1$string$len + 123840
-5   chromedriver                        0x00000001042b7dec cxxbridge1$string$len + 653364
-6   chromedriver                        0x00000001042b70c8 cxxbridge1$string$len + 650000
-7   chromedriver                        0x0000000104269be8 cxxbridge1$string$len + 333360
-8   chromedriver                        0x00000001046a9598 cxxbridge1$str$ptr + 2487600
-9   chromedriver                        0x00000001046ac830 cxxbridge1$str$ptr + 2500552
-10  chromedriver                        0x0000000104689c14 cxxbridge1$str$ptr + 2358188
-11  chromedriver                        0x00000001046ad0b8 cxxbridge1$str$ptr + 2502736
-12  chromedriver                        0x000000010467adec cxxbridge1$str$ptr + 2297220
-13  chromedriver                        0x00000001046cd420 cxxbridge1$str$ptr + 2634680
-14  chromedriver                        0x00000001046cd5ac cxxbridge1$str$ptr + 2635076
-15  chromedriver                        0x00000001046ddbd4 cxxbridge1$str$ptr + 2702188
-16  libsystem_pthread.dylib             0x0000000195546c0c _pthread_start + 136
-17  libsystem_pthread.dylib             0x0000000195541b80 thread_start + 8
-
-
+[ON_DATA] Software Engineer (Technical Leadership) with verification Meta https://www.linkedin.com/company/meta/life  42 minutes ago https://www.linkedin.com/jobs/view/4257699176/?eBP=NON_CHARGEABLE_CHANNEL&refId=kIUtzn5ZbS8v25x%2FhHpQDA%3D%3D&trackingId=qN17575LR7apEP3y8PyLsg%3D%3D&trk=flagship3_search_srp_jobs [] 4528
+[ON_DATA] Software Engineer (Technical Leadership) with verification Meta https://www.linkedin.com/company/meta/life 2025-07-03 42 minutes ago https://www.linkedin.com/jobs/view/4257699185/?eBP=NON_CHARGEABLE_CHANNEL&refId=kIUtzn5ZbS8v25x%2FhHpQDA%3D%3D&trackingId=fx89j%2B5LCdywufZP2AWRIg%3D%3D&trk=flagship3_search_srp_jobs [] 4528
+[ON_DATA] Software Engineer (Technical Leadership) with verification Meta https://www.linkedin.com/company/meta/life 2025-07-03 42 minutes ago https://www.linkedin.com/jobs/view/4257698223/?eBP=NON_CHARGEABLE_CHANNEL&refId=kIUtzn5ZbS8v25x%2FhHpQDA%3D%3D&trackingId=CwRbfT9fOzH4sh5wu3txtw%3D%3D&trk=flagship3_search_srp_jobs [] 4528
+[ON_DATA] Visiting Researcher, GenAI (PhD) with verification Meta https://www.linkedin.com/company/meta/life 2025-07-03 1 hour ago https://www.linkedin.com/jobs/view/4257662771/?eBP=NON_CHARGEABLE_CHANNEL&refId=kIUtzn5ZbS8v25x%2FhHpQDA%3D%3D&trackingId=oesPKuy559zxNqApbItBJw%3D%3D&trk=flagship3_search_srp_jobs [] 4797
+[ON_DATA] Image Processing and Machine Learning Engineer (PhD) with verification Meta https://www.linkedin.com/company/meta/life 2025-06-25 1 week ago https://www.linkedin.com/jobs/view/4254318576/?eBP=NON_CHARGEABLE_CHANNEL&refId=kIUtzn5ZbS8v25x%2FhHpQDA%3D%3D&trackingId=%2BNMno1JSFwAyiO7F2uVa7w%3D%3D&trk=flagship3_search_srp_jobs [] 5762
 [ON_END]
-[ON_DATA] Machine Learning Engineer, AGIF Amazon  2025-06-25  https://www.linkedin.com/jobs/view/machine-learning-engineer-agif-at-amazon-4127777120?position=1&pageNum=0&refId=rERXgDwlaKS7axFVY%2B8vtA%3D%3D&trackingId=t1h34w6DTCNiEdu8uGpo5w%3D%3D [] 4664
-[ON_DATA] Machine Learning Engineer, Amazon General Intelligence (AGI) Amazon  2025-06-25  https://www.linkedin.com/jobs/view/machine-learning-engineer-amazon-general-intelligence-agi-at-amazon-4031555302?position=2&pageNum=0&refId=rERXgDwlaKS7axFVY%2B8vtA%3D%3D&trackingId=KbsMtw%2F6YB0hS3prvU9wtA%3D%3D [] 7044
-[ON_DATA] Machine Learning Engineer, Amazon General Intelligence (AGI) Amazon  2025-06-16  https://www.linkedin.com/jobs/view/machine-learning-engineer-amazon-general-intelligence-agi-at-amazon-4122014723?position=3&pageNum=0&refId=rERXgDwlaKS7axFVY%2B8vtA%3D%3D&trackingId=7tQJM6DMMlvCCylIBVN4iw%3D%3D [] 6641
-[ON_DATA] Machine Learning Engineer, AGIF | Finetuning Amazon  2025-06-19  https://www.linkedin.com/jobs/view/machine-learning-engineer-agif-finetuning-at-amazon-4190143697?position=4&pageNum=0&refId=rERXgDwlaKS7axFVY%2B8vtA%3D%3D&trackingId=MWNiZ2LCHe1jdHQqusbQUA%3D%3D [] 4664
-[ON_DATA] Software Development Engineer I 2025 Amazon  2025-06-30  https://www.linkedin.com/jobs/view/software-development-engineer-i-2025-at-amazon-4097101902?position=5&pageNum=0&refId=rERXgDwlaKS7axFVY%2B8vtA%3D%3D&trackingId=CvkNlqjdzUIpfI83Dwpw4Q%3D%3D [] 5751
+[ON_DATA] Machine Learning Compiler Engineer, Annapurna Labs with verification Amazon Web Services (AWS) https://www.linkedin.com/company/amazon-web-services/life  Reposted 12 minutes ago https://www.linkedin.com/jobs/view/4249298512/?eBP=NON_CHARGEABLE_CHANNEL&refId=c96egcIhmVpdWIHVEU5URg%3D%3D&trackingId=MM9K4XsrNpdNKFvn4SH3SQ%3D%3D&trk=flagship3_search_srp_jobs [] 6055
+[ON_ERROR] HTTPConnectionPool(host='localhost', port=60893): Max retries exceeded with url: /session/10a1e8ad1fb48186e383242663a0a4e7/cookie/li_at (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x109a58150>: Failed to establish a new connection: [Errno 61] Connection refused'))
+Traceback (most recent call last):
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/urllib3/connection.py", line 198, in _new_conn
+    sock = connection.create_connection(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/urllib3/util/connection.py", line 85, in create_connection
+    raise err
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/urllib3/util/connection.py", line 73, in create_connection
+    sock.connect(sa)
+ConnectionRefusedError: [Errno 61] Connection refused
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/urllib3/connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+               ^^^^^^^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/urllib3/connectionpool.py", line 493, in _make_request
+    conn.request(
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/urllib3/connection.py", line 445, in request
+    self.endheaders()
+  File "/Users/hojunyou/.local/share/uv/python/cpython-3.11.12-macos-aarch64-none/lib/python3.11/http/client.py", line 1298, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "/Users/hojunyou/.local/share/uv/python/cpython-3.11.12-macos-aarch64-none/lib/python3.11/http/client.py", line 1058, in _send_output
+    self.send(msg)
+  File "/Users/hojunyou/.local/share/uv/python/cpython-3.11.12-macos-aarch64-none/lib/python3.11/http/client.py", line 996, in send
+    self.connect()
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/urllib3/connection.py", line 276, in connect
+    self.sock = self._new_conn()
+                ^^^^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/urllib3/connection.py", line 213, in _new_conn
+    raise NewConnectionError(
+urllib3.exceptions.NewConnectionError: <urllib3.connection.HTTPConnection object at 0x109a50a10>: Failed to establish a new connection: [Errno 61] Connection refused
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/linkedin_jobs_scraper/strategies/authenticated_strategy.py", line 475, in run
+    load_result = AuthenticatedStrategy.__load_job_details(driver, job_id)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/linkedin_jobs_scraper/strategies/authenticated_strategy.py", line 102, in __load_job_details
+    loaded = driver.execute_script(
+             ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 551, in execute_script
+    return self.execute(command, {"script": script, "args": converted_args})["value"]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 451, in execute
+    response = cast(RemoteConnection, self.command_executor).execute(driver_command, params)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/remote_connection.py", line 404, in execute
+    return self._request(command_info[0], url, body=data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/remote_connection.py", line 428, in _request
+    response = self._conn.request(method, url, body=body, headers=headers, timeout=self._client_config.timeout)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/urllib3/_request_methods.py", line 143, in request
+    return self.request_encode_body(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/urllib3/_request_methods.py", line 278, in request_encode_body
+    return self.urlopen(method, url, **extra_kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/urllib3/poolmanager.py", line 443, in urlopen
+    response = conn.urlopen(method, u.request_uri, **kw)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/urllib3/connectionpool.py", line 871, in urlopen
+    return self.urlopen(
+           ^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/urllib3/connectionpool.py", line 871, in urlopen
+    return self.urlopen(
+           ^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/urllib3/connectionpool.py", line 871, in urlopen
+    return self.urlopen(
+           ^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/urllib3/connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+              ^^^^^^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/urllib3/util/retry.py", line 519, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPConnectionPool(host='localhost', port=60893): Max retries exceeded with url: /session/10a1e8ad1fb48186e383242663a0a4e7/execute/sync (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x109a50a10>: Failed to establish a new connection: [Errno 61] Connection refused'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/urllib3/connection.py", line 198, in _new_conn
+    sock = connection.create_connection(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/urllib3/util/connection.py", line 85, in create_connection
+    raise err
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/urllib3/util/connection.py", line 73, in create_connection
+    sock.connect(sa)
+ConnectionRefusedError: [Errno 61] Connection refused
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/urllib3/connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+               ^^^^^^^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/urllib3/connectionpool.py", line 493, in _make_request
+    conn.request(
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/urllib3/connection.py", line 445, in request
+    self.endheaders()
+  File "/Users/hojunyou/.local/share/uv/python/cpython-3.11.12-macos-aarch64-none/lib/python3.11/http/client.py", line 1298, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "/Users/hojunyou/.local/share/uv/python/cpython-3.11.12-macos-aarch64-none/lib/python3.11/http/client.py", line 1058, in _send_output
+    self.send(msg)
+  File "/Users/hojunyou/.local/share/uv/python/cpython-3.11.12-macos-aarch64-none/lib/python3.11/http/client.py", line 996, in send
+    self.connect()
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/urllib3/connection.py", line 276, in connect
+    self.sock = self._new_conn()
+                ^^^^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/urllib3/connection.py", line 213, in _new_conn
+    raise NewConnectionError(
+urllib3.exceptions.NewConnectionError: <urllib3.connection.HTTPConnection object at 0x109a58150>: Failed to establish a new connection: [Errno 61] Connection refused
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/linkedin_jobs_scraper/linkedin_scraper.py", line 188, in __run
+    self._strategy.run(
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/linkedin_jobs_scraper/strategies/authenticated_strategy.py", line 608, in run
+    if not AuthenticatedStrategy.__is_authenticated_session(driver):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/linkedin_jobs_scraper/strategies/authenticated_strategy.py", line 57, in __is_authenticated_session
+    return driver.get_cookie('li_at') is not None
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 753, in get_cookie
+    return self.execute(Command.GET_COOKIE, {"name": name})["value"]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 451, in execute
+    response = cast(RemoteConnection, self.command_executor).execute(driver_command, params)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/remote_connection.py", line 404, in execute
+    return self._request(command_info[0], url, body=data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/selenium/webdriver/remote/remote_connection.py", line 428, in _request
+    response = self._conn.request(method, url, body=body, headers=headers, timeout=self._client_config.timeout)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/urllib3/_request_methods.py", line 135, in request
+    return self.request_encode_url(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/urllib3/_request_methods.py", line 182, in request_encode_url
+    return self.urlopen(method, url, **extra_kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/urllib3/poolmanager.py", line 443, in urlopen
+    response = conn.urlopen(method, u.request_uri, **kw)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/urllib3/connectionpool.py", line 871, in urlopen
+    return self.urlopen(
+           ^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/urllib3/connectionpool.py", line 871, in urlopen
+    return self.urlopen(
+           ^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/urllib3/connectionpool.py", line 871, in urlopen
+    return self.urlopen(
+           ^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/urllib3/connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+              ^^^^^^^^^^^^^^^^^^
+  File "/Users/hojunyou/Dropbox/Projects/ResumeAgent/resumeagent/lib/python3.11/site-packages/urllib3/util/retry.py", line 519, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPConnectionPool(host='localhost', port=60893): Max retries exceeded with url: /session/10a1e8ad1fb48186e383242663a0a4e7/cookie/li_at (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x109a58150>: Failed to establish a new connection: [Errno 61] Connection refused'))
+
 [ON_END]

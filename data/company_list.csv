@@ -1,7 +1,7 @@
 Category,Company,CareerURL
 Tech Giants,Google,https://careers.google.com/jobs/results/?q={position}&location={location}
 Tech Giants,Microsoft,https://jobs.careers.microsoft.com/global/en/search?q={position}&l={location}
-Tech Giants,Meta (Facebook),https://www.metacareers.com/jobs?query={position}&location={location}
+Tech Giants,Meta,https://www.metacareers.com/jobs?query={position}&location={location}
 Tech Giants,Apple,https://jobs.apple.com/en-us/search?location={location}&search={position}
 Tech Giants,Amazon,https://www.amazon.jobs/en/search?base_query={position}&location={location}
 Tech Giants,NVIDIA,https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite?locationCountry={location}&q={position}
@@ -19,7 +19,7 @@ AI & Machine Learning Leaders,Anthropic,https://www.anthropic.com/careers?query=
 AI & Machine Learning Leaders,Cohere,https://jobs.ashbyhq.com/cohere?keywords={position}&location={location}
 AI & Machine Learning Leaders,Stability AI,https://stability.ai/careers?query={position}&location={location}
 AI & Machine Learning Leaders,Scale AI,https://jobs.lever.co/scaleai?location={location}&department=&team=&search={position}
-AI & Machine Learning Leaders,DeepMind (US office),https://www.linkedin.com/jobs/search/?keywords={position}%20DeepMind&location={location}
+AI & Machine Learning Leaders,DeepMind,https://www.linkedin.com/jobs/search/?keywords={position}%20DeepMind&location={location}
 AI & Machine Learning Leaders,Weights & Biases,https://www.linkedin.com/jobs/search/?keywords={position}%20Weights+%26+Biases&location={location}
 AI & Machine Learning Leaders,OctoML,https://www.linkedin.com/jobs/search/?keywords={position}%20OctoML&location={location}
 AI & Machine Learning Leaders,Snorkel AI,https://www.linkedin.com/jobs/search/?keywords={position}%20Snorkel+AI&location={location}
@@ -104,7 +104,7 @@ E-commerce & Consumer Tech,Flexport,https://www.linkedin.com/jobs/search/?keywor
 Media & Entertainment,Netflix,https://www.linkedin.com/jobs/search/?keywords={position}%20Netflix&location={location}
 Media & Entertainment,Disney Research,https://www.linkedin.com/jobs/search/?keywords={position}%20Disney+Research&location={location}
 Media & Entertainment,Warner Bros. Discovery,https://www.linkedin.com/jobs/search/?keywords={position}%20Warner+Bros.+Discovery&location={location}
-Media & Entertainment,TikTok (ByteDance US),https://www.linkedin.com/jobs/search/?keywords={position}%20TikTok&location={location}
+Media & Entertainment,TikTok,https://www.linkedin.com/jobs/search/?keywords={position}%20TikTok&location={location}
 Media & Entertainment,Spotify,https://www.linkedin.com/jobs/search/?keywords={position}%20Spotify&location={location}
 Media & Entertainment,Snap Inc.,https://www.linkedin.com/jobs/search/?keywords={position}%20Snap+Inc.&location={location}
 Media & Entertainment,Roku,https://www.linkedin.com/jobs/search/?keywords={position}%20Roku&location={location}
@@ -127,10 +127,10 @@ Startups,Replicate,https://www.linkedin.com/jobs/search/?keywords={position}%20R
 Startups,Midjourney,https://www.linkedin.com/jobs/search/?keywords={position}%20Midjourney&location={location}
 Startups,Sesame,https://www.linkedin.com/jobs/search/?keywords={position}%20Sesame&location={location}
 Startups,TwelveLabs,https://www.linkedin.com/jobs/search/?keywords={position}%20TwelveLabs&location={location}
-Other Notable Companies,Boeing (AI for Aerospace),https://www.linkedin.com/jobs/search/?keywords={position}%20Boeing&location={location}
-Other Notable Companies,Lockheed Martin (AI for Defense),https://www.linkedin.com/jobs/search/?keywords={position}%20Lockheed+Martin&location={location}
-Other Notable Companies,NASA (AI for Space Research),https://www.linkedin.com/jobs/search/?keywords={position}%20NASA&location={location}
-Other Notable Companies,USGS (AI for Geospatial Analysis),https://www.linkedin.com/jobs/search/?keywords={position}%20USGS&location={location}
-Other Notable Companies,The Allen Institute for AI (AI2),https://www.linkedin.com/jobs/search/?keywords={position}%20The+Allen+Institute+for+AI&location={location}
+Other Notable Companies,Boeing,https://www.linkedin.com/jobs/search/?keywords={position}%20Boeing&location={location}
+Other Notable Companies,Lockheed Martin,https://www.linkedin.com/jobs/search/?keywords={position}%20Lockheed+Martin&location={location}
+Other Notable Companies,NASA,https://www.linkedin.com/jobs/search/?keywords={position}%20NASA&location={location}
+Other Notable Companies,USGS,https://www.linkedin.com/jobs/search/?keywords={position}%20USGS&location={location}
+Other Notable Companies,The Allen Institute for AI,https://www.linkedin.com/jobs/search/?keywords={position}%20The+Allen+Institute+for+AI&location={location}
 Other Notable Companies,Coupang,https://www.linkedin.com/jobs/search/?keywords={position}%20Coupang&location={location}
 Startups,Wayfair,https://www.wayfair.com/careers/jobs/?gh_src=&source=&keywords={position}&locations={location}
