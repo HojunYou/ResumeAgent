@@ -6,6 +6,8 @@ JobSearchAgent
 • Pulls postings via static HTML scraping or Greenhouse/Lever JSON when available.
 • Filters postings by date, degree, and YOE.
 • Returns a list of job dicts, capped at 6 per company, sorted by similarity-ready text.
+
+Deprecated since linkedin_job_scraper library is used to scrape job postings.
 """
 import os, re, datetime as dt, logging, json
 import pandas as pd

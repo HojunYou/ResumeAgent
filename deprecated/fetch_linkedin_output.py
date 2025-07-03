@@ -13,6 +13,8 @@ python utils/fetch_linkedin_desc.py \
        --input utils/sample_outputs.out \
        --output data/job_descriptions.json \
        --headless
+
+Deprecated since scrap_linkedin.py stores descriptions in JSON.
 """
 from __future__ import annotations
 import argparse, json, os, re, sys, time, pathlib

@@ -6,6 +6,8 @@ Uses Ollama's `/api/embeddings` endpoint (defaults to `mxbai-embed-large`) to
 rank job descriptions against your résumé.
 
 The résumé is embedded once at init; each job description is embedded on demand.
+
+Deprecated as no longer needed.
 """
 from __future__ import annotations
 import pathlib, requests, logging, hashlib

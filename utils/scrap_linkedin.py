@@ -28,8 +28,20 @@ logging.basicConfig(level=logging.INFO) # , format='%(asctime)s - %(levelname)s 
 
 # Fired once for each successfully processed job
 def on_data(data: EventData):
-    print('[ON_DATA]', data.title, f"<<{data.company}>>", data.company_link, data.date, data.date_text, data.link, data.insights,
-          len(data.description))
+    # print('[ON_DATA]', data.title, f"<<{data.company}>>", data.company_link, data.date, data.date_text, data.link, data.insights,
+    #       len(data.description))
+    import json
+    job_info = {
+        "title": data.title[:-18] if data.title.endswith("with verification") else data.title, # Drop 'with verification' suffix
+        "company": data.company,
+        "company_link": data.company_link,
+        "date": data.date,
+        "date_text": data.date_text,
+        "job_url": data.link,
+        "insights": data.insights,
+        "description": data.description,
+    }
+    print("[ON_DATA]\n", json.dumps(job_info, ensure_ascii=False))
 
 # Fired once for each page (25 jobs)
 def on_metrics(metrics: EventMetrics):
