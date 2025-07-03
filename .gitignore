@@ -7,7 +7,7 @@ __pycache__/
 # data/
 tailored_resumes/
 **/.DS_Store
-results/
+outputs/
 .resumeagent/
 resumeagent/
 __pypackages__/
