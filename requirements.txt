@@ -6,3 +6,4 @@ selenium
 rich
 pandas
 linkedin-jobs-scraper==5.0.2
+aiofiles

@@ -22,6 +22,7 @@ import re
 import datetime as dt
 import json
 import aiohttp
+import aiofiles
 from typing import List, Dict, Any
 
 try:
@@ -89,14 +90,9 @@ async def fetch_pdf_as_text(path: str) -> dict:
     name="fetch_tex_as_text",
     description="Read LaTeX resume file content as text."
 )
-async def fetch_tex_as_text(path: str) -> dict:
-    """Read LaTeX file content."""
-    try:
-        with open(path, 'r', encoding='utf-8') as f:
-            content = f.read()
-        return {"text": content}
-    except Exception as e:
-        return {"error": f"Failed to read TeX file: {str(e)}"}
+async def read_file_async(path: str) -> str:
+    async with aiofiles.open(path, 'r', encoding='utf-8') as f:
+        return await f.read()
 
 @mcp.tool(
     name="load_job_posts",
