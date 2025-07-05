@@ -19,7 +19,6 @@ Installation: use `uv add "mcp[cli]"` (or `pip install "mcp[cli]"`).
 import csv
 import pathlib
 import re
-import datetime as dt
 import json
 import aiohttp
 import aiofiles
@@ -32,7 +31,17 @@ except ImportError:
 
 from mcp.server.fastmcp import FastMCP, Context
 
-mcp = FastMCP("Resume Tailoring Agent")
+mcp = FastMCP(
+    "Resume Tailoring Agent", 
+    dependencies=[
+        "aiohttp", 
+        "aiofiles",
+        "fitz",
+        "csv",
+        "json",
+        "pathlib"
+    ]
+)
 
 # --- Helper Functions --------------------------------------------------------
 

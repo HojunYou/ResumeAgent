@@ -1,14 +1,12 @@
 import asyncio
 import argparse
-import subprocess
-import time
-import sys
-from agent_runner import run_agent
+from mcp_core.mcp_client import run_agent
+from mcp import StdioServerParameters
 
 async def main():
     """
     Main entry point for the resume tailoring agent.
-    Handles starting and stopping the MCP server.
+    Handles starting and stopping the MCP server via stdio.
     """
     parser = argparse.ArgumentParser(description="Run the Resume Tailoring Agent.")
     parser.add_argument("--resume-path", default="data/full_resume.tex", help="Path to the LaTeX resume file.")
@@ -16,34 +14,22 @@ async def main():
     parser.add_argument("--target-jobs-path", default="outputs/TargetJobPosts.csv", help="Path to save the target jobs CSV file.")
     args = parser.parse_args()
 
-    # Command to run the MCP server
-    server_command = ["uv", "run", "mcp", "dev", "tools/mcp_tools.py"]
-    server_process = None
+    # StdioServerParameters to run the MCP server script
+    server_params = StdioServerParameters(
+        command="uv",
+        args=["run", "--active", "mcp", "dev", "mcp_core/mcp_servers.py"],
+        env=None,
+    )
 
     try:
-        # Start the MCP server in the background
-        print("--- Starting MCP server in the background... ---")
-        print("--- Please wait for the server to start before running the agent. ---")
-        server_process = subprocess.Popen(server_command)
-        
-        # Check if the server started successfully
-        if server_process.poll() is not None:
-            print("✗ Error: MCP server failed to start. Please check for errors.")
-            return
-
-        print("\n--- Server started. Running the agent... ---")
-        await run_agent(args.resume_path, args.job_posts_path, args.target_jobs_path)
+        print("--- Running agent and server via stdio... ---")
+        # The agent runner will now manage the server process
+        await run_agent(server_params, args.resume_path, args.job_posts_path, args.target_jobs_path)
 
     except KeyboardInterrupt:
         print("\nAgent execution cancelled by user.")
     except Exception as e:
         print(f"An error occurred: {e}")
-    finally:
-        if server_process and server_process.poll() is None:
-            print("\n--- Shutting down MCP server... ---")
-            server_process.terminate()
-            server_process.wait()
-            print("--- Server shut down. ---")
     
     print("Resume Tailoring Agent finished.")
 
