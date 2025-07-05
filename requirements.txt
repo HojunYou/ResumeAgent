@@ -2,10 +2,11 @@
 # Uses subprocess (stdlib) to launch MCP microservices via agent_tools.py
 mcp[cli]
 typer>=0.9.0
+pymupdf
 bs4
-selenium
-rich
 pandas
 langchain_ollama
+langgraph
 linkedin-jobs-scraper==5.0.2
 aiofiles
+aiohttps

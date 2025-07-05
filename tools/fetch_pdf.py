@@ -7,6 +7,7 @@ except ImportError:
 mcp = FastMCP("Fetch PDF")
 
 @mcp.resource(
+    "file://pdf/{path}",
     name="fetch_pdf_as_text",
     description="Extract text content from a PDF resume file."
 )

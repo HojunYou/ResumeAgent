@@ -3,15 +3,12 @@ import csv
 
 mcp = FastMCP("Load CSV")
 
-@mcp.resource(
-    name="load_job_posts",
-    description="Load job postings from CSV file."
-)
-async def load_job_posts(csv_path: str) -> dict:
+@mcp.resource("file://csv/{path}")
+async def load_job_posts(path: str) -> dict:
     """Load job postings from JobPosts.csv file."""
     try:
         jobs = []
-        with open(csv_path, 'r', encoding='utf-8') as f:
+        with open(path, 'r', encoding='utf-8') as f:
             reader = csv.DictReader(f)
             for i, row in enumerate(reader):
                 job = {

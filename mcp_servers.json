@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "fetch_pdf": {
+      "command": "python",
+      "args": ["./tools/fetch_pdf.py"],
+      "transport": "stdio"
+    },
+    "load_job_posts": {
+      "command": "python",
+      "args": ["./tools/load_csv.py"],
+      "transport": "stdio"
+    },
+    "fetch_tex": {
+      "command": "python",
+      "args": ["./tools/fetch_tex.py"],
+      "transport": "stdio"
+    }
+  }
+}

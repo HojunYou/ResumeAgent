@@ -4,6 +4,7 @@ from aiofiles import open as aiofiles
 mcp = FastMCP("Fetch LaTeX")
 
 @mcp.resource(
+    "file://tex/{path}",
     name="fetch_tex_as_text",
     description="Read LaTeX resume file content as text."
 )
