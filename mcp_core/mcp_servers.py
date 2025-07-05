@@ -49,7 +49,7 @@ def _slug(txt: str) -> str:
     """Create a filesystem-safe slug from text."""
     return re.sub(r"[^\w\-]+", "_", txt.lower()).strip("_")
 
-async def call_ollama_api(prompt: str, model: str = "qwen2.5:latest") -> str:
+async def call_ollama_api(prompt: str, model: str = "deepseek-r1:8b") -> str:
     """Call Ollama API to get LLM response."""
     try:
         async with aiohttp.ClientSession() as session:
@@ -76,7 +76,7 @@ async def call_ollama_api(prompt: str, model: str = "qwen2.5:latest") -> str:
 
 # --- Agent Tool Definitions --------------------------------------------------
 
-@mcp.tool(
+@mcp.resource(
     name="fetch_pdf_as_text",
     description="Extract text content from a PDF resume file."
 )
@@ -95,7 +95,7 @@ async def fetch_pdf_as_text(path: str) -> dict:
     except Exception as e:
         return {"error": f"Failed to read PDF: {str(e)}"}
 
-@mcp.tool(
+@mcp.resource(
     name="fetch_tex_as_text",
     description="Read LaTeX resume file content as text."
 )
