@@ -3,9 +3,9 @@
 ResumeAgent is an AI-powered automation tool that discovers relevant jobs, ranks them by similarity to your resume, and generates tailored resumes for each opportunity. It is designed for robust, extensible, and fully automated operation.
 
 ## Development Status
-- Each career website may be too different to scrape successfully. 
-- Scraping LinkedIn jobs would be better.
-- job_search.py needs to be updated to support LinkedIn jobs.
+- Scraping LinkedIn jobs (`utils/scrap_linkedin.py`).
+- Debugging `mcp_tools/agent_tools.py`.
+- Ollama model deepseek-r1:8b (DeepSeek-R1-0528-Qwen3-8B: distilled version of Qwen3-8B)
 
 ## Features
 - **Input:** Full resume (`data/full_resume.pdf`), target companies (`data/company_list.csv`), desired job position(s), and location(s).
@@ -19,35 +19,49 @@ ResumeAgent is an AI-powered automation tool that discovers relevant jobs, ranks
 - **Extensible & Modular:** Easily add new job boards, filters, or AI models.
 
 ## Setup & Installation
-1. **Prepare Data:**
-    - Place your `full_resume.pdf`, `full_resume.tex`, and `company_list.csv` in the `data/` directory.
-    - `company_list.csv` should list one company per row.
-2. **Install Ollama:**
-    - Download from [Ollama](https://ollama.com/download) and ensure `ollama` is in your PATH.
-    - Start Ollama with `ollama serve` (ResumeAgent will also try to launch it automatically).
-    - Pull required models: for example, `ollama pull nomic-embed-text` and `ollama pull qwen3`.
-3. **Install Python Dependencies:**
-    - Recommended: [uv](https://github.com/astral-sh/uv) for reproducible environments.
-    - Run: `uv pip install -r requirements.txt`
-4. **Launch MCP Microservices:**
-    - Before running any job search or resume tailoring commands, launch all MCP microservices:
-    - `python main.py launch-mcp`
-    - (You can add `--background False` to run in the foreground for debugging.)
-5. **Run the Agent:**
-    - See all options: `python main.py --help`
-    - Example: `python main.py search-jobs --position "Machine Learning Engineer" --location "California Bay Area"`
-    - Example: `python main.py tailor-resumes --jobs-csv-path results/job_results.csv --resume-path data/resume.pdf`
+1.  **Prepare Data:**
+    *   Place your full resume in TeX format at `data/full_resume.tex`.
+    *   Create a `data/company_list.csv` file with a header `company_name` and list the companies you are interested in, one per line.
+
+2.  **Install Ollama:**
+    *   Download and install Ollama from [ollama.com](https://ollama.com/download).
+    *   Ensure the `ollama` command is available in your system's PATH.
+    *   Pull the required models for embedding and generation:
+        ```bash
+        ollama pull qwen3:8b
+        ```
+
+3.  **Install Python Dependencies:**
+    *   It is recommended to use a virtual environment.
+    *   Install the required packages using `uv` (or `pip`):
+        ```bash
+        uv pip install -r requirements.txt
+        ```
+
+4.  **Run the Application:**
+    *   The main script `main.py` now handles starting and stopping all necessary services automatically.
+    *   Simply run the agent from your terminal:
+        ```bash
+        python main.py
+        ```
+    *   You can also specify custom paths for your files if they differ from the defaults:
+        ```bash
+        python main.py --resume-path path/to/your/resume.tex --job-posts-path path/to/your/jobs.csv
+        ```
 
 ## Usage
-- **First, launch MCP microservices:**
-    - `python main.py launch-mcp`
-- Then, use the CLI to:
-    1. Load company list (`data/company_list.csv`).
-    2. Discover career pages and search for jobs matching your criteria.
-    3. Rank jobs by similarity to your resume.
-    4. Output results to `data/job_list.csv`.
-    5. Generate a tailored `.tex` resume for each valid job.
-- All tailored resumes are saved in structured directories under `tailored_resumes/`.
+- The main script `main.py` handles starting and stopping all necessary services automatically.
+- Simply run the agent from your terminal:
+    ```bash
+    python main.py
+    ```
+- The agent will then:
+    1. Load your resume from `data/full_resume.tex`.
+    2. Load job postings from `outputs/JobPosts.csv`.
+    3. Compare, rank, and filter the jobs.
+    4. Save the top jobs to `outputs/TargetJobPosts.csv`.
+    5. Generate tailored LaTeX resumes in the `tailored_resumes/` directory.
+- You can customize the file paths using command-line arguments. See `python main.py --help` for more details.
 
 ### Weekly Update Mode (Planned)
 - Run: `python main.py weekly-update ...`
@@ -89,7 +103,7 @@ For any issues or suggestions, please open an issue or PR.
 
 ## Example Outputs
 
-### data/job_list.csv
+### outputs/TargetJobPosts.csv
 | JobID        | EmbedScore | LLMScore | CompanyName | CareerWebsite                | JobDescriptionURL            |
 |--------------|------------|----------|-------------|------------------------------|------------------------------|
 | goo_mle_1234 | 0.843      | 0.9      | Google      | https://careers.google.com   | https://.../job/123456       |
