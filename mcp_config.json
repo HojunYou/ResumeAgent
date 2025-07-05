@@ -1,0 +1,16 @@
+{
+    "mcpServers": {
+      "fetch_pdf": {
+        "command": "python",
+        "args": ["./tools/fetch_pdf.py"]
+      },
+      "load_job_posts": {
+        "command": "python",
+        "args": ["./tools/load_job_posts.py"]
+      },
+      "fetch_tex": {
+        "command": "python",
+        "args": ["./tools/fetch_tex.py"]
+      }
+    }
+  }
