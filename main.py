@@ -17,18 +17,14 @@ async def main():
     args = parser.parse_args()
 
     # Command to run the MCP server
-    # Using sys.executable ensures we use the same python interpreter
-    server_command = [sys.executable, "-m", "mcp_tools.agent_tools"]
+    server_command = ["uv", "run", "mcp", "dev", "tools/mcp_tools.py"]
     server_process = None
 
     try:
         # Start the MCP server in the background
         print("--- Starting MCP server in the background... ---")
+        print("--- Please wait for the server to start before running the agent. ---")
         server_process = subprocess.Popen(server_command)
-        
-        # Give the server a moment to initialize
-        print("--- Waiting for server to initialize (5 seconds)... ---")
-        time.sleep(5)
         
         # Check if the server started successfully
         if server_process.poll() is not None:

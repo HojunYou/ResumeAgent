@@ -7,9 +7,8 @@ parser.add_argument("--json", default="outputs/sample_outputs.out", help="JSON p
 parser.add_argument("--output", default="outputs/JobPosts.csv", help="Output CSV path")
 args = parser.parse_args()
 
-
 rows = []
-for line in open(args.jsonpath).readlines():
+for line in open(args.json).readlines():
     line = line.strip()
     if not line:
         continue

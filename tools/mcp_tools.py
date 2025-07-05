@@ -30,7 +30,7 @@ try:
 except ImportError:
     fitz = None
 
-from mcp.server.fastmcp import FastMCP
+from mcp.server.fastmcp import FastMCP, Context
 
 mcp = FastMCP("Resume Tailoring Agent")
 
@@ -90,7 +90,7 @@ async def fetch_pdf_as_text(path: str) -> dict:
     name="fetch_tex_as_text",
     description="Read LaTeX resume file content as text."
 )
-async def read_file_async(path: str) -> str:
+async def fetch_tex_as_text(path: str) -> str:
     async with aiofiles.open(path, 'r', encoding='utf-8') as f:
         return await f.read()
 
