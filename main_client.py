@@ -19,6 +19,7 @@ async def main(idx=0, resume_path="data/full_resume.pdf"):
     row = job_df.iloc[idx]
     position = "Machine Learning Engineer"
     query = llm_screening_prompt(row, position, resume_path)
+    print(query)
     # query = load_csv_prompt("outputs/JobPosts.csv")
     response = await agent.ainvoke(query)
     return query['messages'], response

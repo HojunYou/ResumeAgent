@@ -76,15 +76,14 @@ def llm_screening_prompt(row, position, resume_path):
 ----------------------------------------------------------
 If "keep" is true, additionally perform the following:
 
-Read the following resume file. Then evaluate the relevance and suitability of the resume for this job.
+Read the PDF resume file in the given path using the tools provided. Then evaluate the relevance and suitability of the resume for this job.
 
-Resume:
+Resume path:
 {resume_path}
 
-If you cannot read the resume
 ----------------------------------------------------------
 Return the same JSON structure as before, but with one additional field:
-  "score": a float between 0 and 1 indicating similarity or match level. If keep is false, set score to 0.
+  "score": a float between 0 and 1 indicating similarity or match level. If keep is false or cannot read resume, set score to 0.
 
 Output format:
 {{
