@@ -16,12 +16,9 @@ Exposed tools
 Installation: use `uv add "mcp[cli]"` (or `pip install "mcp[cli]"`).
 """
 
-import csv
-import pathlib
+
 import re
-import json
 import aiohttp
-import aiofiles
 from typing import List, Dict, Any
 
 try:
@@ -76,56 +73,8 @@ async def call_ollama_api(prompt: str, model: str = "deepseek-r1:8b") -> str:
 
 # --- Agent Tool Definitions --------------------------------------------------
 
-@mcp.resource(
-    name="fetch_pdf_as_text",
-    description="Extract text content from a PDF resume file."
-)
-async def fetch_pdf_as_text(path: str) -> dict:
-    """Extract text from a PDF file using PyMuPDF."""
-    try:
-        if fitz is None:
-            return {"error": "PyMuPDF (fitz) not installed. Run: pip install PyMuPDF"}
-        
-        doc = fitz.open(path)
-        text = ""
-        for page in doc:
-            text += page.get_text()
-        doc.close()
-        return {"text": text}
-    except Exception as e:
-        return {"error": f"Failed to read PDF: {str(e)}"}
 
-@mcp.resource(
-    name="fetch_tex_as_text",
-    description="Read LaTeX resume file content as text."
-)
-async def fetch_tex_as_text(path: str) -> str:
-    async with aiofiles.open(path, 'r', encoding='utf-8') as f:
-        return await f.read()
 
-@mcp.tool(
-    name="load_job_posts",
-    description="Load job postings from CSV file."
-)
-async def load_job_posts(csv_path: str) -> dict:
-    """Load job postings from JobPosts.csv file."""
-    try:
-        jobs = []
-        with open(csv_path, 'r', encoding='utf-8') as f:
-            reader = csv.DictReader(f)
-            for i, row in enumerate(reader):
-                job = {
-                    "job_id": i,
-                    "company": row.get("company", ""),
-                    "title": row.get("title", ""),
-                    "url": row.get("url", ""),
-                    "description": row.get("description", ""),
-                    "posted": row.get("posted", "")
-                }
-                jobs.append(job)
-        return {"jobs": jobs}
-    except Exception as e:
-        return {"error": f"Failed to load job posts: {str(e)}"}
 
 # @mcp.tool(
 #     name="compare_resume_job",

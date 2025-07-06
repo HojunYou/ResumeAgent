@@ -1,4 +1,4 @@
-from langchain_mcp_adapters.client import MultiServerMCPClient
+from langchain_mcp_adapters.client import MultiServerMCPClient, load_mcp_tools
 from langgraph.prebuilt import create_react_agent
 from langchain_ollama import ChatOllama
 import asyncio
@@ -15,7 +15,7 @@ async def main():
     )
     tools = await client.get_tools()
     agent = create_react_agent(model, tools)
-    query = load_csv_prompt("data/JobPosts.csv")
+    query = load_csv_prompt("outputs/JobPosts.csv")
     response = await agent.ainvoke(query)
     print(response)
     

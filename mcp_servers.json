@@ -5,7 +5,7 @@
       "args": ["./tools/fetch_pdf.py"],
       "transport": "stdio"
     },
-    "load_job_posts": {
+    "load_csv": {
       "command": "python",
       "args": ["./tools/load_csv.py"],
       "transport": "stdio"
