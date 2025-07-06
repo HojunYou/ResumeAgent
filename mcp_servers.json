@@ -10,9 +10,9 @@
       "args": ["./tools/handle_tex.py"],
       "transport": "stdio"
     },
-    "handle_pdf": {
+    "fetch_pdf_as_text": {
       "command": "python",
-      "args": ["./tools/read_pdf.py"],
+      "args": ["./tools/fetch_pdf.py"],
       "transport": "stdio"
     }
   }

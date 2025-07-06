@@ -8,11 +8,10 @@ except ImportError:
 mcp = FastMCP("Fetch PDF")
 
 @mcp.tool(
-    # "file://pdf/{path}",
-    name="read_pdf",
+    name="fetch_pdf_as_text",
     description="Extract text content from a PDF resume file."
 )
-async def read_pdf(path: str) -> dict:
+async def fetch_pdf_as_text(path: str) -> dict:
     """Extract text from a PDF file using PyMuPDF."""
     try:
         if fitz is None:
