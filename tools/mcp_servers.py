@@ -1,65 +1,22 @@
-"""
-tools.agent_tools
-=================
-Unified MCP‑compliant toolbox used by the LLM agent for resume tailoring.
 
-Exposed tools
--------------
-• fetch_pdf_as_text(path)       → {"text": str}
-• fetch_tex_as_text(path)       → {"text": str}
-• load_job_posts(csv_path)      → {"jobs": List[dict]}
-• compare_resume_job(resume_text, job_desc, company, title) → {"score": float, "analysis": str}
-• rank_and_filter_jobs(jobs, scores, max_per_company) → {"filtered_jobs": List[dict]}
-• save_target_jobs(jobs, output_path) → {"ok": True}
-• tailor_resume_tex(original_tex, job_desc, company, title, job_id) → {"path": str}
-
-Installation: use `uv add "mcp[cli]"` (or `pip install "mcp[cli]"`).
-"""
-
-
-import re
 import aiohttp
 from typing import List, Dict, Any
+from mcp.server.fastmcp import FastMCP
 
-try:
-    import fitz  # PyMuPDF
-except ImportError:
-    fitz = None
+mcp = FastMCP("Resume Tailoring Agent")
+OLLAMA_API = "http://localhost:11434/api/generate"
 
-from mcp.server.fastmcp import FastMCP, Context
-
-mcp = FastMCP(
-    "Resume Tailoring Agent", 
-    dependencies=[
-        "aiohttp", 
-        "aiofiles",
-        "fitz",
-        "csv",
-        "json",
-        "pathlib"
-    ]
-)
-
-# --- Helper Functions --------------------------------------------------------
-
-def _slug(txt: str) -> str:
-    """Create a filesystem-safe slug from text."""
-    return re.sub(r"[^\w\-]+", "_", txt.lower()).strip("_")
-
-async def call_ollama_api(prompt: str, model: str = "deepseek-r1:8b") -> str:
+async def call_ollama_api(prompt: str) -> str:
     """Call Ollama API to get LLM response."""
+    
     try:
         async with aiohttp.ClientSession() as session:
             async with session.post(
-                "http://localhost:11434/api/generate",
+                OLLAMA_API,
                 json={
-                    "model": model,
+                    "model": "qwen3:8b",
                     "prompt": prompt,
                     "stream": False,
-                    "options": {
-                        "temperature": 0.7,
-                        "top_p": 0.9,
-                    }
                 },
                 timeout=aiohttp.ClientTimeout(total=120)  # 2 minute timeout
             ) as response:

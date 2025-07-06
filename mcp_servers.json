@@ -1,18 +1,18 @@
 {
   "mcpServers": {
-    "fetch_pdf": {
+    "handle_csv": {
       "command": "python",
-      "args": ["./tools/fetch_pdf.py"],
+      "args": ["./tools/read_write_csv.py"],
       "transport": "stdio"
     },
-    "load_csv": {
+    "handle_tex": {
       "command": "python",
-      "args": ["./tools/load_csv.py"],
+      "args": ["./tools/handle_tex.py"],
       "transport": "stdio"
     },
-    "fetch_tex": {
+    "handle_pdf": {
       "command": "python",
-      "args": ["./tools/fetch_tex.py"],
+      "args": ["./tools/handle_pdf.py"],
       "transport": "stdio"
     }
   }

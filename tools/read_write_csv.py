@@ -3,11 +3,11 @@ import csv
 import pathlib
 from typing import List, Dict, Any
 
-mcp = FastMCP("Load CSV")
+mcp = FastMCP("Read and Write CSV")
 
 @mcp.resource("file://csv/{path}")
-def load_csv(path: str) -> dict:
-    """Load job postings from JobPosts.csv file."""
+def read_csv(path: str) -> dict:
+    """Read job postings from CSV file."""
     try:
         jobs = []
         with open(path, 'r', encoding='utf-8') as f:
@@ -24,14 +24,14 @@ def load_csv(path: str) -> dict:
                 jobs.append(job)
         return {"jobs": jobs}
     except Exception as e:
-        return {"error": f"Failed to load job posts: {str(e)}"}
+        return {"error": f"Failed to read CSV: {str(e)}"}
 
 @mcp.tool(
-    name="save_csv",
-    description="Save job postings to CSV file."
+    name="write_csv",
+    description="Write job postings to CSV file."
 )
-def save_csv(jobs: List[dict], output_path: str) -> dict:
-    """Save job postings to CSV file."""
+def write_csv(jobs: List[dict], output_path: str) -> dict:
+    """Write job postings to CSV file."""
     try:
         # Ensure output directory exists
         pathlib.Path(output_path).parent.mkdir(parents=True, exist_ok=True)
@@ -54,7 +54,7 @@ def save_csv(jobs: List[dict], output_path: str) -> dict:
         return {"ok": True, "saved_count": len(jobs)}
         
     except Exception as e:
-        return {"error": f"Failed to save job posts: {str(e)}"}
+        return {"error": f"Failed to write CSV: {str(e)}"}
 
 if __name__ == "__main__":
     mcp.run(transport = 'stdio')
