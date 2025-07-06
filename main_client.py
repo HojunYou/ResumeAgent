@@ -25,7 +25,7 @@ async def main(idx=0, resume_path="data/full_resume.pdf"):
     )
     tools = await client.get_tools()
     tool_names = [tool.name for tool in tools]
-    print(f"Loaded tools: {tool_names}")
+    # print(f"Loaded tools: {tool_names}")
     agent = create_react_agent(model, tools) # , response_format=("Please produce exactly this JSON", ScreeningResponse))
     job_df = pd.read_csv("outputs/JobPosts.csv")
     row = job_df.iloc[idx]
@@ -37,4 +37,4 @@ async def main(idx=0, resume_path="data/full_resume.pdf"):
     
 if __name__ == "__main__":
     response = asyncio.run(main(0, "data/full_resume.pdf"))
-    
+    print(response[-1].content)

@@ -48,11 +48,14 @@ Perform the following checks and return a JSON object:
 2. **Experience Check**: Reject if the job clearly requires more than 7 years of experience. Do not add required years for different skills.
    - Example: If the job requires 5 years of experience in Python and 5 years of experience in machine learning, pass the job since it requires 5 years of experience.
 
+3. **Skill Check**: 'python' or 'pytorch' must be in the job description.
+
 Output strictly in this format:
 {{
   "title_pass": true/false,
   "experience_pass": true/false,
-  "keep": true/false,  // true only if both checks pass
+  "skill_pass": true/false,
+  "keep": true/false,  // true only if all checks pass
   "reason": "Concise explanation of any rejection."
 }}
 """
@@ -79,6 +82,8 @@ You have a multi-step task:
 1.  First, perform the initial screening of the job posting based on the detailed instructions in the user message.
 2.  If the screening passes (i.e., "keep" is true), you MUST use the `fetch_pdf_as_text` tool to read the resume at `{resume_path}`. You are not allowed to make up the content of the resume.
 3.  After fetching the resume, you will score the similarity between the resume and the job description.
+    - Put extra focus on, but not limited to, qualifications, education, and skills.
+    - Score higher if the resume matches preferred qualifications.
 4.  Your final output must be a single JSON object with the keys specified in the user message. If "keep" is false, the "score" should be 0.
 """
 
@@ -89,7 +94,7 @@ You have a multi-step task:
 If "keep" is true, you must perform the following additional step:
 
 1. **Similarity Scoring**:
-   - You **MUST** call the `fetch_pdf_as_text` tool to fetch the resume text from the path: `{resume_path}`.
+   - Fetch the resume text from the path: `{resume_path}`.
    - You are **NOT** allowed to guess or hallucinate the result of this tool call.
    - If the tool call is successful, use the returned text to score similarity between the resume and job description.
    - If the tool call fails for any reason, set the "score" to 0.
@@ -100,7 +105,8 @@ Your final JSON output must include the "score" field. If "keep" is false, set "
 {{
     "title_pass": true/false,
     "experience_pass": true/false,
-    "keep": true/false,
+    "skill_pass": true/false,
+    "keep": true/false,  // true only if all checks pass
     "score": float,
     "reason": "Concise explanation of any rejection."
 }}

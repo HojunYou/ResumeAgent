@@ -10,7 +10,7 @@ mcp = FastMCP("Read and Write CSV")
     description="Read CSV file."
 ) #("file://csv/{path}")
 def read_csv(path: str) -> dict:
-    """Read job postings from CSV file."""
+    """Read data from CSV file."""
     try:
         jobs = []
         with open(path, 'r', encoding='utf-8') as f:
@@ -31,10 +31,10 @@ def read_csv(path: str) -> dict:
 
 @mcp.tool(
     name="write_csv",
-    description="Write job postings to CSV file."
+    description="Write data to CSV file."
 )
 def write_csv(jobs: List[dict], output_path: str) -> dict:
-    """Write job postings to CSV file."""
+    """Write data to CSV file."""
     try:
         # Ensure output directory exists
         pathlib.Path(output_path).parent.mkdir(parents=True, exist_ok=True)

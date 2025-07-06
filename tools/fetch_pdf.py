@@ -9,7 +9,7 @@ mcp = FastMCP("Fetch PDF")
 
 @mcp.tool(
     name="fetch_pdf_as_text",
-    description="Extract text content from a PDF resume file."
+    description="Extract text content from a PDF file."
 )
 async def fetch_pdf_as_text(path: str) -> dict:
     """Extract text from a PDF file using PyMuPDF."""
