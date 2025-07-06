@@ -13,10 +13,6 @@ from linkedin_jobs_scraper.filters import (
 import argparse, os
 import pandas as pd
 
-ABBREVIATIONS = {
-    'machine learning engineer': "MLE",
-    "data scientist": "DS"
-}
 
 def on_data(data: EventData):
     # print('[ON_DATA]', data.title, f"<<{data.company}>>", data.company_link, data.date, data.date_text, data.link, data.insights,

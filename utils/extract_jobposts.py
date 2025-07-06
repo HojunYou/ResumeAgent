@@ -1,7 +1,11 @@
 import pandas as pd
 import json, re
 import argparse
-from scrap_linkedin import ABBREVIATIONS
+
+ABBREVIATIONS = {
+    'machine learning engineer': "MLE",
+    "data scientist": "DS"
+}
 
 def main():
     parser = argparse.ArgumentParser(description="Extract job postings from JSON output")
