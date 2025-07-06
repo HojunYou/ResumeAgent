@@ -5,7 +5,10 @@ from typing import List, Dict, Any
 
 mcp = FastMCP("Read and Write CSV")
 
-@mcp.resource("file://csv/{path}")
+@mcp.tool(
+    name="read_csv",
+    description="Read CSV file."
+) #("file://csv/{path}")
 def read_csv(path: str) -> dict:
     """Read job postings from CSV file."""
     try:
@@ -22,9 +25,9 @@ def read_csv(path: str) -> dict:
                     "posted": row.get("posted", "")
                 }
                 jobs.append(job)
-        return {"jobs": jobs}
+        return {"status":"success", "text":"", "jobs": jobs}
     except Exception as e:
-        return {"error": f"Failed to read CSV: {str(e)}"}
+        return {"status":"error", "text": f"Failed to read CSV: {str(e)}"}
 
 @mcp.tool(
     name="write_csv",
@@ -51,10 +54,10 @@ def write_csv(jobs: List[dict], output_path: str) -> dict:
                     "posted": job.get("posted", "")
                 })
         
-        return {"ok": True, "saved_count": len(jobs)}
+        return {"status":"success", "text":"", "saved_count": len(jobs)}
         
     except Exception as e:
-        return {"error": f"Failed to write CSV: {str(e)}"}
+        return {"status":"error", "text": f"Failed to write CSV: {str(e)}"}
 
 if __name__ == "__main__":
     mcp.run(transport = 'stdio')

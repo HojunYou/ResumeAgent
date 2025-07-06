@@ -66,32 +66,56 @@ def initial_screening_prompt(row, position):
     return {"messages": prompt}
 
 def llm_screening_prompt(row, position, resume_path):
-    title = row.get("title", "").strip()
+    """
+    Build a two‑message array for Ollama / Qwen‑series models.
+
+    Returns
+    -------
+    dict with shape:
+        {
+          "messages": [
+              {"role": "system", "content": "..."},
+              {"role": "user",   "content": "..."}
+          ]
+        }
+    """
+    title       = row.get("title", "").strip()
     description = row.get("description", "").strip()
 
-    screening = _screening_logic_block(title, description, position)
-    
-    extended_prompt = f"""{screening}
+    # Common screening logic reused in both prompts
+    screening_block = _screening_logic_block(title, description, position)
+
+    # System prompt – global behaviour instructions
+    system_msg = """You are an automated evaluator whose task is to *tightly* assess the similarity between a resume and a job description with maximum rigor and strictness.
+You must respond exclusively in valid JSON that matches the required schema, without any extra text, commentary, or formatting.
+Any response that does not conform exactly to the schema or contains any additional text is unacceptable."""
+
+    # User prompt – actual task with resume reference
+    user_msg = f"""{screening_block}
 
 ----------------------------------------------------------
-If "keep" is true, additionally perform the following:
+If "keep" is true, you must perform the following additional step:
 
-Read the PDF resume file in the given path using the tools provided. Then evaluate the relevance and suitability of the resume for this job.
-
-Resume path:
-{resume_path}
+1. **Resume Scoring**:
+   - You **MUST** call the `read_pdf` tool with the following path to get the resume text: `{resume_path}`.
+   - You are **NOT** allowed to guess or hallucinate the result of this tool call.
+   - If the tool call is successful, use the returned text to score the resume from 0 to 1.
+   - If the tool call fails for any reason, set the "score" to 0.
 
 ----------------------------------------------------------
-Return the same JSON structure as before, but with one additional field:
-  "score": a float between 0 and 1 indicating similarity or match level. If keep is false or cannot read resume, set score to 0.
+Return the same JSON structure as before, but with the "score" field added. If "keep" is false, set "score" to 0.
 
-Output format:
 {{
-  "title_pass": true/false,
-  "experience_pass": true/false,
-  "keep": true/false,
-  "reason": "...",
-  "score": float
+    "title_pass": true/false,
+    "experience_pass": true/false,
+    "keep": true/false,
+    "score": float,
+    "reason": "Concise explanation of any rejection."
 }}
 """
-    return {"messages": extended_prompt}
+    # Keep prompt content but drop the explicit system role; align with
+    # the simpler `{ "messages": <str> }` pattern used elsewhere.
+    full_prompt = f"{system_msg}{user_msg}"
+    return {"messages": full_prompt}
+#
+# All prompt builders now return an Ollama‑compatible `messages` array including a system message where appropriate.

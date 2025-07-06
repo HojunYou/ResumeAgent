@@ -7,8 +7,8 @@ except ImportError:
 
 mcp = FastMCP("Fetch LaTeX and PDF")
 
-@mcp.resource(
-    "file://tex/{path}",
+@mcp.tool(
+    # "file://tex/{path}",
     name="fetch_tex_as_text",
     description="Read LaTeX resume file content as text."
 )
