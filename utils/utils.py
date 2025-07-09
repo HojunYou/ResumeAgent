@@ -31,5 +31,5 @@ def parse_score_response(response: str):
         print(f"Error parsing score response: {e}")
         print(f"Response: {response}")
         print(f"Returning empty dict")
-        response = {}
+        response = {"score": 0, "reason": "Error parsing score response"}
     return response
