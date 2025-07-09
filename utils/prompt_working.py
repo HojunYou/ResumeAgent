@@ -86,7 +86,6 @@ You have a multi-step task:
     - Score higher if the resume matches preferred qualifications.
 4.  Your final output must be a single JSON object with the keys specified in the user message. If "keep" is false, the "score" should be 0.
 """
-
     # Add similarity scoring instructions to the user message
     user_msg = f'''{screening_user_msg}
 
@@ -118,5 +117,6 @@ Your final JSON output must include the "score" field. If "keep" is false, set "
             {"role": "user", "content": user_msg},
         ]
     }
-#
+
+
 # All prompt builders now return an Ollama‑compatible `messages` array including a system message where appropriate.

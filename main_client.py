@@ -8,6 +8,7 @@ import os
 import pandas as pd
 
 from utils.prompt_working import llm_screening_prompt
+from utils.utils import create_jobID, get_score_df, parse_score_response
 
 # class ScreeningResponse(BaseModel):
 #     title_pass: bool
@@ -16,7 +17,7 @@ from utils.prompt_working import llm_screening_prompt
 #     score: float
 #     reason: str
 
-async def main(idx=0, resume_path="data/full_resume.pdf"):
+async def main(idx=0, resume_path="data/full_resume.pdf", save_path="outputs/JobScores.csv"):
     model = ChatOllama(model="qwen3:8b")
     servers_config = "mcp_servers.json"
     servers = json.load(open(servers_config))
@@ -25,16 +26,25 @@ async def main(idx=0, resume_path="data/full_resume.pdf"):
     )
     tools = await client.get_tools()
     tool_names = [tool.name for tool in tools]
-    # print(f"Loaded tools: {tool_names}")
+    print(f"Loaded tools: {tool_names}")
     agent = create_react_agent(model, tools) # , response_format=("Please produce exactly this JSON", ScreeningResponse))
     job_df = pd.read_csv("outputs/JobPosts.csv")
     row = job_df.iloc[idx]
     position = "Machine Learning Engineer"
+    score_df = get_score_df(job_df, save_path)
+    job_id = create_jobID(row, position, idx)
+    score_df.loc[idx, 'jobid'] = job_id
     # abs_resume_path = os.path.abspath(resume_path)
     query = llm_screening_prompt(row, position, resume_path)
     response = await agent.ainvoke(query)
+    # if len(response['messages']) > 3:
+    #     results = parse_score_response(response['messages'][4].content)
+    #     score_df.loc[idx, 'score'] = results['score']
+    # else:
+    #     score_df.loc[idx, 'score'] = 0
+    # score_df.to_csv(save_path, index=False)
     return response['messages']
     
 if __name__ == "__main__":
-    response = asyncio.run(main(0, "data/full_resume.pdf"))
+    response = asyncio.run(main(9, "data/full_resume.pdf"))
     print(response[-1].content)
