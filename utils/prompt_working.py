@@ -16,15 +16,36 @@ def save_csv_prompt(output_path):
 
 def fetch_tex_prompt(path):
     prompt = f"""
-    Read the following LaTeX resume file content as text.
+    Fetch the following LaTeX resume file content as text.
     {path}
 
-    Return the text content. No other text."""
+    Return the text content in the following format:
+    <latex>
+    text_content
+    </latex>
+
+    For example, if the text content is:
+    ```
+    \documentclass{{article}}
+    \begin{{document}}
+    Hello, world!
+    \end{{document}}
+    ```
+    The output should be:
+    <latex>
+    \documentclass{{article}}
+    \begin{{document}}
+    Hello, world!
+    \end{{document}}
+    </latex>
+
+    Do not include any other text.
+"""
     return {"messages": prompt}
 
 def fetch_pdf_prompt(path):
     prompt = f"""
-    Read the following PDF resume file content as text.
+    Fetch the following PDF resume file content as text.
     {path}
 
     Return the text content. No other text."""
@@ -81,11 +102,12 @@ def llm_screening_prompt(row, position, resume_path):
 You have a multi-step task:
 1.  First, perform the initial screening of the job posting based on the detailed instructions in the user message.
 2.  If the screening passes (i.e., "keep" is true), you MUST use the `fetch_pdf_as_text` tool to read the resume at `{resume_path}`. You are not allowed to make up the content of the resume.
-3.  After fetching the resume, you will score the similarity between the resume and the job description.
+3.  After fetching the resume, you will score the similarity between the resume and the job description in scale of 0 to 1 up to 2 decimal places.
     - Put extra focus on, but not limited to, qualifications, education, and skills.
     - Score higher if the resume matches preferred qualifications.
 4.  Your final output must be a single JSON object with the keys specified in the user message. If "keep" is false, the "score" should be 0.
 """
+
     # Add similarity scoring instructions to the user message
     user_msg = f'''{screening_user_msg}
 
@@ -117,6 +139,5 @@ Your final JSON output must include the "score" field. If "keep" is false, set "
             {"role": "user", "content": user_msg},
         ]
     }
-
-
+#
 # All prompt builders now return an Ollama‑compatible `messages` array including a system message where appropriate.

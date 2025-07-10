@@ -21,15 +21,34 @@ def get_score_df(job_df: pd.DataFrame, save_path: str):
         score_df = score_df[['jobid', 'score'] + [col for col in score_df.columns if col not in ['jobid', 'score']]]
     return score_df
 
-def parse_score_response(response: str):
+def parse_score_response(response: str) -> dict:
     ## remove content from <think> to </think>
-    response = response.split('<think>')[1].split('</think>')[1]
-    response = response.strip()
+    response_text = response.split('<think>')[1].split('</think>')[1]
+    response_text = response_text.strip()
     try:
-        response = json.loads(response)
+        result = json.loads(response_text)
     except Exception as e:
         print(f"Error parsing score response: {e}")
-        print(f"Response: {response}")
+        print(f"Response: {response_text}")
         print(f"Returning empty dict")
-        response = {"score": 0, "reason": "Error parsing score response"}
-    return response
+        result = {
+            "score": 0, 
+            "reason": "Error parsing score response",
+            "title_pass": False,
+            "experience_pass": False,
+            "skill_pass": False,
+            "keep": False
+        }
+    return result
+
+def update_score_df(score_df: pd.DataFrame, job_id: str, idx: int, response: dict, save_path: str):
+    
+    score_df.loc[idx, 'jobid'] = job_id
+    if len(response['messages']) > 3:
+        results = parse_score_response(response['messages'][4].content)
+        score_df.loc[idx, 'score'] = results['score']
+    else:
+        score_df.loc[idx, 'score'] = 0
+    score_df.to_csv(save_path, index=False)
+
+    return score_df

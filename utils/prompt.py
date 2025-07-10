@@ -81,7 +81,7 @@ def llm_screening_prompt(row, position, resume_path):
 You have a multi-step task:
 1.  First, perform the initial screening of the job posting based on the detailed instructions in the user message.
 2.  If the screening passes (i.e., "keep" is true), you MUST use the `fetch_pdf_as_text` tool to read the resume at `{resume_path}`. You are not allowed to make up the content of the resume.
-3.  After fetching the resume, you will score the similarity between the resume and the job description.
+3.  After fetching the resume, you will score the similarity between the resume and the job description in scale of 0 to 1 up to 2 decimal places.
     - Put extra focus on, but not limited to, qualifications, education, and skills.
     - Score higher if the resume matches preferred qualifications.
 4.  Your final output must be a single JSON object with the keys specified in the user message. If "keep" is false, the "score" should be 0.
