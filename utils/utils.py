@@ -9,7 +9,7 @@ def create_jobID(row: dict, position: str, unique_digits: int):
     unique_digits_str = f"{unique_digits:04d}"
     return f"{company_name}_{position_abbr}_{unique_digits_str}"
 
-def get_score_df(job_df: pd.DataFrame, save_path: str):
+def get_score_df(job_df: pd.DataFrame, save_path: str) -> pd.DataFrame:
     if os.path.exists(save_path):
         score_df = pd.read_csv(save_path)
     else:
@@ -18,7 +18,8 @@ def get_score_df(job_df: pd.DataFrame, save_path: str):
         score_df['jobid'] = None
         score_df['score'] = None
         ## Make JobID comes first and score comes fifth
-        score_df = score_df[['jobid', 'score'] + [col for col in score_df.columns if col not in ['jobid', 'score']]]
+        other_cols = [col for col in score_df.columns if col not in ['jobid', 'score']]
+        score_df = pd.DataFrame(score_df[['jobid', 'score'] + other_cols])
     return score_df
 
 def parse_score_response(response: str) -> dict:
@@ -49,6 +50,7 @@ def update_score_df(score_df: pd.DataFrame, job_id: str, idx: int, response: dic
         score_df.loc[idx, 'score'] = results['score']
     else:
         score_df.loc[idx, 'score'] = 0
+    print(f"Job score updated: {score_df.loc[idx, 'job_url']}: {score_df.loc[idx, 'score']}")
     score_df.to_csv(save_path, index=False)
 
     return score_df
