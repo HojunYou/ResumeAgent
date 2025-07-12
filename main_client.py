@@ -48,8 +48,10 @@ async def main(idx=0, resume_path="data/full_resume.pdf", save_path="outputs/Job
     ## Fetch .tex file test prompt
     # tex_response = await agent.ainvoke(fetch_tex_prompt(resume_path.replace(".pdf", ".tex")))
     ## Step 4: Tailor .tex file
+    original_tex_path = resume_path.replace(".pdf", ".tex")
+    resume_tex = open(original_tex_path, "r").read()
     if updated_row['score'] > threshold:
-        query = resume_tailoring_prompt(updated_row, resume_path.replace(".pdf", ".tex"))
+        query = resume_tailoring_prompt(updated_row, resume_tex)
         response = await agent.ainvoke(query)
         return response['messages']
     else:
@@ -57,6 +59,6 @@ async def main(idx=0, resume_path="data/full_resume.pdf", save_path="outputs/Job
         return None
     
 if __name__ == "__main__":
-    response = asyncio.run(main(9, "data/full_resume.pdf")) #"/Users/hojunyou/Dropbox/Projects/ResumeAgent/data/full_resume.pdf" 
+    response = asyncio.run(main(14, "data/full_resume.pdf")) #"/Users/hojunyou/Dropbox/Projects/ResumeAgent/data/full_resume.pdf" 
     if response:
         print(response[-1].content)

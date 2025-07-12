@@ -141,44 +141,75 @@ Your final JSON output must include the "score" field. If "keep" is false, set "
     }
 
 def resume_tailoring_prompt(row, resume_path):
-    ## This prompt should read resume_path (use mcp tool) and given description,
-    ## return a new resume that is tailored to the description while keeping the original resume latex format.
-    ## The new resume should be saved to a new path 'tailored_resume/row['jobid'].tex'
-    ## When tailoring it must not create new content or hallucinate the content.
-    ## Only allowed to re-organize to emphasize the most relevant experience and skills and remove the irrelevant ones.
-    ## The new resume should be about 1 page long.
-    ## At last, it should return the fit score between the new resume and the job description.
-    ## The new tailored latex content should be delimited by <latex> and </latex> tags.
+    """
+    Generates a prompt for the LLM to tailor a resume.
+    The prompt instructs the LLM to first fetch the resume content from a .tex file,
+    then tailor it based on the job description.
+    """
+    job_id = row.get('jobid', 'unknown_job')
+    job_description = row.get('description', '')
 
-    system_msg = f"""You are an expert resume editor specializing in tailoring LaTeX resumes for specific job applications.
-Your task is to read a resume and a job description, then rewrite the resume to perfectly match the job's requirements, while strictly adhering to the given constraints.
-You must use the `fetch_tex_as_text` and `write_tex` tools to fetch and write the resume content."""
-    user_msg = f"""Here is the job description:
-----------------------------------------------------------
-{row['description']}
-----------------------------------------------------------
+    system_msg = f"""You are an expert resume editor. Your task is to read a LaTeX resume and rewrite it to match a given job description.
 
-Your task is to perform the following steps:
+**CORE PRINCIPLES:**
+- **NO FABRICATION**: Never invent experiences, skills, or qualifications.
+- **TOOL USE IS MANDATORY**: You MUST use the specified tools for fetching and saving the resume.
+- **LATEX INTEGRITY**: Maintain the original LaTeX structure and commands.
 
-1. **Fetch Resume**: You MUST use the `fetch_tex_as_text` tool to read the resume content from the following path: `{resume_path}`. You **are not allowed to make up the content of the resume**.
-
-2. **Tailor Resume**: Rewrite the resume based on the job description.
-   - **Constraint 1**: The output *MUST* be in LaTeX format, maintaining the original document's structure and style.
-   - **Constraint 2**: You *MUST NOT* invent or hallucinate any experiences, skills, or qualifications. All content in the tailored resume must be derived from the original resume.
-   - **Constraint 3**: Reorder, rephrase, and selectively remove sections to emphasize the most relevant qualifications and experiences that align with the job description.
-   - **Constraint 4**: The final tailored resume should be concise and ideally about one page long.
-   - **Constraint 5**: The final tailored resume should be written to a new path 'tailored_resume/row['jobid'].tex'
-
-3. **Score Fit**: After tailoring, calculate a "fit score" between the tailored resume and the job description. The score should be a float between 0 and 1 up to 2 decimal places (e.g., 0.85), representing the quality of the match.
-
-4. **Format Output**: Your final output MUST be a single JSON object containing two keys: "new_score" and "latex_content".
-   - The "latex_content" value must be the full text of the tailored LaTeX resume.
-   - The "new_score" value must be the calculated fit score.
-
-Example of the final JSON output format:
-{{
-  "new_score": 0.92,
-  "latex_content": "documentclass{{article}}...\\end{{document}}"
-}}
+**PROCESS:**
+1.  Fetch the resume content using the `fetch_tex_as_text` tool.
+2.  Rewrite the resume to match the job description.
+3.  Save the tailored resume using the `save_latex_resume` tool.
+4.  Score the fit of the tailored resume.
 """
-    return {"messages": [{"role": "system", "content": system_msg}, {"role": "user", "content": user_msg}]}
+
+    user_msg = f"""**JOB DESCRIPTION:**
+----------------------------------------------------------
+{job_description}
+----------------------------------------------------------
+
+**RESUME FILE PATH:**
+{resume_path}
+
+**YOUR TASK (execute in this order):**
+
+1.  **FETCH RESUME:**
+    - You MUST use the `fetch_tex_as_text` tool to get the content of the resume from the path: `{resume_path}`.
+    - You are **NOT** allowed to guess or hallucinate the result of this tool call.
+    - If the tool call fails, you must stop and report the error.
+
+2.  **ANALYZE & TAILOR (only after successful fetch):**
+    - Analyze the job description for key requirements.
+    - Rewrite the fetched resume content to align with the job description.
+    - Reorder sections, emphasize relevant skills, and remove irrelevant information.
+    - DO NOT add any new information.
+
+3.  **SAVE TAILORED RESUME:**
+    - You MUST use the `save_latex_resume` tool to write the tailored LaTeX content.
+    - **File Path:** `tailored_resume/{job_id}.tex`
+
+4.  **CALCULATE FIT SCORE:**
+    - Evaluate your tailored resume against the job description.
+    - Score from 0.00 to 1.00 based on skill alignment, experience relevance, and keyword optimization.
+
+**OUTPUT FORMAT:**
+Return a single JSON object with exactly these keys:
+
+{{
+  "success": true/false,
+  "fit_score": 0.XX,
+  "latex_content": "full tailored LaTeX content",
+  "tailoring_summary": "brief description of key changes made",
+  "error_message": "error description if success is false, otherwise null"
+}}
+
+**ERROR HANDLING:**
+- If any step fails, set success to false and provide a reason in `error_message`.
+- If the `fetch_tex_as_text` or `save_latex_resume` tool fails, report the error.
+"""
+    return {
+        "messages": [
+            {"role": "system", "content": system_msg},
+            {"role": "user", "content": user_msg}
+        ]
+    }

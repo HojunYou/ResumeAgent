@@ -5,7 +5,7 @@ try:
 except ImportError:
     fitz = None
 
-mcp = FastMCP("Fetch and write LaTeX and convert to PDF")
+mcp = FastMCP("Fetch and save LaTeX and convert to PDF")
 
 @mcp.tool(
     # "file://tex/{path}",
@@ -17,11 +17,11 @@ async def fetch_tex_as_text(path: str) -> str:
         return await f.read()
 
 @mcp.tool(
-    name="write_tex",
-    description="Write LaTeX resume file content as text."
+    name="save_latex_resume",
+    description="Save LaTeX resume file content as text."
 )
-async def write_tex(text: str, output_path: str) -> dict:
-    """Write LaTeX resume file content as text."""
+async def save_latex_resume(text: str, output_path: str) -> dict:
+    """Save LaTeX resume file content as text."""
     try:
         async with aopen(output_path, 'w', encoding='utf-8') as f:
             await f.write(text)
