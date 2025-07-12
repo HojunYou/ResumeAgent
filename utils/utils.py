@@ -2,9 +2,9 @@ import os
 import pandas as pd
 import json
 
-def create_jobID(row: dict, position: str, unique_digits: int):
+def create_jobID(row: pd.Series, position: str, unique_digits: int):
     # JobID: {company_name}_{positionabbr}_{unique 4 digits} # should be unique
-    company_name = row['company'].lower().replace(' ', '_')
+    company_name = str(row['company']).lower().replace(' ', '_')
     position_abbr = ''.join(map(lambda x: x[0], position.lower().split(' ')))
     unique_digits_str = f"{unique_digits:04d}"
     return f"{company_name}_{position_abbr}_{unique_digits_str}"
@@ -17,14 +17,18 @@ def get_score_df(job_df: pd.DataFrame, save_path: str) -> pd.DataFrame:
         score_df = job_df.copy()
         score_df['jobid'] = None
         score_df['score'] = None
+        score_df['final_score'] = None
         ## Make JobID comes first and score comes fifth
-        other_cols = [col for col in score_df.columns if col not in ['jobid', 'score']]
-        score_df = pd.DataFrame(score_df[['jobid', 'score'] + other_cols])
+        other_cols = [col for col in score_df.columns if col not in ['jobid', 'score', 'final_score']]
+        score_df = pd.DataFrame(score_df[['jobid', 'score', 'final_score'] + other_cols])
     return score_df
 
 def parse_score_response(response: str) -> dict:
-    ## remove content from <think> to </think>
-    response_text = response.split('<think>')[1].split('</think>')[1]
+    ## remove content from <think> to </think> if exists
+    if '<think>' in response:
+        response_text = response.split('<think>')[1].split('</think>')[1]
+    else:
+        response_text = response
     response_text = response_text.strip()
     try:
         result = json.loads(response_text)
@@ -42,14 +46,14 @@ def parse_score_response(response: str) -> dict:
         }
     return result
 
-def update_score_df(score_df: pd.DataFrame, job_id: str, idx: int, response: dict, save_path: str):
-    
-    score_df.loc[idx, 'jobid'] = job_id
+def update_score_df(score_df: pd.DataFrame, job_id: str, idx: int, response: dict, save_path: str, target_col: str = 'score'):
+    if score_df.loc[idx, 'jobid'] is None:
+        score_df.loc[idx, 'jobid'] = job_id
     if len(response['messages']) > 3:
-        results = parse_score_response(response['messages'][4].content)
-        score_df.loc[idx, 'score'] = results['score']
+        results = parse_score_response(response['messages'][-1].content)
+        score_df.loc[idx, target_col] = results['score']
     else:
-        score_df.loc[idx, 'score'] = 0
+        score_df.loc[idx, target_col] = 0
     print(f"Job score updated: {score_df.loc[idx, 'job_url']}: {score_df.loc[idx, 'score']}")
     score_df.to_csv(save_path, index=False)
 
@@ -57,7 +61,12 @@ def update_score_df(score_df: pd.DataFrame, job_id: str, idx: int, response: dic
 
 def convert_tex_to_pdf(tex_file_path: str, output_dir: str) -> str:
     try:
-        os.system(f"pdflatex -output-directory {output_dir} {tex_file_path}")
+        os.system(f"pdflatex -interaction=nonstopmode -output-directory {output_dir} {tex_file_path}")
         return "success"
     except Exception as e:
         return f"failure: {str(e)}"
+
+def filter_score_df(score_df: pd.DataFrame, threshold: float, save_path: str):
+    filtered_df = score_df[(score_df['final_score'] >= threshold) | (score_df['score'] >= threshold)]
+    filtered_df = filtered_df.groupby('company').apply(lambda x: x.sort_values(by='final_score', ascending=False))
+    filtered_df.to_csv(save_path, index=False)

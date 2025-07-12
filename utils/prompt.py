@@ -118,5 +118,84 @@ Your final JSON output must include the "score" field. If "keep" is false, set "
             {"role": "user", "content": user_msg},
         ]
     }
-#
-# All prompt builders now return an Ollama‑compatible `messages` array including a system message where appropriate.
+
+def resume_tailoring_prompt(row, resume_path):
+    """Updated prompt that accounts for the MCP tool return format."""
+    job_description = row.get('description', '')
+    job_id = row.get('jobid', 'unknown_job')
+    output_path = f"tailored_resume/{job_id}/{job_id}.tex"
+    system_msg = f"""You are an expert resume editor specializing in tailoring LaTeX resumes for specific job applications.
+
+**AVAILABLE MCP TOOLS:**
+- `fetch_tex_as_text(file_path)`: Returns the text content of the file.
+- `save_tex(text, output_path)`: Returns 'success' or 'failure'.
+
+**TOOL RESPONSE HANDLING:**
+- For fetch_tex_as_text: use the returned text for the actual LaTeX text
+- For save_tex: use the returned 'success' or 'failure' for operation success or failure
+
+**TAILORING PROCESS:**
+1. Read the original resume using the `fetch_tex_as_text` tool.
+2. Tailor the resume based on the given job description.
+3. Save the tailored resume using the `save_tex` tool.
+4. Calculate the fit score based on the tailored resume and the given job description."""
+
+    user_msg = f"""You must tailor a resume for the following job description:
+
+**<JOB DESCRIPTION>**
+{job_description}
+**</JOB DESCRIPTION>**
+
+**TASK EXECUTION:**
+
+1. **READ ORIGINAL RESUME**
+   ```
+   result = fetch_tex_as_text("{resume_path}")
+   if result.startswith("failure"):
+       return {{"success": false, "error": result, "score": 0.00}}
+   
+   original_content = result
+   ```
+
+2. **TAILOR RESUME**
+   - Analyze job requirements/qualifications and map to existing resume content
+   - Reorder and emphasize relevant sections
+   - MUST keep those skills and experiences relevant to AI/ML.
+   - Remove/condense less relevant content, but *never remove any section/section header completely*.
+   - Maintain LaTeX formatting
+   - Contact information line must be kept in the same line
+   - Don't use adjectives like "strong" or "excellent" to describe skills.
+
+3. **SAVE TAILORED RESUME**
+   ```
+   save_result = save_tex(tailored_content, "{output_path}")
+   if save_result.startswith("failure"):
+       return {{"success": false, "error": save_result, "score": 0.00}}
+   ```
+
+4. **CALCULATE FIT SCORE**
+   - Score based on skills alignment, experience relevance, keyword optimization
+   - Return float between 0.00-1.00
+
+**OUTPUT FORMAT:**
+{{
+  "success": true/false,
+  "content": "full tailored LaTeX content",
+  "error": "error description if success is false, otherwise null",
+  "score": 0.XX,
+  "saved_path": "path where file was saved"
+}}
+
+**ERROR HANDLING EXAMPLES:**
+- If read fails: Use the tool's error message directly
+- If save fails: Use the tool's error message directly
+- Always propagate tool errors to final output
+
+Begin by reading the original resume using the MCP tool."""
+
+    return {
+        "messages": [
+            {"role": "system", "content": system_msg},
+            {"role": "user", "content": user_msg}
+        ]
+    }
