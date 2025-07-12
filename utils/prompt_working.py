@@ -149,19 +149,7 @@ def resume_tailoring_prompt(row, resume_path):
     job_id = row.get('jobid', 'unknown_job')
     job_description = row.get('description', '')
 
-    system_msg = f"""You are an expert resume editor. Your task is to read a LaTeX resume and rewrite it to match a given job description.
-
-**CORE PRINCIPLES:**
-- **NO FABRICATION**: Never invent experiences, skills, or qualifications.
-- **TOOL USE IS MANDATORY**: You MUST use the specified tools for fetching and saving the resume.
-- **LATEX INTEGRITY**: Maintain the original LaTeX structure and commands.
-
-**PROCESS:**
-1.  Fetch the resume content using the `fetch_tex_as_text` tool.
-2.  Rewrite the resume to match the job description.
-3.  Save the tailored resume using the `save_latex_resume` tool.
-4.  Score the fit of the tailored resume.
-"""
+    system_msg = f"""You are an expert resume editor. Your task is to execute a series of commands. You must execute them in order. You must not add any conversational text."""
 
     user_msg = f"""**JOB DESCRIPTION:**
 ----------------------------------------------------------
@@ -173,9 +161,9 @@ def resume_tailoring_prompt(row, resume_path):
 
 **YOUR TASK (execute in this order):**
 
-1.  **FETCH RESUME:**
-    - You MUST use the `fetch_tex_as_text` tool to get the content of the resume from the path: `{resume_path}`.
-    - You are **NOT** allowed to guess or hallucinate the result of this tool call.
+1.  **FETCH RESUME (DO THIS FIRST):**
+    - Call the `fetch_tex_as_text` tool with the path: `{resume_path}`.
+    - DO NOT write any text. Call the tool now.
     - If the tool call fails, you must stop and report the error.
 
 2.  **ANALYZE & TAILOR (only after successful fetch):**
@@ -185,8 +173,9 @@ def resume_tailoring_prompt(row, resume_path):
     - DO NOT add any new information.
 
 3.  **SAVE TAILORED RESUME:**
-    - You MUST use the `save_latex_resume` tool to write the tailored LaTeX content.
-    - **File Path:** `tailored_resume/{job_id}.tex`
+    - You MUST use the `save_tex` tool to write the tailored LaTeX content.
+    - 'save_tex' input: (1) the tailored LaTeX content, (2) the output path.
+    - **Output Path:** `tailored_resume/{job_id}.tex`
 
 4.  **CALCULATE FIT SCORE:**
     - Evaluate your tailored resume against the job description.
@@ -205,8 +194,84 @@ Return a single JSON object with exactly these keys:
 
 **ERROR HANDLING:**
 - If any step fails, set success to false and provide a reason in `error_message`.
-- If the `fetch_tex_as_text` or `save_latex_resume` tool fails, report the error.
+- If the `fetch_tex_as_text` or `save_tex` tool fails, report the error.
 """
+    return {
+        "messages": [
+            {"role": "system", "content": system_msg},
+            {"role": "user", "content": user_msg}
+        ]
+    }
+
+def updated_resume_tailoring_prompt(row, resume_path):
+    """Updated prompt that accounts for the MCP tool return format."""
+    job_description = row.get('description', '')
+    system_msg = f"""You are an expert resume editor specializing in tailoring LaTeX resumes for specific job applications.
+
+**AVAILABLE MCP TOOLS:**
+- `fetch_tex_as_text(file_path)`: Returns the text content of the file.
+- `save_tex(text, output_path)`: Returns 'success' or 'failure'.
+
+**TOOL RESPONSE HANDLING:**
+- For fetch_tex_as_text: use the returned text for the actual LaTeX text
+- For save_tex: use the returned 'success' or 'failure' for the save operation
+
+**TAILORING PROCESS:**
+1. Read the original resume using the `fetch_tex_as_text` tool.
+2. Tailor the resume based on the given job description.
+3. Save the tailored resume using the `save_tex` tool.
+4. Calculate the fit score based on the tailored resume and the given job description."""
+
+    user_msg = f"""You must tailor a resume for the following job description:
+
+**<JOB DESCRIPTION>**
+{job_description}
+**</JOB DESCRIPTION>**
+
+**TASK EXECUTION:**
+
+1. **READ ORIGINAL RESUME**
+   ```
+   result = fetch_tex_as_text("{resume_path}")
+   if result.startswith("failure"):
+       return {{"success": false, "error": result, "fit_score": 0.00}}
+   
+   original_content = result
+   ```
+
+2. **TAILOR RESUME**
+   - Analyze job requirements and map to existing resume content
+   - Reorder and emphasize relevant sections
+   - Remove/condense less relevant content
+   - Maintain LaTeX formatting
+
+3. **SAVE TAILORED RESUME**
+   ```
+   save_result = save_tex(tailored_content, "tailored_resume/{row['jobid']}/{row['jobid']}.tex")
+   if save_result.startswith("failure"):
+       return {{"success": false, "error": save_result, "fit_score": 0.00}}
+   ```
+
+4. **CALCULATE FIT SCORE**
+   - Score based on skills alignment, experience relevance, keyword optimization
+   - Return float between 0.00-1.00
+
+**OUTPUT FORMAT:**
+{{
+  "success": true/false,
+  "fit_score": 0.XX,
+  "content": "full tailored LaTeX content",
+  "error": "error description if success is false, otherwise null",
+  "saved_path": "path where file was saved"
+}}
+
+**ERROR HANDLING EXAMPLES:**
+- If read fails: Use the tool's error message directly
+- If save fails: Use the tool's error message directly
+- Always propagate tool errors to final output
+
+Begin by reading the original resume using the MCP tool."""
+
     return {
         "messages": [
             {"role": "system", "content": system_msg},

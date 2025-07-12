@@ -54,3 +54,10 @@ def update_score_df(score_df: pd.DataFrame, job_id: str, idx: int, response: dic
     score_df.to_csv(save_path, index=False)
 
     return score_df
+
+def convert_tex_to_pdf(tex_file_path: str, output_dir: str) -> str:
+    try:
+        os.system(f"pdflatex -output-directory {output_dir} {tex_file_path}")
+        return "success"
+    except Exception as e:
+        return f"failure: {str(e)}"

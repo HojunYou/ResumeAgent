@@ -1,14 +1,20 @@
 from langchain_mcp_adapters.client import MultiServerMCPClient
 from langgraph.prebuilt import create_react_agent
 from langchain_ollama import ChatOllama
+from langchain_openai import ChatOpenAI
 
 import asyncio
 import json
-import os
+import os, sys
 import pandas as pd
 
-from utils.prompt_working import llm_screening_prompt, resume_tailoring_prompt #, fetch_tex_prompt
-from utils.utils import create_jobID, get_score_df, update_score_df
+from utils.prompt_working import (
+    llm_screening_prompt, 
+    resume_tailoring_prompt, 
+    updated_resume_tailoring_prompt, 
+    # updated_resume_tailoring_prompt2,
+ ) #, fetch_tex_prompt
+from utils.utils import get_score_df , update_score_df, convert_tex_to_pdf
 
 # class ScreeningResponse(BaseModel):
 #     title_pass: bool
@@ -17,8 +23,16 @@ from utils.utils import create_jobID, get_score_df, update_score_df
 #     score: float
 #     reason: str
 
+# Load API key from file
+with open(os.path.expanduser("~/.openai_key"), "r") as f:
+    openai_api_key = f.read().strip()
+
+openai_api_key = openai_api_key.split("\"")[1].strip()
+os.environ["OPENAI_API_KEY"] = openai_api_key
+
 async def main(idx=0, resume_path="data/full_resume.pdf", save_path="outputs/JobScores.csv", threshold=0.75):
-    model = ChatOllama(model="qwen3:8b")
+    # model = ChatOllama(model="qwen3:14b")
+    model = ChatOpenAI(model="gpt-4.1")
     servers_config = "mcp_servers.json"
     servers = json.load(open(servers_config))
     client = MultiServerMCPClient(
@@ -49,16 +63,29 @@ async def main(idx=0, resume_path="data/full_resume.pdf", save_path="outputs/Job
     # tex_response = await agent.ainvoke(fetch_tex_prompt(resume_path.replace(".pdf", ".tex")))
     ## Step 4: Tailor .tex file
     original_tex_path = resume_path.replace(".pdf", ".tex")
-    resume_tex = open(original_tex_path, "r").read()
-    if updated_row['score'] > threshold:
-        query = resume_tailoring_prompt(updated_row, resume_tex)
+    # resume_tex = open(original_tex_path, "r").read()
+    if updated_row['score'] >= threshold:
+        # query = resume_tailoring_prompt(updated_row, original_tex_path)
+        query = updated_resume_tailoring_prompt(updated_row, original_tex_path)
+        # query = updated_resume_tailoring_prompt2(updated_row, original_tex_path)
         response = await agent.ainvoke(query)
+        try:
+            results = json.loads(response['messages'][-1].content)
+            if results['success']:
+                try:
+                    convert_tex_to_pdf(results['saved_path'], results['saved_path'].replace(".tex", ".pdf"))
+                except Exception as e:
+                    print(f"Error converting tex to pdf: {e}")
+            else:
+                print(f"Error tailoring resume: {results['error']}")
+        except Exception as e:
+            print(f"Error tailoring resume: {e}")
         return response['messages']
     else:
         print(f"Job {updated_row['jobid']} failed screening with score {updated_row['score']}")
         return None
     
 if __name__ == "__main__":
-    response = asyncio.run(main(14, "data/full_resume.pdf")) #"/Users/hojunyou/Dropbox/Projects/ResumeAgent/data/full_resume.pdf" 
+    response = asyncio.run(main(8, "data/full_resume.pdf")) #"/Users/hojunyou/Dropbox/Projects/ResumeAgent/data/full_resume.pdf" 
     if response:
         print(response[-1].content)
