@@ -63,9 +63,9 @@ def main():
     authenticate_linkedin(cookie_file)
     
     scraper = LinkedinScraper(
-        chrome_executable_path=None,  # Custom Chrome executable path (e.g. /foo/bar/bin/chromedriver)
-        chrome_binary_location=None,  # Custom path to Chrome/Chromium binary (e.g. /foo/bar/chrome-mac/Chromium.app/Contents/MacOS/Chromium)
-        chrome_options=None,  # Custom Chrome options here
+        # chrome_executable_path=None,  # Custom Chrome executable path (e.g. /foo/bar/bin/chromedriver)
+        # chrome_binary_location=None,  # Custom path to Chrome/Chromium binary (e.g. /foo/bar/chrome-mac/Chromium.app/Contents/MacOS/Chromium)
+        # chrome_options=None,  # Custom Chrome options here
         headless=True,  # Overrides headless mode only if chrome_options is None
         max_workers=1,  # How many threads will be spawned to run queries concurrently (one Chrome driver for each thread)
         slow_mo=2,  # Slow down the scraper to avoid 'Too many requests 429' errors (in seconds)
