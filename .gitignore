@@ -13,10 +13,11 @@ resumeagent/
 __pypackages__/
 .uv/
 .python_version
-data/linkedin_cookie.txt
-data/company_list.csv
-data/full_resume.pdf
-data/full_resume.tex
+
+# Data files - ignore all except company_small_list.csv and ResumeAgent workflow.pdf
+data/*
+!data/company_small_list.csv
+!data/ResumeAgent workflow.pdf
 
 
 # C extensions
