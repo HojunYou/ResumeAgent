@@ -3,9 +3,8 @@
 ResumeAgent is an AI-powered automation tool that discovers relevant jobs, ranks them by similarity to your resume, and generates tailored resumes for each opportunity. It is designed for robust, extensible, and fully automated operation.
 
 ## Development Status
-- Scraping LinkedIn jobs (`utils/scrap_linkedin.py`).
-- Debugging `mcp_tools/agent_tools.py`.
-- Using OpenAI API (o4-mini model) for LLM-based job screening and resume tailoring.
+- Using OpenAI API (o4-mini model) for LLM-based job screening and resume tailoring. Ollama-based api supported, but `resume_tailoring_prompt` may not work as desired.
+- Weekly updates have not been implemented yet.
 
 ## Features
 - **Input:** Full resume (`data/full_resume.pdf` and `data/full_resume.tex`), target companies (`data/company_list.csv`), desired job position(s), and location(s).
