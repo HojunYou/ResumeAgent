@@ -38,6 +38,7 @@ async def main():
     parser.add_argument("--need_update", action=argparse.BooleanOptionalAction, default=False, help="Update job posts.")
     parser.add_argument("--threshold", type=float, default=0.6, help="Score threshold for job filtering.")
     parser.add_argument("--num_jobs", type=int, default=10, help="Number of jobs to scrape per company.")
+    parser.add_argument("--api_type", type=str, default="openai", help="API type: 'openai' or 'ollama'.")
     args = parser.parse_args()
 
     try:
@@ -63,8 +64,8 @@ async def main():
         subprocess.run(["python", "utils/extract_jobposts.py", "--position", args.position, "--input", f"outputs/linkedin_outputs_{abbr}.out", "--output", job_posts_path])
     
     # Step 2: Setup model and tools
-    logging.info("Setting up model and MCP tools...")
-    model, tools = await setup_model_and_tools()
+    logging.info(f"Setting up model and MCP tools with {args.api_type}...")
+    model, tools = await setup_model_and_tools(args.api_type)
     
     # Step 3: Initialize ResumeAgent
     agent = ResumeAgent(model, tools, args.position, args.resume_path, args.threshold)

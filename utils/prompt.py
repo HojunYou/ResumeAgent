@@ -30,7 +30,7 @@ def fetch_pdf_prompt(path):
     Return the text content. No other text."""
     return {"messages": prompt}
 
-def _screening_logic_block(title, description, position):
+def _screening_logic_block(title, description, position, screening_word_list = ['staff', 'principal', 'lead', 'manager', 'infrastructure', 'cuda', 'researcher']):
     system_msg = f"You are an assistant tasked with filtering job postings for a junior-to-mid-level {position} (up to 7 years of experience)."
     user_msg = f"""Here is a job posting:
 ----------------------------------------------------------
@@ -42,7 +42,7 @@ def _screening_logic_block(title, description, position):
 Perform the following checks and return a JSON object:
 
 1. **Title Check**: Reject if the title includes any of the following words (case-insensitive): 
-   'staff', 'principal', 'lead', 'manager', 'infrastructure', 'cuda', or 'researcher'.
+   {', '.join(screening_word_list)}
    - Exception: Accept if it contains 'technical staff'.
 
 2. **Experience Check**: Reject if the job clearly requires more than 7 years of experience. Do not add required years for different skills.

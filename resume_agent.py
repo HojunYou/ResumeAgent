@@ -2,15 +2,16 @@ import json
 import os
 import logging
 import pandas as pd
-from typing import Any, Dict
+from typing import Any, Dict, Literal
 from langchain_mcp_adapters.client import MultiServerMCPClient
 from langchain_openai import ChatOpenAI
+from langchain_ollama import ChatOllama
 from langgraph.prebuilt import create_react_agent
 from utils.prompt import llm_screening_prompt, resume_tailoring_prompt
 from utils.utils import create_jobID, update_score_df, convert_tex_to_pdf
 
 class ResumeAgent:
-    def __init__(self, model: ChatOpenAI, tools: list, position: str, resume_path: str, threshold: float = 0.6):
+    def __init__(self, model: ChatOpenAI | ChatOllama, tools: list, position: str, resume_path: str, threshold: float = 0.6):
         self.model = model
         self.tools = tools
         self.agent = create_react_agent(model, tools)
@@ -78,18 +79,19 @@ class ResumeAgent:
             logging.info(error_msg)
             return {'success': False, 'job_id': job_id, 'error': error_msg}
 
-async def setup_model_and_tools() -> tuple[ChatOpenAI, list]:
+async def setup_model_and_tools(api_type: Literal["openai", "ollama"] = "openai") -> tuple[ChatOpenAI | ChatOllama, list]:
     """Setup the model and MCP tools."""
     # Load API key from file
-    with open(os.path.expanduser("~/.openai_key"), "r") as f:
-        openai_api_key = f.read().strip()
-    
-    openai_api_key = openai_api_key.split("\"")[1].strip()
-    os.environ["OPENAI_API_KEY"] = openai_api_key
-    
-    # Initialize model
-    model = ChatOpenAI(model="o4-mini")
-    
+    if api_type == "openai":
+        with open(os.path.expanduser("~/.openai_key"), "r") as f:
+            openai_api_key = f.read().strip()
+        openai_api_key = openai_api_key.split("\"")[1].strip()
+        os.environ["OPENAI_API_KEY"] = openai_api_key
+        model = ChatOpenAI(model="o4-mini")
+    elif api_type == "ollama":
+        model = ChatOllama(model="qwen3:8b")
+    else:
+        raise ValueError(f"Invalid API type: {api_type}")
     # Load MCP servers and create client
     servers_config = "mcp_servers.json"
     servers = json.load(open(servers_config))
