@@ -12,7 +12,23 @@ from linkedin_jobs_scraper.filters import (
 )
 import argparse, os
 import pandas as pd
-from utils.utils import authenticate_linkedin
+
+def authenticate_linkedin(cookie_file: str):
+    if os.path.exists(cookie_file):
+        try:
+            # Read the cookie file directly
+            with open(cookie_file, 'r') as f:
+                content = f.read().strip()
+
+            if "\n" in content:
+                content = content.split("\n")[0].strip()
+            os.environ['LI_AT_COOKIE'] = content
+            logging.info("LinkedIn cookie loaded successfully")
+        except Exception as e:
+            logging.warning(f"Could not load LinkedIn cookie file: {e}")
+    else:
+        logging.info("No LinkedIn cookie file found, proceeding without authentication")
+
 
 def on_data(data: EventData):
     # print('[ON_DATA]', data.title, f"<<{data.company}>>", data.company_link, data.date, data.date_text, data.link, data.insights,
@@ -47,7 +63,7 @@ def main():
     parser.add_argument("--position", default="Machine Learning Engineer", help="Job position keyword, e.g. 'Machine Learning Engineer'")
     parser.add_argument("--location", default="San Jose", help="Job location, e.g. 'San Francisco Bay Area'")
     parser.add_argument("--filepath", default="data/company_small_list.csv", help="CSV with LinkedinURL column")
-    parser.add_argument("--num_jobs", default=5, help="Number of jobs to scrape per company")
+    parser.add_argument("--num_jobs", default=5, type=int, help="Number of jobs to scrape per company")
     args = parser.parse_args()
 
     position = args.position
@@ -59,8 +75,8 @@ def main():
     logging.info(f"Scraping {position} jobs in {location} for {num_jobs} jobs per company from {csv_path}")
     
     # Load LinkedIn cookies if file exists
-    cookie_file = "data/linkedin_cookie.txt"
-    authenticate_linkedin(cookie_file)
+    # cookie_file = "data/linkedin_cookie.txt"
+    # authenticate_linkedin(cookie_file)
     
     scraper = LinkedinScraper(
         # chrome_executable_path=None,  # Custom Chrome executable path (e.g. /foo/bar/bin/chromedriver)
@@ -89,6 +105,8 @@ def main():
         if not url or not isinstance(url, str):
             logging.warning("No valid LinkedinURL found for company: %s", row.get("Company"))
             continue
+        else:
+            logging.info(f"Scraping {position} jobs for {row.get('Company')} in {location} from {url}")
         companies.append(row.get("Company"))
         queries.append(
             Query(

@@ -14,64 +14,92 @@ Launches the entire ResumeAgent project.
 """
 
 import asyncio
-import argparse
 import subprocess
 import logging
 import pandas as pd
 import os
-from utils.extract_jobposts import ABBREVIATIONS
+import json
+from utils.scrap_linkedin import authenticate_linkedin
 from utils.utils import get_score_df, filter_score_df, convert_tex_to_pdf
 from resume_agent import ResumeAgent, setup_model_and_tools
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
+ABBREVIATIONS = {
+    'machine learning engineer': "MLE",
+    "data scientist": "DS"
+}
 
 async def main():
     """
     Main entry point for the ResumeAgent project.
     Handles starting and stopping the MCP server via stdio.
     """
-    parser = argparse.ArgumentParser(description="Run the ResumeAgent project.")
-    parser.add_argument("--position", default="Machine Learning Engineer", help="Job position keyword, e.g. 'Machine Learning Engineer'")
-    parser.add_argument("--resume-path", default="data/full_resume.pdf", help="Path to the LaTeX resume file.")
-    parser.add_argument("--job-posts-path", default="outputs/JobPosts.csv", help="Path to the job posts CSV file.")
-    parser.add_argument("--need_update", action=argparse.BooleanOptionalAction, default=False, help="Update job posts.")
-    parser.add_argument("--threshold", type=float, default=0.6, help="Score threshold for job filtering.")
-    parser.add_argument("--num_jobs", type=int, default=10, help="Number of jobs to scrape per company.")
-    parser.add_argument("--api_type", type=str, default="openai", help="API type: 'openai' or 'ollama'.")
-    args = parser.parse_args()
 
+    # Load configuration from JSON file
     try:
-        abbr = ABBREVIATIONS.get(args.position.lower())
+        with open('config.json', 'r') as f:
+            config = json.load(f)
+    except FileNotFoundError:
+        print(f"Configuration file not found: config.json")
+        return
+    except json.JSONDecodeError as e:
+        print(f"Invalid JSON in configuration file: {e}")
+        return
+    linkedin_config = config.get("scrap_linkedin")
+    try:
+        abbr = ABBREVIATIONS.get(config["position"].lower())
         if not abbr:
-            print(f"Invalid position: {args.position} in ABBREVIATIONS.")
+            print(f"Invalid position: {config['position']} in ABBREVIATIONS.")
             return
     except KeyError:
-        print(f"Invalid position: {args.position} in ABBREVIATIONS.")
+        print(f"Invalid position: {config['position']} in ABBREVIATIONS.")
         return
     
     # Setup file paths
-    job_posts_path = args.job_posts_path.replace(".csv", f"_{abbr}.csv")
-    # filtered_job_posts_path = os.path.dirname(job_posts_path) + f"/Filtered{os.path.basename(job_posts_path)}"
-    # final_job_posts_path = os.path.dirname(job_posts_path) + f"/Final{os.path.basename(job_posts_path)}"
-    # tailored_resume_path = os.path.dirname(job_posts_path) + f"/Tailored{os.path.basename(job_posts_path)}"
+    job_posts_path = config["job_posts_path"].replace(".csv", f"_{abbr}.csv")
     score_save_path = f"outputs/JobScores_{abbr}.csv"
 
     # Step 1: Update job posts if needed
-    if args.need_update:
-        logging.info(f"Updating job posts for {args.position}...")
-        subprocess.run(["python", "utils/scrape_linkedin.py", "--position", args.position, "--num_jobs", str(args.num_jobs), ">", f"outputs/linkedin_outputs_{abbr}.out"])
-        subprocess.run(["python", "utils/extract_jobposts.py", "--position", args.position, "--input", f"outputs/linkedin_outputs_{abbr}.out", "--output", job_posts_path])
+    if config["need_update"]:
+        logging.info(f"Updating job posts for {config['position']}...")
+        linkedin_outputs = f"outputs/linkedin_outputs_{abbr}.out"
+
+        # Load LinkedIn cookie and pass environment to subprocess
+        authenticate_linkedin("data/linkedin_cookie.txt")
+        env_vars = os.environ.copy()
+        
+        # Run LinkedIn scraper and capture output
+        result = subprocess.run([
+            "python", "utils/scrap_linkedin.py", 
+            "--position", config["position"], 
+            "--num_jobs", str(linkedin_config.get("num_jobs", 10)), 
+            "--location", linkedin_config.get("location", "San Jose"), 
+            "--filepath", linkedin_config.get("filepath", "data/company_small_list.csv")
+        ], capture_output=True, text=True, env=env_vars)
+        
+        # Save the output to file
+        with open(linkedin_outputs, 'w') as f:
+            f.write(result.stdout)
+            if result.stderr:
+                f.write(f"\n# STDERR:\n{result.stderr}")
+                
+        subprocess.run([
+            "python", "utils/extract_jobposts.py", 
+            "--position", config["position"], 
+            "--input", linkedin_outputs, 
+            "--output", job_posts_path
+        ])
     
     # Step 2: Setup model and tools
-    logging.info(f"Setting up model and MCP tools with {args.api_type}...")
-    model, tools = await setup_model_and_tools(args.api_type)
+    logging.info(f"Setting up model and MCP tools with {config['api_type']}...")
+    model, tools = await setup_model_and_tools(config["api_type"])
     
     # Step 3: Initialize ResumeAgent
-    agent = ResumeAgent(model, tools, args.position, args.resume_path, args.threshold)
+    agent = ResumeAgent(model, tools, config["position"], config["resume_path"], config["threshold"])
     
     # Step 4: Load job posts
-    logging.info(f"Loading job posts for {args.position}...")
+    logging.info(f"Loading job posts for {config['position']}...")
     if not os.path.exists(job_posts_path):
         logging.error(f"Job posts file not found: {job_posts_path}")
         return
@@ -104,7 +132,7 @@ async def main():
     # Step 6: Filter and save results
     logging.info(f"Processing complete. {len(successful_jobs)} jobs successfully processed.")
     logging.info(f"Successful jobs:\n{successful_jobs}")
-    filter_score_df(score_df, args.threshold, f"outputs/TargetJobs_{abbr}.csv")
+    filter_score_df(score_df, config["threshold"], f"outputs/TargetJobs_{abbr}.csv")
     logging.info(f"Results saved to outputs/TargetJobs_{abbr}.csv")
 
 if __name__ == "__main__":

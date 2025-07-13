@@ -14,9 +14,9 @@ def main():
     parser.add_argument("--output", default="outputs/JobPosts.csv", help="Output CSV path")
     args = parser.parse_args()
 
-    abbr = ABBREVIATIONS.get(args.position.lower(), args.position)
-    args.input = args.input[:-4] + f"_{abbr}.out"
-    args.output = args.output[:-4] + f"_{abbr}.csv"
+    # abbr = ABBREVIATIONS.get(args.position.lower(), args.position)
+    # args.input = args.input[:-4] + f"_{abbr}.out"
+    # args.output = args.output[:-4] + f"_{abbr}.csv"
 
     rows = []
     for line in open(args.input).readlines():

@@ -1,0 +1,13 @@
+{
+  "position": "Machine Learning Engineer",
+  "resume_path": "data/full_resume.pdf",
+  "job_posts_path": "outputs/JobPosts.csv",
+  "need_update": true,
+  "threshold": 0.6,
+  "api_type": "openai",
+  "scrap_linkedin": {
+    "location": "San Jose",
+    "filepath": "data/company_small_list.csv",
+    "num_jobs": 10
+  }
+} 
