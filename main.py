@@ -60,36 +60,10 @@ async def main():
     job_posts_path = config["job_posts_path"].replace(".csv", f"_{abbr}.csv")
     score_save_path = f"outputs/JobScores_{abbr}.csv"
 
-    # Step 1: Update job posts if needed
+    # Step 1: Scrape LinkedIn
     if config["need_update"]:
-        logging.info(f"Updating job posts for {config['position']}...")
-        linkedin_outputs = f"outputs/linkedin_outputs_{abbr}.out"
-
-        # Load LinkedIn cookie and pass environment to subprocess
-        authenticate_linkedin("data/linkedin_cookie.txt")
-        env_vars = os.environ.copy()
-        
-        # Run LinkedIn scraper and capture output
-        result = subprocess.run([
-            "python", "utils/scrap_linkedin.py", 
-            "--position", config["position"], 
-            "--num_jobs", str(linkedin_config.get("num_jobs", 10)), 
-            "--location", linkedin_config.get("location", "San Jose"), 
-            "--filepath", linkedin_config.get("filepath", "data/company_small_list.csv")
-        ], capture_output=True, text=True, env=env_vars)
-        
-        # Save the output to file
-        with open(linkedin_outputs, 'w') as f:
-            f.write(result.stdout)
-            if result.stderr:
-                f.write(f"\n# STDERR:\n{result.stderr}")
-                
-        subprocess.run([
-            "python", "utils/extract_jobposts.py", 
-            "--position", config["position"], 
-            "--input", linkedin_outputs, 
-            "--output", job_posts_path
-        ])
+        logging.info(f"Scraping LinkedIn for {config['position']}...")
+        ## Manually scrap linkedin and save the output to data/linkedin_outputs.out
     
     # Step 2: Setup model and tools
     logging.info(f"Setting up model and MCP tools with {config['api_type']}...")
