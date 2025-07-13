@@ -14,7 +14,9 @@ __pypackages__/
 .uv/
 .python_version
 data/linkedin_cookie.txt
-errors/
+data/company_list.csv
+data/full_resume.pdf
+data/full_resume.tex
 
 
 # C extensions
