@@ -28,9 +28,10 @@ ResumeAgent is an AI-powered automation tool that discovers relevant jobs, ranks
 - **Efficiency:** Optimized prompts and response parsing for cost-effective operation
 
 ## Setup & Installation
-1.  **Prepare Data:**
-    *   Place your full resume in TeX format at `data/full_resume.tex`.
-    *   Create a `data/company_list.csv` file and list the companies you are interested in, one per line. Company name and LinkedinURL must be provided.
+1.  **Initial Preparation:**
+    *   Place your full resume in PDF format at `data/full_resume.pdf` and in TeX format at `data/full_resume.tex` for better customization.
+    *   Create a `data/company_list.csv` file with columns: `Company`, `LinkedinURL`. See `data/company_small_list.csv` for an example format.
+    *   (Optional) For LinkedIn job scraping, create `data/linkedin_cookie.txt` with your LinkedIn authentication cookie in the format: `export LI_AT_COOKIE="your-cookie-value"`. See [linkedin-jobs-scraper](https://github.com/spinlud/py-linkedin-jobs-scraper) for details.
 
 2.  **Setup OpenAI API:**
     *   Create an OpenAI API key at [platform.openai.com](https://platform.openai.com/api-keys)

@@ -12,7 +12,7 @@ from linkedin_jobs_scraper.filters import (
 )
 import argparse, os
 import pandas as pd
-
+from utils.utils import authenticate_linkedin
 
 def on_data(data: EventData):
     # print('[ON_DATA]', data.title, f"<<{data.company}>>", data.company_link, data.date, data.date_text, data.link, data.insights,
@@ -55,18 +55,23 @@ def main():
     csv_path = args.filepath
     num_jobs = args.num_jobs
     # Change root logger level (default is WARN)
-    logging.basicConfig(level=logging.INFO) # , format='%(asctime)s - %(levelname)s - %(message)s')
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     logging.info(f"Scraping {position} jobs in {location} for {num_jobs} jobs per company from {csv_path}")
+    
+    # Load LinkedIn cookies if file exists
+    cookie_file = "data/linkedin_cookie.txt"
+    authenticate_linkedin(cookie_file)
+    
     scraper = LinkedinScraper(
-        # chrome_executable_path=None,  # Custom Chrome executable path (e.g. /foo/bar/bin/chromedriver)
-        # chrome_binary_location=None,  # Custom path to Chrome/Chromium binary (e.g. /foo/bar/chrome-mac/Chromium.app/Contents/MacOS/Chromium)
-        # chrome_options=None,  # Custom Chrome options here
+        chrome_executable_path=None,  # Custom Chrome executable path (e.g. /foo/bar/bin/chromedriver)
+        chrome_binary_location=None,  # Custom path to Chrome/Chromium binary (e.g. /foo/bar/chrome-mac/Chromium.app/Contents/MacOS/Chromium)
+        chrome_options=None,  # Custom Chrome options here
         headless=True,  # Overrides headless mode only if chrome_options is None
         max_workers=1,  # How many threads will be spawned to run queries concurrently (one Chrome driver for each thread)
         slow_mo=2,  # Slow down the scraper to avoid 'Too many requests 429' errors (in seconds)
         page_load_timeout=40  # Page load timeout (in seconds)    
     )
-
+    
     # Add event listeners
     scraper.on(Events.DATA, on_data)
     scraper.on(Events.ERROR, on_error)
