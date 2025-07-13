@@ -123,7 +123,8 @@ def resume_tailoring_prompt(row, resume_path):
     """Updated prompt that accounts for the MCP tool return format."""
     job_description = row.get('description', '')
     job_id = row.get('jobid', 'unknown_job')
-    output_path = f"tailored_resume/{job_id}/{job_id}.tex"
+    company = row.get('company', 'unknown_company')
+    output_path = f"tailored_resumes/{company}/{job_id}.tex"
     system_msg = f"""You are an expert resume editor specializing in tailoring LaTeX resumes for specific job applications.
 
 **AVAILABLE MCP TOOLS:**

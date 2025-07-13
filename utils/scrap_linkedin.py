@@ -47,19 +47,20 @@ def main():
     parser.add_argument("--position", default="Machine Learning Engineer", help="Job position keyword, e.g. 'Machine Learning Engineer'")
     parser.add_argument("--location", default="San Jose", help="Job location, e.g. 'San Francisco Bay Area'")
     parser.add_argument("--filepath", default="data/company_small_list.csv", help="CSV with LinkedinURL column")
+    parser.add_argument("--num_jobs", default=5, help="Number of jobs to scrape per company")
     args = parser.parse_args()
 
     position = args.position
     location = args.location
     csv_path = args.filepath
-
+    num_jobs = args.num_jobs
     # Change root logger level (default is WARN)
     logging.basicConfig(level=logging.INFO) # , format='%(asctime)s - %(levelname)s - %(message)s')
-
+    logging.info(f"Scraping {position} jobs in {location} for {num_jobs} jobs per company from {csv_path}")
     scraper = LinkedinScraper(
-        chrome_executable_path=None,  # Custom Chrome executable path (e.g. /foo/bar/bin/chromedriver)
-        chrome_binary_location=None,  # Custom path to Chrome/Chromium binary (e.g. /foo/bar/chrome-mac/Chromium.app/Contents/MacOS/Chromium)
-        chrome_options=None,  # Custom Chrome options here
+        # chrome_executable_path=None,  # Custom Chrome executable path (e.g. /foo/bar/bin/chromedriver)
+        # chrome_binary_location=None,  # Custom path to Chrome/Chromium binary (e.g. /foo/bar/chrome-mac/Chromium.app/Contents/MacOS/Chromium)
+        # chrome_options=None,  # Custom Chrome options here
         headless=True,  # Overrides headless mode only if chrome_options is None
         max_workers=1,  # How many threads will be spawned to run queries concurrently (one Chrome driver for each thread)
         slow_mo=2,  # Slow down the scraper to avoid 'Too many requests 429' errors (in seconds)
@@ -92,9 +93,9 @@ def main():
                     apply_link=True,  # Try to extract apply link (easy applies are skipped). If set to True, scraping is slower because an additional page must be navigated. Default to False.
                     skip_promoted_jobs=True,  # Skip promoted jobs. Default to False.
                     page_offset=0,  # How many pages to skip
-                    limit=5,
+                    limit=num_jobs,
                     filters=QueryFilters(
-                        company_jobs_url=url if url else None,
+                        company_jobs_url=url if url else "",
                         relevance=RelevanceFilters.RECENT,
                         # time=TimeFilters.MONTH,
                         type=[TypeFilters.FULL_TIME], #, TypeFilters.INTERNSHIP],

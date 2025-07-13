@@ -20,7 +20,7 @@ import logging
 import pandas as pd
 import os
 from utils.extract_jobposts import ABBREVIATIONS
-from utils.utils import get_score_df, filter_score_df
+from utils.utils import get_score_df, filter_score_df, convert_tex_to_pdf
 from resume_agent import ResumeAgent, setup_model_and_tools
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -37,6 +37,7 @@ async def main():
     parser.add_argument("--job-posts-path", default="outputs/JobPosts.csv", help="Path to the job posts CSV file.")
     parser.add_argument("--need_update", action=argparse.BooleanOptionalAction, default=False, help="Update job posts.")
     parser.add_argument("--threshold", type=float, default=0.6, help="Score threshold for job filtering.")
+    parser.add_argument("--num_jobs", type=int, default=10, help="Number of jobs to scrape per company.")
     args = parser.parse_args()
 
     try:
@@ -49,16 +50,16 @@ async def main():
         return
     
     # Setup file paths
-    job_posts_path = args.job_posts_path[:-4] + f"_{abbr}.csv"
-    filtered_job_posts_path = os.path.dirname(job_posts_path) + f"/Filtered{os.path.basename(job_posts_path)}"
-    final_job_posts_path = os.path.dirname(job_posts_path) + f"/Final{os.path.basename(job_posts_path)}"
-    tailored_resume_path = os.path.dirname(job_posts_path) + f"/Tailored{os.path.basename(job_posts_path)}"
-    score_save_path = "outputs/JobScores.csv"
+    job_posts_path = args.job_posts_path.replace(".csv", f"_{abbr}.csv")
+    # filtered_job_posts_path = os.path.dirname(job_posts_path) + f"/Filtered{os.path.basename(job_posts_path)}"
+    # final_job_posts_path = os.path.dirname(job_posts_path) + f"/Final{os.path.basename(job_posts_path)}"
+    # tailored_resume_path = os.path.dirname(job_posts_path) + f"/Tailored{os.path.basename(job_posts_path)}"
+    score_save_path = f"outputs/JobScores_{abbr}.csv"
 
     # Step 1: Update job posts if needed
     if args.need_update:
         logging.info(f"Updating job posts for {args.position}...")
-        subprocess.run(["python", "utils/scrape_linkedin.py", "--position", args.position])
+        subprocess.run(["python", "utils/scrape_linkedin.py", "--position", args.position, "--num_jobs", str(args.num_jobs), ">", f"outputs/linkedin_outputs_{abbr}.out"])
         subprocess.run(["python", "utils/extract_jobposts.py", "--position", args.position, "--input", f"outputs/linkedin_outputs_{abbr}.out", "--output", job_posts_path])
     
     # Step 2: Setup model and tools
@@ -84,6 +85,15 @@ async def main():
     for idx, row in job_posts.iterrows():
         try:
             result = await agent.process_job_posting(row, idx, score_df, score_save_path)
+            ## TODO: check for .tex without .pdf and re-try converting it
+            tex_path = result.get('tex_path', '')
+            if tex_path and os.path.exists(tex_path) and not os.path.exists(tex_path.replace('.tex', '.pdf')):
+                logging.info(f"Re-converting {tex_path} to PDF...")
+                try:
+                    convert_tex_to_pdf(tex_path, os.path.dirname(tex_path))
+                except Exception as e:
+                    logging.error(f"Error re-converting {tex_path} to PDF: {e}")
+                    continue
             if result['success']:
                 successful_jobs.append(result)
         except Exception as e:
@@ -92,8 +102,9 @@ async def main():
     
     # Step 6: Filter and save results
     logging.info(f"Processing complete. {len(successful_jobs)} jobs successfully processed.")
-    filter_score_df(score_df, args.threshold, "outputs/TargetJobs.csv")
-    logging.info("Results saved to outputs/TargetJobs.csv")
+    logging.info(f"Successful jobs:\n{successful_jobs}")
+    filter_score_df(score_df, args.threshold, f"outputs/TargetJobs_{abbr}.csv")
+    logging.info(f"Results saved to outputs/TargetJobs_{abbr}.csv")
 
 if __name__ == "__main__":
     asyncio.run(main())

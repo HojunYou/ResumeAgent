@@ -8,12 +8,12 @@ ResumeAgent is an AI-powered automation tool that discovers relevant jobs, ranks
 - Ollama model deepseek-r1:8b (DeepSeek-R1-0528-Qwen3-8B: distilled version of Qwen3-8B)
 
 ## Features
-- **Input:** Full resume (`data/full_resume.pdf`), target companies (`data/company_list.csv`), desired job position(s), and location(s).
-- **Automated Career Site Discovery:** Finds each company's official career website and relevant job search page.
-- **Job Search & Filtering:** Scrapes jobs from official career sites (supports Greenhouse, Lever, static HTML, and extensible for more). Filters by years of experience, education, posting date, and strict role match.
-- **Similarity Scoring:** Uses a local Ollama API for both embedding-based and LLM-based similarity scoring between your resume and each job description.
-- **Results Output:** Outputs all selected jobs to `data/job_list.csv` with columns: `JobID`, `SimilarityScore`, `CompanyName`, `CareerWebsite`, `JobDescriptionURL`. Supports up to 6 jobs per company (no artificial filling).
-- **Tailored Resume Generation:** For each job, generates a LaTeX `.tex` file in `tailored_resumes/{company}/{position}_{JobID}_{date}.tex`, validated to compile.
+- **Input:** Full resume (`data/full_resume.pdf` and `data/full_resume.tex`), target companies (`data/company_list.csv`), desired job position(s), and location(s).
+- **Automated Career Site Discovery:** Finds each company's linkedin website and relevant job search page. Those companies do not appear on linkedin are not supported for now. All found jobs saved to `outputs/JobPosts_{position}.csv`.
+- **Job Search & Filtering:** Scrapes jobs from linkedin websites with desired position, location, posting date and etc. Initial filtering by title, years of experience, and key skills.
+- **Similarity Scoring:** Uses an OpenAI api (or a local Ollama API) for LLM-based similarity scoring between your resume and each job description.
+- **Results Output:** Outputs all selected jobs to `outputs/JobScores_{position}.csv` with columns: `JobID`, `Score`, `Company`, `JobDescriptionURL`, and more.
+- **Tailored Resume Generation:** For each job, generates a LaTeX `.tex` file in `tailored_resumes/{company}/{position}_{JobID}_{unique}.tex` and converted pdf file. Also `final_score` column is added to `outputs/JobScores.csv` based on tailored 
 - **Weekly Updates & Tracking:** (Planned) Weekly mode checks for new jobs, deduplicates, and generates resumes only for new postings.
 - **Robust Logging & Error Handling:** All steps feature robust logging and meaningful error messages.
 - **Extensible & Modular:** Easily add new job boards, filters, or AI models.

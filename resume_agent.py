@@ -3,6 +3,7 @@ import os
 import logging
 import pandas as pd
 from typing import Any, Dict
+from langchain_mcp_adapters.client import MultiServerMCPClient
 from langchain_openai import ChatOpenAI
 from langgraph.prebuilt import create_react_agent
 from utils.prompt import llm_screening_prompt, resume_tailoring_prompt
@@ -20,7 +21,7 @@ class ResumeAgent:
     async def process_job_posting(self, row: pd.Series, idx: Any, score_df: pd.DataFrame, save_path: str) -> Dict[str, Any]:
         """Process a single job posting through screening and tailoring."""
         job_id = create_jobID(row, self.position, idx)
-        logging.info(f"Processing job {idx + 1}: {row['title']} at {row['company']}")
+        logging.info(f"Processing job {idx}: {row['title']} at {row['company']}")
         
         # Step 1: Initial screening
         screening_query = llm_screening_prompt(row, self.position, self.resume_path)
@@ -28,13 +29,13 @@ class ResumeAgent:
         
         # Update score_df with screening results
         score_df = update_score_df(score_df, job_id, idx, screening_response, save_path)
-        
+        updated_row = score_df.loc[idx]
         # Check if job passed initial screening
-        if score_df.loc[idx, 'score'] > self.threshold:  # threshold
-            logging.info(f"Job {job_id} passed screening with score {score_df.loc[idx, 'score']}")
+        if updated_row['score'] > self.threshold:  # threshold
+            logging.info(f"Job {job_id} passed screening with score {updated_row['score']}")
             
             # Step 2: Resume tailoring
-            tailoring_query = resume_tailoring_prompt(row, self.resume_path.replace('.pdf', '.tex'))
+            tailoring_query = resume_tailoring_prompt(updated_row, self.resume_path.replace('.pdf', '.tex'))
             tailoring_response = await self.agent.ainvoke(tailoring_query)
             
             # Parse tailoring response
@@ -57,17 +58,25 @@ class ResumeAgent:
                                 'tex_path': tex_path
                             }
                         else:
-                            logging.error(f"PDF conversion failed for {job_id}: {pdf_result}")
+                            error_msg = f"PDF conversion failed for {job_id}: {pdf_result}"
+                            logging.error(error_msg)
+                            return {'success': False, 'job_id': job_id, 'error': error_msg}
                     else:
-                        logging.error(f"Tailored resume file not found for {job_id}")
+                        error_msg = f"Tailored resume file not found for {job_id}"
+                        logging.error(error_msg)
+                        return {'success': False, 'job_id': job_id, 'error': error_msg}
                 else:
-                    logging.error(f"Tailoring failed for {job_id}: {results.get('error', 'Unknown error')}")
+                    error_msg = f"Tailoring failed for {job_id}: {results.get('error', 'Unknown error')}"
+                    logging.error(error_msg)
+                    return {'success': False, 'job_id': job_id, 'error': error_msg}
             except Exception as e:
-                logging.error(f"Error parsing tailoring response for {job_id}: {e}")
+                error_msg = f"Error parsing tailoring response for {job_id}: {e}"
+                logging.error(error_msg)
+                return {'success': False, 'job_id': job_id, 'error': error_msg}
         else:
-            logging.info(f"Job {job_id} failed screening with score {score_df.loc[idx, 'score']}")
-        
-        return {'success': False, 'job_id': job_id}
+            error_msg = f"Job {job_id} failed screening with score {score_df.loc[idx, 'score']}"
+            logging.info(error_msg)
+            return {'success': False, 'job_id': job_id, 'error': error_msg}
 
 async def setup_model_and_tools() -> tuple[ChatOpenAI, list]:
     """Setup the model and MCP tools."""

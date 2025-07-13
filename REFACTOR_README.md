@@ -14,9 +14,9 @@ The ResumeAgent codebase has been refactored to improve organization and maintai
 ### Core Files
 
 - **`main.py`**: Main entry point with model/tools setup and complete workflow
-- **`main_client.py`**: Simplified test client for individual job processing
+- **`resume_agent.py`**: Simplified test client for individual job processing
 - **`utils/utils.py`**: Utility functions for job processing and file operations
-- **`utils/prompt_working.py`**: LLM prompts for screening and tailoring
+- **`utils/prompt.py`**: LLM prompts for screening and tailoring
 - **`mcp_servers.json`**: MCP server configuration
 
 ### Test Files
@@ -85,13 +85,6 @@ python main.py --need_update --position "Machine Learning Engineer"
 ```bash
 # Run the test script
 python test_refactor.py
-```
-
-### Testing Individual Jobs
-
-```bash
-# Test a single job (requires setup from main.py)
-python main_client.py
 ```
 
 ## Configuration
