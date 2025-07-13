@@ -2,21 +2,12 @@ import pandas as pd
 import json, re
 import argparse
 
-ABBREVIATIONS = {
-    'machine learning engineer': "MLE",
-    "data scientist": "DS"
-}
-
 def main():
     parser = argparse.ArgumentParser(description="Extract job postings from JSON output")
     parser.add_argument('--position', default="Machine Learning Engineer", help="Job position keyword, e.g. 'Machine Learning Engineer'")
     parser.add_argument("--input", default="outputs/sample_outputs.out", help="JSON path")
     parser.add_argument("--output", default="outputs/JobPosts.csv", help="Output CSV path")
     args = parser.parse_args()
-
-    # abbr = ABBREVIATIONS.get(args.position.lower(), args.position)
-    # args.input = args.input[:-4] + f"_{abbr}.out"
-    # args.output = args.output[:-4] + f"_{abbr}.csv"
 
     rows = []
     for line in open(args.input).readlines():

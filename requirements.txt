@@ -11,3 +11,5 @@ langgraph
 linkedin-jobs-scraper==5.0.2
 aiofiles
 aiohttps
+------
+selenium
