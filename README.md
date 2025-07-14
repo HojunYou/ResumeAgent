@@ -3,16 +3,16 @@
 ResumeAgent is an AI-powered automation tool that discovers relevant jobs, ranks them by similarity to your resume, and generates tailored resumes for each opportunity. It is designed for robust, extensible, and fully automated operation.
 
 ## Development Status
-- Using OpenAI API (o4-mini model) for LLM-based job screening and resume tailoring. Ollama-based api supported, but `resume_tailoring_prompt` may not work as desired.
+- Using OpenAI API (o4-mini model) for LLM-based job screening and resume tailoring. Ollama-based api supported, but `resume_tailoring_prompt` may not save tailored resumes to desired directories.
 - Weekly updates have not been implemented yet.
 
 ## Features
 - **Input:** Full resume (`data/full_resume.pdf` and `data/full_resume.tex`), target companies (`data/company_list.csv`), desired job position(s), and location(s).
-- **Automated Job Posts Discovery:** Each company's linkedin website must be filled in `data/company_list.csv` in `LinkedinURL` column (see `data/company_small_list.csv`). Those companies whose job posts are not appeared on linkedin are not supported as of now. All found jobs (up to `--num-jobs` jobs per company) should saved to `outputs/JobPosts_{position}.csv`.
+- **Automated Job Posts Discovery:** Each company's linkedin website must be filled in `data/company_list.csv` in `LinkedinURL` column (see `data/company_small_list.csv`).
 - **Job Search & Filtering:** Scrapes jobs from linkedin websites with desired position, location, posting date and etc. Initial filtering by title (`screening_word_list`), years of experience, and key skills.
 - **Similarity Scoring:** Uses OpenAI API (o4-mini model) for LLM-based similarity scoring between your resume and each job description. 
-    - Ollama apis are also compatible with tool-calling supporting models such as Qwen3 series, but OpenAI models perform better at calling mcp tools in experiments. You can further adjust `resume_tailoring_prompt` in `utils/prompt.py` to improve tool calling with ollama apis.
-    - Make sure ollama is installed and your target model is running.
+    - Ollama apis are also compatible with tool-calling supporting models such as Qwen3 series, but OpenAI models perform better at calling mcp tools in my experiments. You can further adjust `resume_tailoring_prompt` in `utils/prompt.py` to improve tool calling with ollama apis.
+    - Make sure ollama is installed and your model is running.
 - **Results Output:** Outputs all selected jobs to `outputs/JobScores_{position}.csv` with columns: `jobid`, `score`, `company`, `JobDescriptionURL`, and more.
 - **Tailored Resume Generation:** For each job, generates a LaTeX (`{jobid}_{unique_id}.tex`) and a pdf (`{jobid}_{unique_id}.pdf`) file under `tailored_resumes/{company}` directory. Also `final_score` column is added to `outputs/JobScores_{position}.csv` based on the fit of tailored resume to each job description.
 - **Weekly Updates & Tracking:** (Planned) Weekly mode checks for new jobs, deduplicates, and generates resumes only for new postings. Only job posts newly updated since the last execution will be updated.
@@ -50,11 +50,11 @@ ResumeAgent is an AI-powered automation tool that discovers relevant jobs, ranks
     *   The main script `main.py` now handles starting and stopping all necessary services automatically.
     *   (Optional) Scrap job posts from linkedin. Make sure your cookie is properly updated in `data/linkedin_cookie.txt` and abbreviation for your target position is defined.
         ```bash
-        python scrap_linkedin.py --filepath 'filepath' --position 'Your target position' --location 'your target location' --num_jobs 'num_jobs' > outputs/linkedin_outputs_{abbr}.out 2>&1
+        python scrap_linkedin.py --filepath 'filepath' --position 'Your target position' --location 'your target location' --num_jobs 'num_jobs' > outputs/linkedin_outputs_{position}.out 2>&1
         ```
         Once all relevant job posts are scraped. Extract the job posts into a csv file.
         ```bash
-        python extract_jobposts.py --input 'outputs/linkedin_outputs_{abbr}.out' --output 'outputs/JobPosts_{abbr}.csv'
+        python extract_jobposts.py --input 'outputs/linkedin_outputs_{position}.out' --output 'outputs/JobPosts_{position}.csv'
         ```
     *   Simply run the agent from your terminal:
         ```bash
@@ -73,12 +73,10 @@ ResumeAgent is an AI-powered automation tool that discovers relevant jobs, ranks
     ```
 - The agent will then:
     1. Load your resume from `data/full_resume.pdf`.
-    (Optional) Scrap job posts from Linkedin if `--need_update`.
     2. Load job postings from `outputs/JobPosts_{position}.csv`.
     3. Compare, rank, and filter the jobs using OpenAI API.
     4. Save the top jobs (with a score above a threshold) to `outputs/TargetJobs_{position}.csv`.
     5. Generate tailored LaTeX resumes in the `tailored_resumes/` directory.
-- You can customize the file paths using command-line arguments. See `python main.py --help` for more details.
 
 ### Weekly Update Mode (Planned)
 - Run: `python main.py weekly-update ...`
