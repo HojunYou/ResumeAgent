@@ -14,12 +14,12 @@ Launches the entire ResumeAgent project.
 """
 
 import asyncio
-import subprocess
+# import subprocess
 import logging
 import pandas as pd
 import os
 import json
-from utils.scrap_linkedin import authenticate_linkedin
+# from utils.scrap_linkedin import authenticate_linkedin
 from utils.utils import get_score_df, filter_score_df, convert_tex_to_pdf
 from resume_agent import ResumeAgent, setup_model_and_tools
 
@@ -46,7 +46,9 @@ async def main():
     except json.JSONDecodeError as e:
         print(f"Invalid JSON in configuration file: {e}")
         return
-    linkedin_config = config.get("scrap_linkedin")
+    
+    ## scrap_linkedin.py is used separately to scrape linkedin and save the output to data/linkedin_outputs_{position}.out
+    # linkedin_config = config.get("scrap_linkedin")
     try:
         abbr = ABBREVIATIONS.get(config["position"].lower())
         if not abbr:
@@ -60,19 +62,14 @@ async def main():
     job_posts_path = config["job_posts_path"].replace(".csv", f"_{abbr}.csv")
     score_save_path = f"outputs/JobScores_{abbr}.csv"
 
-    # Step 1: Scrape LinkedIn
-    if config["need_update"]:
-        logging.info(f"Scraping LinkedIn for {config['position']}...")
-        ## Manually scrap linkedin and save the output to data/linkedin_outputs.out
-    
-    # Step 2: Setup model and tools
+    # Step 1: Setup model and tools
     logging.info(f"Setting up model and MCP tools with {config['api_type']}...")
     model, tools = await setup_model_and_tools(config["api_type"])
     
-    # Step 3: Initialize ResumeAgent
+    # Step 2: Initialize ResumeAgent
     agent = ResumeAgent(model, tools, config["position"], config["resume_path"], config["threshold"])
     
-    # Step 4: Load job posts
+    # Step 3: Load job posts
     logging.info(f"Loading job posts for {config['position']}...")
     if not os.path.exists(job_posts_path):
         logging.error(f"Job posts file not found: {job_posts_path}")
@@ -83,7 +80,7 @@ async def main():
     
     logging.info(f"Loaded {len(job_posts)} job posts from {job_posts_path}")
     
-    # Step 5: Process each job posting
+    # Step 4: Process each job posting
     successful_jobs = []
     for idx, row in job_posts.iterrows():
         try:
@@ -103,7 +100,7 @@ async def main():
             logging.error(f"Error processing job {idx}: {e}")
             continue
     
-    # Step 6: Filter and save results
+    # Step 5: Filter and save results
     logging.info(f"Processing complete. {len(successful_jobs)} jobs successfully processed.")
     logging.info(f"Successful jobs:\n{successful_jobs}")
     filter_score_df(score_df, config["threshold"], f"outputs/TargetJobs_{abbr}.csv")

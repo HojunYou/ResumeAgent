@@ -8,7 +8,7 @@ ResumeAgent is an AI-powered automation tool that discovers relevant jobs, ranks
 
 ## Features
 - **Input:** Full resume (`data/full_resume.pdf` and `data/full_resume.tex`), target companies (`data/company_list.csv`), desired job position(s), and location(s).
-- **Automated Job Posts Discovery:** Each company's linkedin website must be filled in `data/company_list.csv` in `LinkedinURL` column (see `data/company_small_list.csv`). Those companies whose job posts are not appeared on linkedin are not supported as of now. All found jobs (up to `--num-jobs` jobs per company) will be saved to `outputs/JobPosts_{position}.csv`.
+- **Automated Job Posts Discovery:** Each company's linkedin website must be filled in `data/company_list.csv` in `LinkedinURL` column (see `data/company_small_list.csv`). Those companies whose job posts are not appeared on linkedin are not supported as of now. All found jobs (up to `--num-jobs` jobs per company) should saved to `outputs/JobPosts_{position}.csv`.
 - **Job Search & Filtering:** Scrapes jobs from linkedin websites with desired position, location, posting date and etc. Initial filtering by title (`screening_word_list`), years of experience, and key skills.
 - **Similarity Scoring:** Uses OpenAI API (o4-mini model) for LLM-based similarity scoring between your resume and each job description. 
     - Ollama apis are also compatible with tool-calling supporting models such as Qwen3 series, but OpenAI models perform better at calling mcp tools in experiments. You can further adjust `resume_tailoring_prompt` in `utils/prompt.py` to improve tool calling with ollama apis.
@@ -31,7 +31,7 @@ ResumeAgent is an AI-powered automation tool that discovers relevant jobs, ranks
 1.  **Initial Preparation:**
     *   Place your full resume in PDF format at `data/full_resume.pdf` and in TeX format at `data/full_resume.tex` for better customization.
     *   Create a `data/company_list.csv` file with columns: `Company`, `LinkedinURL`. See `data/company_small_list.csv` for an example format.
-    *   (Optional) For LinkedIn job scraping, create `data/linkedin_cookie.txt` with your LinkedIn authentication cookie in the format: `export LI_AT_COOKIE="your-cookie-value"`. See [linkedin-jobs-scraper](https://github.com/spinlud/py-linkedin-jobs-scraper) for details.
+    *   (Optional) For LinkedIn job scraping, create `data/linkedin_cookie.txt` only with your LinkedIn authentication cookie value (no other text such as `export`): `your-cookie-value`. See [linkedin-jobs-scraper](https://github.com/spinlud/py-linkedin-jobs-scraper) for details.
     *   Review and customize `config.json` with your preferred settings (job position, API type, thresholds, etc.).
 
 2.  **Setup OpenAI API:**
@@ -48,6 +48,14 @@ ResumeAgent is an AI-powered automation tool that discovers relevant jobs, ranks
 
 4.  **Run the Application:**
     *   The main script `main.py` now handles starting and stopping all necessary services automatically.
+    *   (Optional) Scrap job posts from linkedin. Make sure your cookie is properly updated in `data/linkedin_cookie.txt` and abbreviation for your target position is defined.
+        ```bash
+        python scrap_linkedin.py --filepath 'filepath' --position 'Your target position' --location 'your target location' --num_jobs 'num_jobs' > outputs/linkedin_outputs_{abbr}.out 2>&1
+        ```
+        Once all relevant job posts are scraped. Extract the job posts into a csv file.
+        ```bash
+        python extract_jobposts.py --input 'outputs/linkedin_outputs_{abbr}.out' --output 'outputs/JobPosts_{abbr}.csv'
+        ```
     *   Simply run the agent from your terminal:
         ```bash
         python main.py
