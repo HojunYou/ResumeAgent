@@ -79,7 +79,7 @@ ResumeAgent is an AI-powered automation tool that discovers relevant jobs, ranks
     5. Generate tailored LaTeX resumes in the `tailored_resumes/` directory.
 
 ### Weekly Update Mode (Planned)
-- Run: `python main.py weekly-update ...`
+- Run: `python scrap_linkedin.py weekly-update ...`
 - Checks each company for new jobs, adds only new ones, and generates tailored resumes as needed (no duplicates).
 
 ## Requirements
