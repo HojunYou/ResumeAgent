@@ -26,8 +26,9 @@ from resume_agent import ResumeAgent, setup_model_and_tools
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 ABBREVIATIONS = {
-    'machine learning engineer': "MLE",
-    "data scientist": "DS"
+    "machine learning engineer": "MLE",
+    "data scientist": "DS",
+    "research engineer": "RE"
 }
 
 async def main():

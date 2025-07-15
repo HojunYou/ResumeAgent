@@ -61,16 +61,8 @@ ResumeAgent is an AI-powered automation tool that discovers relevant jobs, ranks
         python main.py
         ```
     *   You can customize the configuration by editing `config.json` or specify a different config file:
-        ```bash
-        python main.py
-        ```
 
 ## Usage
-- The main script `main.py` handles starting and stopping all necessary services automatically.
-- Simply run the agent from your terminal:
-    ```bash
-    python main.py
-    ```
 - The agent will then:
     1. Load your resume from `data/full_resume.pdf`.
     2. Load job postings from `outputs/JobPosts_{position}.csv`.
