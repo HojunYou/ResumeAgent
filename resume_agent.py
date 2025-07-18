@@ -11,13 +11,14 @@ from utils.prompt import llm_screening_prompt, resume_tailoring_prompt
 from utils.utils import create_jobID, update_score_df, convert_tex_to_pdf
 
 class ResumeAgent:
-    def __init__(self, model: ChatOpenAI | ChatOllama, tools: list, position: str, resume_path: str, threshold: float = 0.6):
+    def __init__(self, model: ChatOpenAI | ChatOllama, tools: list, position: str, resume_path: str, lower_threshold: float = 0.6, upper_threshold: float = 0.8):
         self.model = model
         self.tools = tools
         self.agent = create_react_agent(model, tools)
         self.position = position
         self.resume_path = resume_path
-        self.threshold = threshold
+        self.lower_threshold = lower_threshold
+        self.upper_threshold = upper_threshold
         
     async def process_job_posting(self, row: pd.Series, idx: Any, score_df: pd.DataFrame, save_path: str) -> Dict[str, Any]:
         """Process a single job posting through screening and tailoring."""
@@ -32,7 +33,7 @@ class ResumeAgent:
         score_df = update_score_df(score_df, job_id, idx, screening_response, save_path)
         updated_row = score_df.loc[idx]
         # Check if job passed initial screening
-        if updated_row['score'] > self.threshold:  # threshold
+        if self.lower_threshold <= updated_row['score'] < self.upper_threshold:  # threshold
             logging.info(f"Job {job_id} passed screening with score {updated_row['score']}")
             
             # Step 2: Resume tailoring
@@ -88,8 +89,10 @@ async def setup_model_and_tools(api_type: Literal["openai", "ollama"] = "openai"
         openai_api_key = openai_api_key.split("\"")[1].strip()
         os.environ["OPENAI_API_KEY"] = openai_api_key
         model = ChatOpenAI(model="o4-mini")
+        print("Using OpenAI model: o4-mini")
     elif api_type == "ollama":
         model = ChatOllama(model="qwen3:8b")
+        print("Using Ollama model: qwen3:8b")
     else:
         raise ValueError(f"Invalid API type: {api_type}")
     # Load MCP servers and create client

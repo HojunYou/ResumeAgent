@@ -3,6 +3,7 @@
   "resume_path": "data/full_resume.pdf",
   "job_posts_path": "outputs/JobPosts.csv",
   "need_update": true,
-  "threshold": 0.6,
-  "api_type": "openai"
+  "low_threshold": 0.6,
+  "high_threshold": 0.8,
+  "api_type": "ollama"
 }

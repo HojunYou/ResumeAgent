@@ -10,20 +10,20 @@ import pandas as pd
 
 from utils.prompt import (
     llm_screening_prompt, 
-    resume_tailoring_prompt, 
+    resume_tailoring_prompt
  ) 
 from utils.utils import create_jobID, get_score_df, update_score_df, convert_tex_to_pdf, filter_score_df
 
 # Load API key from file
-with open(os.path.expanduser("~/.openai_key"), "r") as f:
-    openai_api_key = f.read().strip()
+# with open(os.path.expanduser("~/.openai_key"), "r") as f:
+#     openai_api_key = f.read().strip()
 
-openai_api_key = openai_api_key.split("\"")[1].strip()
-os.environ["OPENAI_API_KEY"] = openai_api_key
+# openai_api_key = openai_api_key.split("\"")[1].strip()
+# os.environ["OPENAI_API_KEY"] = openai_api_key
 
 async def main(idx=0, resume_path="data/full_resume.pdf", save_path="outputs/JobScores.csv", threshold=0.6):
-    # model = ChatOllama(model="qwen3:14b")
-    model = ChatOpenAI(model="o4-mini")
+    model = ChatOllama(model="MFDoom/deepseek-r1-tool-calling:8b")
+    # model = ChatOpenAI(model="o4-mini")
     servers_config = "mcp_servers.json"
     servers = json.load(open(servers_config))
     client = MultiServerMCPClient(
@@ -36,14 +36,14 @@ async def main(idx=0, resume_path="data/full_resume.pdf", save_path="outputs/Job
     job_df = pd.read_csv("outputs/JobPosts.csv")
     row = job_df.iloc[idx]
     position = "Machine Learning Engineer"
-    score_df = get_score_df(job_df, save_path)
-    job_id = create_jobID(row, position, idx)
+    # score_df = get_score_df(job_df, save_path)
+    # job_id = create_jobID(row, position, idx)
     ## Step 1: Screening
     query = llm_screening_prompt(row, position, resume_path)
     screening_response = await agent.ainvoke(query)
     ## Step 2: Update score_df
     # print(f"Response: {screening_response}")
-    score_df = update_score_df(score_df, job_id, idx, screening_response, save_path)
+    # score_df = update_score_df(score_df, job_id, idx, screening_response, save_path)
     return screening_response['messages']
     # ## Step 3: Check if the job passed screening
     # updated_row = score_df.iloc[idx]

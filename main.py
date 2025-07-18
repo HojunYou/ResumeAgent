@@ -28,7 +28,8 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 ABBREVIATIONS = {
     "machine learning engineer": "MLE",
     "data scientist": "DS",
-    "research engineer": "RE"
+    "research engineer": "RE",
+    "applied scientist": "AS"
 }
 
 async def main():
